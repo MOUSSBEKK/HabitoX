@@ -3,18 +3,18 @@ import '../models/goal.dart';
 
 class GoalCard extends StatelessWidget {
   final Goal goal;
-  final VoidCallback onTap;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-  final VoidCallback onToggleStatus;
+  final VoidCallback? onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onToggleStatus;
 
   const GoalCard({
     super.key,
     required this.goal,
-    required this.onTap,
-    required this.onEdit,
-    required this.onDelete,
-    required this.onToggleStatus,
+    this.onTap,
+    this.onEdit,
+    this.onDelete,
+    this.onToggleStatus,
   });
 
   @override
@@ -83,41 +83,87 @@ class GoalCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Menu d'actions
-                  PopupMenuButton<String>(
-                    icon: Icon(Icons.more_vert, color: Colors.grey[600]),
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          onEdit();
-                          break;
-                        case 'delete':
-                          onDelete();
-                          break;
-                        case 'toggle':
-                          onToggleStatus();
-                          break;
-                      }
-                    },
-                    itemBuilder: (context) => _buildPopupMenuItems(),
-                  ),
+                  // Menu d'actions (seulement si des callbacks sont fournis)
+                  if (onEdit != null ||
+                      onDelete != null ||
+                      onToggleStatus != null)
+                    PopupMenuButton<String>(
+                      icon: Icon(Icons.more_vert, color: Colors.grey[600]),
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'edit':
+                            onEdit?.call();
+                            break;
+                          case 'delete':
+                            onDelete?.call();
+                            break;
+                          case 'toggle':
+                            onToggleStatus?.call();
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        if (onEdit != null)
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, size: 20),
+                                SizedBox(width: 8),
+                                Text('Modifier'),
+                              ],
+                            ),
+                          ),
+                        if (onToggleStatus != null)
+                          PopupMenuItem(
+                            value: 'toggle',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  goal.isActive
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(goal.isActive ? 'Pauser' : 'Activer'),
+                              ],
+                            ),
+                          ),
+                        if (onDelete != null)
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, size: 20, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Supprimer',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                 ],
               ),
-
-              const SizedBox(height: 20),
-
-              // Grade actuel
-              _buildGradeSection(),
 
               const SizedBox(height: 20),
 
               // Barre de progression
               _buildProgressSection(),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               // Statistiques
               _buildStatsSection(),
+
+              // Actions rapides (seulement pour les objectifs actifs)
+              if (goal.isActive && onTap != null) ...[
+                const SizedBox(height: 20),
+                _buildQuickActions(context),
+              ],
             ],
           ),
         ),
@@ -127,21 +173,21 @@ class GoalCard extends StatelessWidget {
 
   Widget _buildStatusBadge() {
     Color badgeColor;
-    String statusText;
-    IconData statusIcon;
+    String badgeText;
+    IconData badgeIcon;
 
     if (goal.isCompleted) {
       badgeColor = Colors.green;
-      statusText = 'Complété';
-      statusIcon = Icons.check_circle;
+      badgeText = 'Complété';
+      badgeIcon = Icons.check_circle;
     } else if (goal.isActive) {
       badgeColor = Colors.blue;
-      statusText = 'Actif';
-      statusIcon = Icons.play_circle;
+      badgeText = 'Actif';
+      badgeIcon = Icons.play_circle;
     } else {
       badgeColor = Colors.grey;
-      statusText = 'Archivé';
-      statusIcon = Icons.pause_circle;
+      badgeText = 'Archivé';
+      badgeIcon = Icons.archive;
     }
 
     return Container(
@@ -154,45 +200,18 @@ class GoalCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(statusIcon, size: 14, color: badgeColor),
+          Icon(badgeIcon, size: 16, color: badgeColor),
           const SizedBox(width: 4),
           Text(
-            statusText,
+            badgeText,
             style: TextStyle(
               fontSize: 12,
-              color: badgeColor,
               fontWeight: FontWeight.w600,
+              color: badgeColor,
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildGradeSection() {
-    final currentGrade = goal.currentGrade;
-    final nextGrade = goal.nextGrade;
-
-    return Row(
-      children: [
-        Text(currentGrade.emoji, style: const TextStyle(fontSize: 20)),
-        const SizedBox(width: 8),
-        Text(
-          currentGrade.title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: currentGrade.color,
-          ),
-        ),
-        if (nextGrade != null) ...[
-          const Spacer(),
-          Text(
-            'Prochain: ${nextGrade.emoji}',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-          ),
-        ],
-      ],
     );
   }
 
@@ -229,7 +248,7 @@ class GoalCard extends StatelessWidget {
           color: goal.color,
           borderRadius: BorderRadius.circular(4),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Text(
           '${goal.totalDays} jours sur ${goal.targetDays}',
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
@@ -241,125 +260,117 @@ class GoalCard extends StatelessWidget {
   Widget _buildStatsSection() {
     return Row(
       children: [
-        _buildStatItem(
-          '${goal.currentStreak}',
-          'Série',
-          Icons.local_fire_department,
-          Colors.orange,
+        Expanded(
+          child: _buildStatItem(
+            'Série',
+            '${goal.currentStreak}',
+            Icons.local_fire_department,
+            Colors.orange,
+          ),
         ),
-        const SizedBox(width: 24),
-        _buildStatItem(
-          '${goal.maxStreak}',
-          'Meilleure',
-          Icons.emoji_events,
-          Colors.amber,
+        const SizedBox(width: 16),
+        Expanded(
+          child: _buildStatItem(
+            'Meilleure',
+            '${goal.maxStreak}',
+            Icons.emoji_events,
+            Colors.amber,
+          ),
         ),
-        const SizedBox(width: 24),
-        _buildStatItem(
-          '${goal.totalDays}',
-          'Total',
-          Icons.calendar_today,
-          Colors.blue,
+        const SizedBox(width: 16),
+        Expanded(
+          child: _buildStatItem(
+            'Grade',
+            goal.currentGrade.emoji,
+            Icons.star,
+            goal.currentGrade.color,
+          ),
         ),
       ],
     );
   }
 
   Widget _buildStatItem(
-    String value,
     String label,
+    String value,
     IconData icon,
     Color color,
   ) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: color),
-        const SizedBox(width: 4),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
             ),
-            Text(
-              label,
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: color.withOpacity(0.8),
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
-      ],
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
-  List<PopupMenuItem<String>> _buildPopupMenuItems() {
-    final items = <PopupMenuItem<String>>[];
-
-    // Éditer
-    items.add(
-      PopupMenuItem(
-        value: 'edit',
-        child: Row(
-          children: [
-            Icon(Icons.edit, size: 18, color: Colors.blue),
-            const SizedBox(width: 8),
-            const Text('Modifier'),
-          ],
-        ),
-      ),
-    );
-
-    // Actions selon le statut
-    if (goal.isCompleted) {
-      // Objectif complété - pas d'actions supplémentaires
-    } else if (goal.isActive) {
-      // Objectif actif - option de changer
-      items.add(
-        PopupMenuItem(
-          value: 'toggle',
-          child: Row(
-            children: [
-              Icon(Icons.swap_horiz, size: 18, color: Colors.orange),
-              const SizedBox(width: 8),
-              const Text('Changer d\'objectif'),
-            ],
+  Widget _buildQuickActions(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: onTap,
+            icon: const Icon(Icons.check, size: 18),
+            label: const Text('Marquer session'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
-      );
-    } else {
-      // Objectif archivé - option d'activer
-      items.add(
-        PopupMenuItem(
-          value: 'toggle',
-          child: Row(
-            children: [
-              Icon(Icons.play_arrow, size: 18, color: Colors.green),
-              const SizedBox(width: 8),
-              const Text('Activer'),
-            ],
+        const SizedBox(width: 12),
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () {
+              // Reset streak action
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Fonctionnalité à implémenter'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            },
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Reset série'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
-      );
-    }
-
-    // Supprimer
-    items.add(
-      PopupMenuItem(
-        value: 'delete',
-        child: Row(
-          children: [
-            Icon(Icons.delete, size: 18, color: Colors.red),
-            const SizedBox(width: 8),
-            const Text('Supprimer'),
-          ],
-        ),
-      ),
+      ],
     );
-
-    return items;
   }
 }

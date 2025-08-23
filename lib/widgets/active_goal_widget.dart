@@ -3,9 +3,12 @@ import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../services/badge_sync_service.dart';
+import '../services/user_profile_service.dart';
 
 class ActiveGoalWidget extends StatelessWidget {
-  const ActiveGoalWidget({super.key});
+  final Function(int)? onSwitchTab;
+
+  const ActiveGoalWidget({super.key, this.onSwitchTab});
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +54,10 @@ class ActiveGoalWidget extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: () {
-              // Navigation vers la création d'objectif
-              Navigator.pushNamed(context, '/goals');
+              // Navigation vers l'onglet objectifs
+              if (onSwitchTab != null) {
+                onSwitchTab!(1); // Index 1 = onglet Objectifs
+              }
             },
             icon: const Icon(Icons.add),
             label: const Text('Créer un objectif'),
@@ -353,9 +358,13 @@ class ActiveGoalWidget extends StatelessWidget {
               // Check if any badges should be unlocked
               BadgeSyncService.checkAndUnlockBadges(context);
 
+              // Mettre à jour l'aura
+              final profileService = context.read<UserProfileService>();
+              goalService.updateAura(profileService);
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Session marquée comme complétée !'),
+                  content: Text('Session marquée comme complétée ! +100 Aura'),
                   backgroundColor: Colors.green,
                   action: SnackBarAction(
                     label: 'Annuler',
@@ -371,7 +380,7 @@ class ActiveGoalWidget extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

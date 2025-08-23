@@ -2,47 +2,110 @@ import 'package:flutter/material.dart';
 import 'active_goal_widget.dart';
 import 'global_stats_widget.dart';
 import 'calendar_heatmap_widget.dart';
-import 'badges_widget.dart';
 
 class SkillProgressWidget extends StatelessWidget {
-  const SkillProgressWidget({super.key});
+  final Function(int)? onSwitchTab;
+
+  const SkillProgressWidget({super.key, this.onSwitchTab});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("HabitoX - Focus sur un Objectif"),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.indigo,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Widget de l'objectif actif
-            const ActiveGoalWidget(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isTablet = constraints.maxWidth > 600;
+        final padding = isTablet ? 32.0 : 20.0;
+        final spacing = isTablet ? 40.0 : 32.0;
 
-            const SizedBox(height: 32),
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              '📊 Tableau de Bord',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.indigo,
+                fontSize: isTablet ? 28.0 : 24.0,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.indigo.withOpacity(0.05), Colors.white],
+              ),
+            ),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(padding),
+                child: Column(
+                  children: [
+                    // Widget de l'objectif actif avec design amélioré
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          isTablet ? 28.0 : 24.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.indigo.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: ActiveGoalWidget(onSwitchTab: onSwitchTab),
+                    ),
 
-            // Widget du calendrier heatmap
-            const CalendarHeatmapWidget(),
+                    SizedBox(height: spacing),
 
-            const SizedBox(height: 32),
+                    // Widget du calendrier heatmap avec design premium
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          isTablet ? 28.0 : 24.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.purple.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const CalendarHeatmapWidget(),
+                    ),
 
-            // Widget des badges
-            const BadgesWidget(),
+                    SizedBox(height: spacing),
 
-            const SizedBox(height: 32),
+                    // Widget des statistiques globales avec design moderne
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          isTablet ? 28.0 : 24.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.teal.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const GlobalStatsWidget(),
+                    ),
 
-            // Statistiques globales
-            const GlobalStatsWidget(),
-
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
+                    SizedBox(height: spacing + 8),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

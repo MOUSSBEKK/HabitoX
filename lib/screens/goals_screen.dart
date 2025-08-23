@@ -5,177 +5,434 @@ import '../services/goal_service.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/add_goal_dialog.dart';
 
-class GoalsScreen extends StatelessWidget {
+class GoalsScreen extends StatefulWidget {
   const GoalsScreen({super.key});
 
   @override
+  State<GoalsScreen> createState() => _GoalsScreenState();
+}
+
+class _GoalsScreenState extends State<GoalsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Gestion des Objectifs',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.indigo,
-      ),
-      body: Consumer<GoalService>(
-        builder: (context, goalService, child) {
-          final allGoals = goalService.goals;
-          final activeGoal = goalService.activeGoal;
-          final completedGoals = goalService.completedGoals;
-          final archivedGoals = goalService.archivedGoals;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isTablet = constraints.maxWidth > 600;
+        final padding = isTablet ? 32.0 : 20.0;
+        final headerPadding = isTablet ? 80.0 : 60.0;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Section objectif actif
-                if (activeGoal != null) ...[
-                  _buildSectionTitle('🎯 Objectif Actuel', Colors.green),
-                  const SizedBox(height: 16),
-                  GoalCard(
-                    goal: activeGoal!,
-                    onTap: () => _showGoalDetails(context, activeGoal!),
-                    onEdit: () => _showEditGoalDialog(context, activeGoal!),
-                    onDelete: () =>
-                        _showDeleteConfirmation(context, activeGoal!),
-                    onToggleStatus: () =>
-                        _showSwitchGoalDialog(context, goalService),
-                  ),
-                  const SizedBox(height: 32),
+        return Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.blue.withOpacity(0.1),
+                  Colors.indigo.withOpacity(0.05),
+                  Colors.white,
                 ],
+              ),
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // Header avec design premium
+                  Container(
+                    padding: EdgeInsets.fromLTRB(
+                      padding,
+                      headerPadding,
+                      padding,
+                      padding,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blue.withOpacity(0.2),
+                          Colors.indigo.withOpacity(0.1),
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(
+                                  isTablet ? 24.0 : 20.0,
+                                ),
+                                border: Border.all(
+                                  color: Colors.blue.withOpacity(0.3),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.flag,
+                                size: isTablet ? 40.0 : 32.0,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            SizedBox(width: isTablet ? 20.0 : 16.0),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '🎯 Mes Objectifs',
+                                    style: TextStyle(
+                                      fontSize: isTablet ? 32.0 : 28.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Définissez et suivez vos objectifs personnels',
+                                    style: TextStyle(
+                                      fontSize: isTablet ? 18.0 : 16.0,
+                                      color: Colors.blue.withOpacity(0.8),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: isTablet ? 24.0 : 20.0),
 
-                // Section objectifs complétés
-                if (completedGoals.isNotEmpty) ...[
-                  _buildSectionTitle('🏆 Objectifs Complétés', Colors.amber),
-                  const SizedBox(height: 16),
-                  ...completedGoals.map(
-                    (goal) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: GoalCard(
-                        goal: goal,
-                        onTap: () => _showGoalDetails(context, goal),
-                        onEdit: () => _showEditGoalDialog(context, goal),
-                        onDelete: () => _showDeleteConfirmation(context, goal),
-                        onToggleStatus: () => _showReactivateGoalDialog(
+                        // Statistiques des objectifs
+                        Consumer<GoalService>(
+                          builder: (context, goalService, child) {
+                            final totalGoals = goalService.goals.length;
+                            final activeGoals = goalService.goals
+                                .where((g) => g.isActive)
+                                .length;
+                            final completedGoals =
+                                goalService.completedGoals.length;
+
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: _buildStatCard(
+                                    'Total',
+                                    '$totalGoals',
+                                    Icons.list,
+                                    Colors.blue,
+                                    isTablet,
+                                  ),
+                                ),
+                                SizedBox(width: isTablet ? 20.0 : 16.0),
+                                Expanded(
+                                  child: _buildStatCard(
+                                    'Actifs',
+                                    '$activeGoals',
+                                    Icons.play_circle,
+                                    Colors.green,
+                                    isTablet,
+                                  ),
+                                ),
+                                SizedBox(width: isTablet ? 20.0 : 16.0),
+                                Expanded(
+                                  child: _buildStatCard(
+                                    'Complétés',
+                                    '$completedGoals',
+                                    Icons.check_circle,
+                                    Colors.orange,
+                                    isTablet,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: isTablet ? 24.0 : 20.0),
+
+                  // Bouton d'ajout d'objectif
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: padding),
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showAddGoalDialog(context),
+                      icon: Icon(Icons.add, size: isTablet ? 24.0 : 20.0),
+                      label: Text(
+                        'Ajouter un objectif',
+                        style: TextStyle(
+                          fontSize: isTablet ? 18.0 : 16.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isTablet ? 32.0 : 24.0,
+                          vertical: isTablet ? 20.0 : 16.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            isTablet ? 20.0 : 16.0,
+                          ),
+                        ),
+                        elevation: 8,
+                        shadowColor: Colors.blue.withOpacity(0.3),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: isTablet ? 24.0 : 20.0),
+
+                  // Onglets stylisés
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: padding),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(
+                        isTablet ? 20.0 : 16.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      labelColor: Colors.blue,
+                      unselectedLabelColor: Colors.grey[600],
+                      indicatorColor: Colors.blue,
+                      indicatorWeight: 3,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: isTablet ? 18.0 : 16.0,
+                      ),
+                      unselectedLabelStyle: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: isTablet ? 18.0 : 16.0,
+                      ),
+                      tabs: const [
+                        Tab(icon: Icon(Icons.play_circle), text: 'Actifs'),
+                        Tab(icon: Icon(Icons.check_circle), text: 'Complétés'),
+                        Tab(icon: Icon(Icons.archive), text: 'Archivés'),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: isTablet ? 24.0 : 20.0),
+
+                  // Contenu des onglets
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        // Onglet Objectifs Actifs
+                        _buildGoalsList(
                           context,
-                          goal,
-                          goalService,
+                          (goalService) => goalService.goals
+                              .where((g) => g.isActive)
+                              .toList(),
+                          'Aucun objectif actif',
+                          'Commencez par créer votre premier objectif !',
+                          Icons.flag_outlined,
+                          isTablet,
+                        ),
+
+                        // Onglet Objectifs Complétés
+                        _buildGoalsList(
+                          context,
+                          (goalService) => goalService.completedGoals,
+                          'Aucun objectif complété',
+                          'Complétez vos objectifs pour les voir ici !',
+                          Icons.check_circle_outline,
+                          isTablet,
+                        ),
+
+                        // Onglet Objectifs Archivés
+                        _buildGoalsList(
+                          context,
+                          (goalService) => goalService.goals
+                              .where((g) => !g.isActive && !g.isCompleted)
+                              .toList(),
+                          'Aucun objectif archivé',
+                          'Archivez vos objectifs pour les organiser !',
+                          Icons.archive_outlined,
+                          isTablet,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildGoalsList(
+    BuildContext context,
+    List<Goal> Function(GoalService) goalsSelector,
+    String emptyTitle,
+    String emptySubtitle,
+    IconData emptyIcon,
+    bool isTablet,
+  ) {
+    return Consumer<GoalService>(
+      builder: (context, goalService, child) {
+        final goals = goalsSelector(goalService);
+
+        if (goals.isEmpty) {
+          return Container(
+            padding: EdgeInsets.all(isTablet ? 48.0 : 32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  emptyIcon,
+                  size: isTablet ? 100.0 : 80.0,
+                  color: Colors.grey[400],
+                ),
+                SizedBox(height: isTablet ? 32.0 : 24.0),
+                Text(
+                  emptyTitle,
+                  style: TextStyle(
+                    fontSize: isTablet ? 24.0 : 20.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: isTablet ? 16.0 : 12.0),
+                Text(
+                  emptySubtitle,
+                  style: TextStyle(
+                    fontSize: isTablet ? 18.0 : 16.0,
+                    color: Colors.grey[500],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                if (goalsSelector ==
+                    (goalService) => goalService.goals
+                        .where((g) => g.isActive)
+                        .toList()) ...[
+                  SizedBox(height: isTablet ? 32.0 : 24.0),
+                  ElevatedButton.icon(
+                    onPressed: () => _showAddGoalDialog(context),
+                    icon: Icon(Icons.add, size: isTablet ? 24.0 : 20.0),
+                    label: Text(
+                      'Créer un objectif',
+                      style: TextStyle(
+                        fontSize: isTablet ? 18.0 : 16.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isTablet ? 32.0 : 24.0,
+                        vertical: isTablet ? 20.0 : 16.0,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          isTablet ? 20.0 : 16.0,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
                 ],
-
-                // Section objectifs archivés
-                if (archivedGoals.isNotEmpty) ...[
-                  _buildSectionTitle('📁 Objectifs Archivés', Colors.grey),
-                  const SizedBox(height: 16),
-                  ...archivedGoals.map(
-                    (goal) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: GoalCard(
-                        goal: goal,
-                        onTap: () => _showGoalDetails(context, goal),
-                        onEdit: () => _showEditGoalDialog(context, goal),
-                        onDelete: () => _showDeleteConfirmation(context, goal),
-                        onToggleStatus: () =>
-                            _showActivateGoalDialog(context, goal, goalService),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
-
-                // État vide si aucun objectif
-                if (allGoals.isEmpty) ...[_buildEmptyState(context)],
               ],
             ),
           );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddGoalDialog(context),
-        icon: const Icon(Icons.add),
-        label: const Text('Nouvel Objectif'),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
-      ),
-    );
-  }
+        }
 
-  Widget _buildSectionTitle(String title, Color color) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-        const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            title == '🎯 Objectif Actuel'
-                ? '1 seul actif'
-                : '${title == '🏆 Objectifs Complétés' ? 'Complétés' : 'Archivés'}',
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.flag_outlined, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 24),
-          Text(
-            'Aucun objectif pour le moment',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Commencez par créer votre premier objectif !\n\n💡 Rappel : Vous ne pouvez traiter qu\'un seul objectif à la fois pour rester focalisé.',
-            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: () => _showAddGoalDialog(context),
-            icon: const Icon(Icons.add),
-            label: const Text('Créer un objectif'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.indigo,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+        return ListView.builder(
+          padding: EdgeInsets.all(isTablet ? 24.0 : 16.0),
+          itemCount: goals.length,
+          itemBuilder: (context, index) {
+            final goal = goals[index];
+            return Padding(
+              padding: EdgeInsets.only(bottom: isTablet ? 20.0 : 16.0),
+              child: GoalCard(
+                goal: goal,
+                onTap: () => _showGoalDetails(context, goal),
+                onEdit: () => _showEditGoalDialog(context, goal),
+                onDelete: () => _showDeleteConfirmation(context, goal),
+                onToggleStatus: () => _toggleGoalStatus(goal),
               ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+    bool isTablet,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
+        border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: isTablet ? 28.0 : 24.0),
+          SizedBox(height: isTablet ? 10.0 : 8.0),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: isTablet ? 24.0 : 20.0,
+              fontWeight: FontWeight.bold,
+              color: color,
             ),
+          ),
+          SizedBox(height: isTablet ? 6.0 : 4.0),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: isTablet ? 14.0 : 12.0,
+              color: color.withOpacity(0.8),
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -186,6 +443,34 @@ class GoalsScreen extends StatelessWidget {
     showDialog(context: context, builder: (context) => const AddGoalDialog());
   }
 
+  void _showGoalDetails(BuildContext context, Goal goal) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(goal.title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Description: ${goal.description}'),
+            const SizedBox(height: 8),
+            Text('Objectif: ${goal.targetDays} jours'),
+            const SizedBox(height: 8),
+            Text('Progression: ${goal.totalDays}/${goal.targetDays} jours'),
+            const SizedBox(height: 8),
+            Text('Grade actuel: ${goal.currentGrade.name}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Fermer'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showEditGoalDialog(BuildContext context, Goal goal) {
     showDialog(
       context: context,
@@ -193,20 +478,13 @@ class GoalsScreen extends StatelessWidget {
     );
   }
 
-  void _showGoalDetails(BuildContext context, Goal goal) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GoalDetailsScreen(goal: goal)),
-    );
-  }
-
   void _showDeleteConfirmation(BuildContext context, Goal goal) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Supprimer l\'objectif'),
+        title: const Text('Confirmer la suppression'),
         content: Text(
-          'Êtes-vous sûr de vouloir supprimer "${goal.title}" ?\n\nCette action est irréversible.',
+          'Êtes-vous sûr de vouloir supprimer l\'objectif "${goal.title}" ?',
         ),
         actions: [
           TextButton(
@@ -226,555 +504,16 @@ class GoalsScreen extends StatelessWidget {
     );
   }
 
-  void _showSwitchGoalDialog(BuildContext context, GoalService goalService) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Changer d\'objectif'),
-        content: const Text(
-          'Voulez-vous vraiment changer d\'objectif ?\n\n'
-          '⚠️ Attention : Changer d\'objectif désactivera l\'objectif actuel. '
-          'Il est recommandé de terminer un objectif avant d\'en commencer un autre.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showGoalSelectionDialog(context, goalService);
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.orange),
-            child: const Text('Changer'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showGoalSelectionDialog(BuildContext context, GoalService goalService) {
-    final availableGoals = goalService.goals
-        .where((g) => !g.isActive && !g.isCompleted)
-        .toList();
-
-    if (availableGoals.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Aucun autre objectif disponible'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-      return;
+  void _toggleGoalStatus(Goal goal) {
+    if (goal.isActive) {
+      // Désactiver l'objectif en supprimant son statut actif
+      final goalService = context.read<GoalService>();
+      // Créer une copie de l'objectif sans le statut actif
+      final updatedGoal = goal.copyWith(isActive: false);
+      goalService.updateGoal(updatedGoal);
+    } else {
+      // Activer l'objectif
+      context.read<GoalService>().activateGoal(goal.id);
     }
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Choisir un nouvel objectif'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: availableGoals.length,
-            itemBuilder: (context, index) {
-              final goal = availableGoals[index];
-              return ListTile(
-                leading: Icon(goal.icon, color: goal.color),
-                title: Text(goal.title),
-                subtitle: Text(goal.description),
-                onTap: () {
-                  goalService.activateGoal(goal.id);
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        '${goal.title} est maintenant votre objectif actif',
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showActivateGoalDialog(
-    BuildContext context,
-    Goal goal,
-    GoalService goalService,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Activer l\'objectif'),
-        content: Text(
-          'Voulez-vous activer "${goal.title}" ?\n\n'
-          '⚠️ Attention : Cela désactivera l\'objectif actuellement actif.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              goalService.activateGoal(goal.id);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${goal.title} est maintenant votre objectif actif',
-                  ),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.green),
-            child: const Text('Activer'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showReactivateGoalDialog(
-    BuildContext context,
-    Goal goal,
-    GoalService goalService,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Réactiver l\'objectif'),
-        content: Text(
-          'Voulez-vous réactiver "${goal.title}" ?\n\n'
-          '⚠️ Attention : Cela désactivera l\'objectif actuellement actif.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              goalService.activateGoal(goal.id);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${goal.title} est maintenant votre objectif actif',
-                  ),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.green),
-            child: const Text('Réactiver'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GoalDetailsScreen extends StatelessWidget {
-  final Goal goal;
-
-  const GoalDetailsScreen({super.key, required this.goal});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(goal.title),
-        backgroundColor: goal.color.withOpacity(0.1),
-        foregroundColor: goal.color,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // En-tête avec icône et titre
-            Center(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: goal.color.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(goal.icon, size: 60, color: goal.color),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    goal.title,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    goal.description,
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            // Grade et progression
-            _buildGradeSection(goal),
-
-            const SizedBox(height: 32),
-
-            // Statistiques
-            _buildStatsSection(),
-
-            const SizedBox(height: 32),
-
-            // Barre de progression
-            _buildProgressSection(),
-
-            const SizedBox(height: 32),
-
-            // Actions
-            _buildActionsSection(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGradeSection(Goal goal) {
-    final currentGrade = goal.currentGrade;
-    final nextGrade = goal.nextGrade;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Grade et Progression',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                currentGrade.color.withOpacity(0.2),
-                currentGrade.color.withOpacity(0.1),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: currentGrade.color.withOpacity(0.3)),
-          ),
-          child: Row(
-            children: [
-              Text(currentGrade.emoji, style: const TextStyle(fontSize: 40)),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      currentGrade.title,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: currentGrade.color,
-                      ),
-                    ),
-                    Text(
-                      '${currentGrade.minDays}+ jours d\'expérience',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: currentGrade.color.withOpacity(0.8),
-                      ),
-                    ),
-                    if (nextGrade != null) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        'Prochain: ${nextGrade.emoji} ${nextGrade.title}',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Statistiques',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildStatCard(
-                'Progression',
-                '${(goal.progress * 100).toInt()}%',
-                Icons.trending_up,
-                goal.color,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildStatCard(
-                'Série actuelle',
-                '${goal.currentStreak} jours',
-                Icons.local_fire_department,
-                Colors.orange,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildStatCard(
-                'Meilleure série',
-                '${goal.maxStreak} jours',
-                Icons.emoji_events,
-                Colors.amber,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(fontSize: 12, color: color.withOpacity(0.8)),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProgressSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Progression vers l\'objectif',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 16),
-        LinearProgressIndicator(
-          value: goal.progress,
-          minHeight: 12,
-          backgroundColor: Colors.grey[300],
-          color: goal.color,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '${goal.totalDays} jours sur ${goal.targetDays}',
-          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionsSection(BuildContext context) {
-    if (goal.isCompleted) {
-      return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.green.withOpacity(0.3)),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.celebration, color: Colors.green[700], size: 32),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '🎉 Objectif accompli !',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green[700],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Complété le ${_formatDate(goal.completedAt!)}',
-                    style: TextStyle(fontSize: 14, color: Colors.green[600]),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Actions',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
-          ),
-        ),
-        const SizedBox(height: 16),
-        if (goal.isActive) ...[
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    context.read<GoalService>().updateProgress(goal.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Session marquée comme complétée !'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.check),
-                  label: const Text('Marquer session'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    context.read<GoalService>().resetStreak(goal.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Série réinitialisée'),
-                        backgroundColor: Colors.orange,
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Reset série'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ] else ...[
-          ElevatedButton.icon(
-            onPressed: () {
-              context.read<GoalService>().activateGoal(goal.id);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${goal.title} est maintenant votre objectif actif',
-                  ),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-            icon: const Icon(Icons.play_arrow),
-            label: const Text('Activer cet objectif'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date).inDays;
-
-    if (difference == 0) return 'Aujourd\'hui';
-    if (difference == 1) return 'Hier';
-    if (difference < 7) return 'Il y a $difference jours';
-    if (difference < 30) return 'Il y a ${(difference / 7).round()} semaines';
-    if (difference < 365) return 'Il y a ${(difference / 30).round()} mois';
-    return 'Il y a ${(difference / 365).round()} ans';
   }
 }

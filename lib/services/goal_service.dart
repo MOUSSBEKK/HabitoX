@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/goal.dart';
 import '../models/calendar_shape.dart';
+import 'user_profile_service.dart';
 
 class GoalService extends ChangeNotifier {
   static const String _goalsKey = 'goals';
@@ -216,6 +217,11 @@ class GoalService extends ChangeNotifier {
         }
       }
     }
+  }
+
+  // Méthode pour mettre à jour l'aura (appelée depuis l'extérieur)
+  void updateAura(UserProfileService profileService) {
+    profileService.addAuraForDay();
   }
 
   Future<void> resetStreak(String goalId) async {

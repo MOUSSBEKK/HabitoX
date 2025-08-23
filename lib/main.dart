@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'services/goal_service.dart';
 import 'services/calendar_service.dart';
+import 'services/user_profile_service.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -17,6 +18,7 @@ class HabitoXApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => GoalService()),
         ChangeNotifierProvider(create: (context) => CalendarService()),
+        ChangeNotifierProvider(create: (context) => UserProfileService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
