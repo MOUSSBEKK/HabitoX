@@ -5,6 +5,17 @@ import '../services/goal_service.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/add_goal_dialog.dart';
 
+// Couleurs du design épuré
+class GoalsColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
+
 class GoalsScreen extends StatefulWidget {
   const GoalsScreen({super.key});
 
@@ -39,20 +50,12 @@ class _GoalsScreenState extends State<GoalsScreen>
         return Scaffold(
           body: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.blue.withOpacity(0.1),
-                  Colors.indigo.withOpacity(0.05),
-                  Colors.white,
-                ],
-              ),
+              color: GoalsColors.lightColor.withOpacity(0.1),
             ),
             child: SafeArea(
               child: Column(
                 children: [
-                  // Header avec design premium
+                  // Header avec design épuré
                   Container(
                     padding: EdgeInsets.fromLTRB(
                       padding,
@@ -61,14 +64,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                       padding,
                     ),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.blue.withOpacity(0.2),
-                          Colors.indigo.withOpacity(0.1),
-                        ],
-                      ),
+                      color: GoalsColors.lightColor.withOpacity(0.3),
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
@@ -81,19 +77,23 @@ class _GoalsScreenState extends State<GoalsScreen>
                             Container(
                               padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
                               decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.2),
+                                color: GoalsColors.primaryColor.withOpacity(
+                                  0.15,
+                                ),
                                 borderRadius: BorderRadius.circular(
                                   isTablet ? 24.0 : 20.0,
                                 ),
                                 border: Border.all(
-                                  color: Colors.blue.withOpacity(0.3),
-                                  width: 2,
+                                  color: GoalsColors.primaryColor.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.5,
                                 ),
                               ),
                               child: Icon(
                                 Icons.flag,
                                 size: isTablet ? 40.0 : 32.0,
-                                color: Colors.blue,
+                                color: GoalsColors.primaryColor,
                               ),
                             ),
                             SizedBox(width: isTablet ? 20.0 : 16.0),
@@ -105,8 +105,8 @@ class _GoalsScreenState extends State<GoalsScreen>
                                     '🎯 Mes Objectifs',
                                     style: TextStyle(
                                       fontSize: isTablet ? 32.0 : 28.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600,
+                                      color: GoalsColors.darkColor,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -114,7 +114,9 @@ class _GoalsScreenState extends State<GoalsScreen>
                                     'Définissez et suivez vos objectifs personnels',
                                     style: TextStyle(
                                       fontSize: isTablet ? 18.0 : 16.0,
-                                      color: Colors.blue.withOpacity(0.8),
+                                      color: GoalsColors.darkColor.withOpacity(
+                                        0.7,
+                                      ),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -142,7 +144,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                                     'Total',
                                     '$totalGoals',
                                     Icons.list,
-                                    Colors.blue,
+                                    GoalsColors.primaryColor,
                                     isTablet,
                                   ),
                                 ),
@@ -152,7 +154,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                                     'Actifs',
                                     '$activeGoals',
                                     Icons.play_circle,
-                                    Colors.green,
+                                    GoalsColors.primaryColor,
                                     isTablet,
                                   ),
                                 ),
@@ -162,7 +164,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                                     'Complétés',
                                     '$completedGoals',
                                     Icons.check_circle,
-                                    Colors.orange,
+                                    GoalsColors.primaryColor,
                                     isTablet,
                                   ),
                                 ),
@@ -190,7 +192,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: GoalsColors.primaryColor,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           horizontal: isTablet ? 32.0 : 24.0,

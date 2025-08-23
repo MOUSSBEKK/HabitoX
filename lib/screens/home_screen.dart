@@ -5,6 +5,17 @@ import 'test_screen.dart';
 import 'badges_screen.dart';
 import '../widgets/skill_progress_widget.dart';
 
+// Couleurs du design épuré
+class HomeColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -40,9 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: HomeColors.darkColor.withOpacity(0.08),
                   blurRadius: 20,
                   offset: const Offset(0, -5),
                 ),
@@ -59,13 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? BottomNavigationBarType.fixed
                   : BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
-              selectedItemColor: Colors.indigo,
-              unselectedItemColor: Colors.grey[600],
+              selectedItemColor: HomeColors.primaryColor,
+              unselectedItemColor: HomeColors.darkColor.withOpacity(0.5),
               selectedLabelStyle: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: isTablet ? 14.0 : 12.0,
+                color: HomeColors.primaryColor,
               ),
-              unselectedLabelStyle: TextStyle(fontSize: isTablet ? 14.0 : 12.0),
+              unselectedLabelStyle: TextStyle(
+                fontSize: isTablet ? 14.0 : 12.0,
+                color: HomeColors.darkColor.withOpacity(0.5),
+              ),
               elevation: 0,
               items: [
                 BottomNavigationBarItem(

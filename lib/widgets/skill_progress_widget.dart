@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'active_goal_widget.dart';
-import 'global_stats_widget.dart';
 import 'calendar_heatmap_widget.dart';
+
+// Couleurs du design épuré
+class SkillProgressColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
 
 class SkillProgressWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -21,8 +31,8 @@ class SkillProgressWidget extends StatelessWidget {
             title: Text(
               '📊 Tableau de Bord',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.indigo,
+                fontWeight: FontWeight.w600,
+                color: SkillProgressColors.darkColor,
                 fontSize: isTablet ? 28.0 : 24.0,
               ),
             ),
@@ -32,18 +42,14 @@ class SkillProgressWidget extends StatelessWidget {
           ),
           body: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.indigo.withOpacity(0.05), Colors.white],
-              ),
+              color: SkillProgressColors.lightColor.withOpacity(0.1),
             ),
             child: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(padding),
                 child: Column(
                   children: [
-                    // Widget de l'objectif actif avec design amélioré
+                    // Widget de l'objectif actif avec design épuré
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -51,7 +57,9 @@ class SkillProgressWidget extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.indigo.withOpacity(0.1),
+                            color: SkillProgressColors.primaryColor.withOpacity(
+                              0.1,
+                            ),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -62,7 +70,7 @@ class SkillProgressWidget extends StatelessWidget {
 
                     SizedBox(height: spacing),
 
-                    // Widget du calendrier heatmap avec design premium
+                    // Widget du calendrier heatmap avec design épuré
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -70,32 +78,15 @@ class SkillProgressWidget extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.purple.withOpacity(0.1),
+                            color: SkillProgressColors.primaryColor.withOpacity(
+                              0.1,
+                            ),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
                         ],
                       ),
                       child: const CalendarHeatmapWidget(),
-                    ),
-
-                    SizedBox(height: spacing),
-
-                    // Widget des statistiques globales avec design moderne
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          isTablet ? 28.0 : 24.0,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.teal.withOpacity(0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: const GlobalStatsWidget(),
                     ),
 
                     SizedBox(height: spacing + 8),

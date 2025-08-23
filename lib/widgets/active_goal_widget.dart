@@ -10,6 +10,15 @@ class ActiveGoalWidget extends StatelessWidget {
 
   const ActiveGoalWidget({super.key, this.onSwitchTab});
 
+  // Couleurs du design épuré (cohérentes avec le thème global)
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GoalService>(
@@ -27,47 +36,62 @@ class ActiveGoalWidget extends StatelessWidget {
 
   Widget _buildNoActiveGoal(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey[300]!),
+        color: lightColor.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: lightColor.withOpacity(0.5), width: 1),
       ),
       child: Column(
         children: [
-          Icon(Icons.flag_outlined, size: 60, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(Icons.flag_outlined, size: 48, color: primaryColor),
+          ),
+          const SizedBox(height: 24),
           Text(
             'Aucun objectif actif',
             style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              color: darkColor,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(
             'Commencez par créer votre premier objectif pour commencer votre voyage !',
-            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+            style: TextStyle(
+              fontSize: 16,
+              color: darkColor.withOpacity(0.7),
+              height: 1.4,
+            ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: () {
-              // Navigation vers l'onglet objectifs
               if (onSwitchTab != null) {
-                onSwitchTab!(1); // Index 1 = onglet Objectifs
+                onSwitchTab!(1);
               }
             },
-            icon: const Icon(Icons.add),
-            label: const Text('Créer un objectif'),
+            icon: const Icon(Icons.add, size: 20),
+            label: const Text(
+              'Créer un objectif',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.indigo,
+              backgroundColor: primaryColor,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
+              elevation: 0,
+              shadowColor: primaryColor.withOpacity(0.3),
             ),
           ),
         ],
@@ -81,15 +105,11 @@ class ActiveGoalWidget extends StatelessWidget {
     GoalService goalService,
   ) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [goal.color.withOpacity(0.1), goal.color.withOpacity(0.05)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: goal.color.withOpacity(0.3)),
+        color: lightColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: lightColor.withOpacity(0.4), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,26 +120,32 @@ class ActiveGoalWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: goal.color.withOpacity(0.2),
+                  color: primaryColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(goal.icon, size: 32, color: goal.color),
+                child: Icon(goal.icon, size: 28, color: primaryColor),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       goal.title,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: darkColor,
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       goal.description,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: darkColor.withOpacity(0.7),
+                        height: 1.3,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -129,27 +155,27 @@ class ActiveGoalWidget extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
           // Grade actuel avec progression
           _buildGradeSection(goal),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
           // Barre de progression principale
           _buildMainProgressSection(goal),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
           // Statistiques
           _buildStatsSection(goal),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
           // Message de motivation
           _buildMotivationSection(goal),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
           // Actions
           _buildActionsSection(context, goal, goalService),
@@ -167,38 +193,56 @@ class ActiveGoalWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(currentGrade.emoji, style: const TextStyle(fontSize: 24)),
-            const SizedBox(width: 8),
+            Text(currentGrade.emoji, style: const TextStyle(fontSize: 28)),
+            const SizedBox(width: 12),
             Text(
               currentGrade.title,
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: currentGrade.color,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: primaryColor,
               ),
             ),
             if (nextGrade != null) ...[
               const Spacer(),
-              Text(
-                'Prochain: ${nextGrade.emoji} ${nextGrade.title}',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: lightColor.withOpacity(0.4),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Prochain: ${nextGrade.emoji} ${nextGrade.title}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: darkColor.withOpacity(0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ],
         ),
         if (nextGrade != null) ...[
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           LinearProgressIndicator(
             value: goal.progressToNextGrade,
-            minHeight: 6,
-            backgroundColor: Colors.grey[300],
-            color: currentGrade.color,
-            borderRadius: BorderRadius.circular(3),
+            minHeight: 8,
+            backgroundColor: lightColor.withOpacity(0.3),
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(4),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
             '${(goal.progressToNextGrade * 100).toInt()}% vers ${nextGrade.title}',
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 13,
+              color: darkColor.withOpacity(0.6),
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ],
@@ -215,33 +259,37 @@ class ActiveGoalWidget extends StatelessWidget {
             Text(
               'Progression vers l\'objectif',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
+                color: darkColor,
               ),
             ),
             Text(
               '${(goal.progress * 100).toInt()}%',
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: goal.color,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: primaryColor,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         LinearProgressIndicator(
           value: goal.progress,
-          minHeight: 12,
-          backgroundColor: Colors.grey[300],
-          color: goal.color,
-          borderRadius: BorderRadius.circular(6),
+          minHeight: 14,
+          backgroundColor: lightColor.withOpacity(0.3),
+          color: primaryColor,
+          borderRadius: BorderRadius.circular(7),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Text(
           '${goal.totalDays} jours sur ${goal.targetDays}',
-          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          style: TextStyle(
+            fontSize: 15,
+            color: darkColor.withOpacity(0.7),
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
@@ -255,7 +303,6 @@ class ActiveGoalWidget extends StatelessWidget {
             'Série actuelle',
             '${goal.currentStreak}',
             Icons.local_fire_department,
-            Colors.orange,
           ),
         ),
         const SizedBox(width: 16),
@@ -264,7 +311,6 @@ class ActiveGoalWidget extends StatelessWidget {
             'Meilleure série',
             '${goal.maxStreak}',
             Icons.emoji_events,
-            Colors.amber,
           ),
         ),
         const SizedBox(width: 16),
@@ -273,42 +319,47 @@ class ActiveGoalWidget extends StatelessWidget {
             'Total',
             '${goal.totalDays}',
             Icons.calendar_today,
-            Colors.blue,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatCard(String title, String value, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        color: lightColor.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: lightColor.withOpacity(0.5), width: 1),
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: primaryColor, size: 22),
+          ),
+          const SizedBox(height: 12),
           Text(
             value,
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: color,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: darkColor,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
             title,
-            style: TextStyle(fontSize: 12, color: color.withOpacity(0.8)),
+            style: TextStyle(
+              fontSize: 13,
+              color: darkColor.withOpacity(0.7),
+              fontWeight: FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -318,23 +369,31 @@ class ActiveGoalWidget extends StatelessWidget {
 
   Widget _buildMotivationSection(Goal goal) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.amber.withOpacity(0.3)),
+        color: primaryColor.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: primaryColor.withOpacity(0.2), width: 1),
       ),
       child: Row(
         children: [
-          Icon(Icons.lightbulb_outline, color: Colors.amber[700], size: 24),
-          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(Icons.lightbulb_outline, color: primaryColor, size: 20),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Text(
               goal.motivationMessage,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.amber[800],
+                color: darkColor.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
+                height: 1.4,
               ),
             ),
           ),
@@ -354,20 +413,21 @@ class ActiveGoalWidget extends StatelessWidget {
           child: ElevatedButton.icon(
             onPressed: () {
               goalService.updateProgress(goal.id);
-
-              // Check if any badges should be unlocked
               BadgeSyncService.checkAndUnlockBadges(context);
-
-              // Mettre à jour l'aura
               final profileService = context.read<UserProfileService>();
               goalService.updateAura(profileService);
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Session marquée comme complétée ! +100 Aura'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: primaryColor,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   action: SnackBarAction(
                     label: 'Annuler',
+                    textColor: lightColor,
                     onPressed: () {
                       // Logique pour annuler la session
                     },
@@ -375,15 +435,20 @@ class ActiveGoalWidget extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.check),
-            label: const Text('Marquer session'),
+            icon: const Icon(Icons.check, size: 20),
+            label: const Text(
+              'Marquer session',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
+              backgroundColor: primaryColor,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
+              elevation: 0,
+              shadowColor: primaryColor.withOpacity(0.3),
             ),
           ),
         ),
@@ -393,18 +458,27 @@ class ActiveGoalWidget extends StatelessWidget {
             onPressed: () {
               goalService.resetStreak(goal.id);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Série réinitialisée'),
-                  backgroundColor: Colors.orange,
+                SnackBar(
+                  content: const Text('Série réinitialisée'),
+                  backgroundColor: darkColor,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               );
             },
-            icon: const Icon(Icons.refresh),
-            label: const Text('Reset série'),
+            icon: const Icon(Icons.refresh, size: 20),
+            label: const Text(
+              'Reset série',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
             style: OutlinedButton.styleFrom(
+              foregroundColor: darkColor,
+              side: BorderSide(color: darkColor.withOpacity(0.3), width: 1.5),
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),

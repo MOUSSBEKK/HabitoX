@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
+import '../services/goal_service.dart';
 import '../widgets/user_profile_widget.dart';
-import '../widgets/aura_badges_widget.dart';
+import '../widgets/global_stats_widget.dart';
+
+// Couleurs du design épuré
+class ProfileScreenColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,26 +30,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, constraints) {
         final isTablet = constraints.maxWidth > 600;
         final padding = isTablet ? 32.0 : 20.0;
-        final headerHeight = isTablet ? 250.0 : 200.0;
-        final headerPadding = isTablet ? 80.0 : 60.0;
+        final headerHeight = isTablet ? 280.0 : 240.0;
+        final headerPadding = isTablet ? 60.0 : 40.0;
 
         return Scaffold(
           body: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.indigo.withOpacity(0.1),
-                  Colors.purple.withOpacity(0.05),
-                  Colors.white,
-                ],
-              ),
+              color: ProfileScreenColors.lightColor.withOpacity(0.1),
             ),
             child: SafeArea(
               child: CustomScrollView(
                 slivers: [
-                  // Header avec design premium
+                  // Header avec design épuré
                   SliverAppBar(
                     expandedHeight: headerHeight,
                     floating: false,
@@ -47,14 +51,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     flexibleSpace: FlexibleSpaceBar(
                       background: Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.indigo.withOpacity(0.3),
-                              Colors.purple.withOpacity(0.2),
-                              Colors.indigo.withOpacity(0.1),
-                            ],
+                          color: ProfileScreenColors.lightColor.withOpacity(
+                            0.3,
                           ),
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(30),
@@ -72,28 +70,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.all(isTablet ? 24.0 : 20.0),
+                                padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(
-                                    isTablet ? 36.0 : 30.0,
+                                    isTablet ? 32.0 : 28.0,
                                   ),
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
-                                    width: 2,
+                                    color: ProfileScreenColors.lightColor
+                                        .withOpacity(0.4),
+                                    width: 1,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.indigo.withOpacity(0.2),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
+                                      color: ProfileScreenColors.darkColor
+                                          .withOpacity(0.08),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
                                 child: Icon(
                                   Icons.person,
-                                  size: isTablet ? 48.0 : 40.0,
-                                  color: Colors.white,
+                                  size: isTablet ? 44.0 : 36.0,
+                                  color: ProfileScreenColors.darkColor,
                                 ),
                               ),
                               SizedBox(height: isTablet ? 20.0 : 16.0),
@@ -102,15 +102,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 style: TextStyle(
                                   fontSize: isTablet ? 32.0 : 28.0,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: ProfileScreenColors.darkColor,
                                 ),
                               ),
-                              SizedBox(height: isTablet ? 10.0 : 8.0),
+                              SizedBox(height: isTablet ? 12.0 : 10.0),
+                              // Médaille actuelle de l'utilisateur
+                              Consumer<GoalService>(
+                                builder: (context, goalService, child) {
+                                  final highestGrade =
+                                      goalService.highestGradeAchieved;
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isTablet ? 16.0 : 12.0,
+                                      vertical: isTablet ? 8.0 : 6.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: ProfileScreenColors.primaryColor
+                                          .withOpacity(0.15),
+                                      borderRadius: BorderRadius.circular(
+                                        isTablet ? 20.0 : 16.0,
+                                      ),
+                                      border: Border.all(
+                                        color: ProfileScreenColors.primaryColor
+                                            .withOpacity(0.3),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          highestGrade.emoji,
+                                          style: TextStyle(
+                                            fontSize: isTablet ? 20.0 : 18.0,
+                                          ),
+                                        ),
+                                        SizedBox(width: isTablet ? 8.0 : 6.0),
+                                        Text(
+                                          highestGrade.title,
+                                          style: TextStyle(
+                                            fontSize: isTablet ? 18.0 : 16.0,
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                ProfileScreenColors.darkColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(height: isTablet ? 12.0 : 10.0),
                               Text(
-                                'Suivez votre progression et votre aura',
+                                'Suivez votre progression et vos statistiques',
                                 style: TextStyle(
                                   fontSize: isTablet ? 18.0 : 16.0,
-                                  color: Colors.white.withOpacity(0.9),
+                                  color: ProfileScreenColors.darkColor
+                                      .withOpacity(0.9),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -125,16 +173,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: IconButton(
                           onPressed: () => _showProfileSettings(context),
                           icon: Container(
-                            padding: EdgeInsets.all(isTablet ? 10.0 : 8.0),
+                            padding: EdgeInsets.all(isTablet ? 12.0 : 10.0),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: ProfileScreenColors.primaryColor
+                                  .withOpacity(0.1),
                               borderRadius: BorderRadius.circular(
-                                isTablet ? 16.0 : 12.0,
+                                isTablet ? 18.0 : 16.0,
                               ),
                             ),
                             child: Icon(
                               Icons.settings,
-                              color: Colors.white,
+                              color: ProfileScreenColors.primaryColor,
                               size: isTablet ? 28.0 : 24.0,
                             ),
                           ),
@@ -153,77 +202,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
-                                isTablet ? 28.0 : 24.0,
+                                isTablet ? 24.0 : 20.0,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.indigo.withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
+                                  color: ProfileScreenColors.primaryColor
+                                      .withOpacity(0.08),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
                             ),
                             child: const UserProfileWidget(),
                           ),
 
-                          SizedBox(height: isTablet ? 40.0 : 32.0),
+                          SizedBox(height: isTablet ? 32.0 : 24.0),
 
-                          // Section Aura avec design premium
+                          // Section Statistiques Globales
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
-                                isTablet ? 28.0 : 24.0,
+                                isTablet ? 24.0 : 20.0,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.purple.withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
+                                  color: ProfileScreenColors.primaryColor
+                                      .withOpacity(0.08),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
                             ),
-                            child: _buildAuraSection(isTablet),
+                            child: const GlobalStatsWidget(),
                           ),
 
-                          SizedBox(height: isTablet ? 40.0 : 32.0),
-
-                          // Section Historique Aura
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                isTablet ? 28.0 : 24.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.teal.withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: _buildAuraHistory(isTablet),
-                          ),
-
-                          SizedBox(height: isTablet ? 40.0 : 32.0),
-
-                          // Section Conseils Aura
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                isTablet ? 28.0 : 24.0,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.orange.withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: _buildAuraTips(isTablet),
-                          ),
-
-                          SizedBox(height: isTablet ? 48.0 : 40.0),
+                          SizedBox(height: isTablet ? 32.0 : 24.0),
                         ],
                       ),
                     ),
@@ -237,325 +250,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildAuraSection(bool isTablet) {
-    return Container(
-      padding: EdgeInsets.all(isTablet ? 32.0 : 24.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.purple.withOpacity(0.1),
-            Colors.indigo.withOpacity(0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(isTablet ? 28.0 : 24.0),
-        border: Border.all(color: Colors.purple.withOpacity(0.2), width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(isTablet ? 16.0 : 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
-                ),
-                child: Icon(
-                  Icons.auto_awesome,
-                  color: Colors.purple,
-                  size: isTablet ? 28.0 : 24.0,
-                ),
-              ),
-              SizedBox(width: isTablet ? 20.0 : 16.0),
-              Expanded(
-                child: Text(
-                  '✨ Système d\'Aura',
-                  style: TextStyle(
-                    fontSize: isTablet ? 24.0 : 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple,
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () => _showAuraInfo(context),
-                icon: Container(
-                  padding: EdgeInsets.all(isTablet ? 10.0 : 8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(isTablet ? 16.0 : 12.0),
-                  ),
-                  child: Icon(
-                    Icons.info_outline,
-                    color: Colors.purple,
-                    size: isTablet ? 24.0 : 20.0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: isTablet ? 24.0 : 20.0),
-          const AuraBadgesWidget(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAuraHistory(bool isTablet) {
-    return Container(
-      padding: EdgeInsets.all(isTablet ? 32.0 : 24.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.teal.withOpacity(0.1), Colors.cyan.withOpacity(0.05)],
-        ),
-        borderRadius: BorderRadius.circular(isTablet ? 28.0 : 24.0),
-        border: Border.all(color: Colors.teal.withOpacity(0.2), width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(isTablet ? 16.0 : 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.teal.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
-                ),
-                child: Icon(
-                  Icons.timeline,
-                  color: Colors.teal,
-                  size: isTablet ? 28.0 : 24.0,
-                ),
-              ),
-              SizedBox(width: isTablet ? 20.0 : 16.0),
-              Expanded(
-                child: Text(
-                  '📈 Historique de l\'Aura',
-                  style: TextStyle(
-                    fontSize: isTablet ? 24.0 : 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: isTablet ? 24.0 : 20.0),
-          Consumer<UserProfileService>(
-            builder: (context, profileService, child) {
-              final profile = profileService.userProfile;
-              return Column(
-                children: [
-                  _buildHistoryItem(
-                    'Niveau actuel',
-                    '${profile?.auraLevel ?? 0}',
-                    Icons.star,
-                    Colors.amber,
-                    isTablet,
-                  ),
-                  SizedBox(height: isTablet ? 16.0 : 12.0),
-                  _buildHistoryItem(
-                    'Points d\'aura',
-                    '${profile?.auraPoints ?? 0}',
-                    Icons.auto_awesome,
-                    Colors.purple,
-                    isTablet,
-                  ),
-                  SizedBox(height: isTablet ? 16.0 : 12.0),
-                  _buildHistoryItem(
-                    'Jours consécutifs',
-                    '${profile?.consecutiveDays ?? 0}',
-                    Icons.local_fire_department,
-                    Colors.orange,
-                    isTablet,
-                  ),
-                  SizedBox(height: isTablet ? 16.0 : 12.0),
-                  _buildHistoryItem(
-                    'Meilleure série',
-                    '${profile?.maxConsecutiveDays ?? 0}',
-                    Icons.emoji_events,
-                    Colors.amber,
-                    isTablet,
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAuraTips(bool isTablet) {
-    return Container(
-      padding: EdgeInsets.all(isTablet ? 32.0 : 24.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.orange.withOpacity(0.1),
-            Colors.amber.withOpacity(0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(isTablet ? 28.0 : 24.0),
-        border: Border.all(color: Colors.orange.withOpacity(0.2), width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(isTablet ? 16.0 : 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
-                ),
-                child: Icon(
-                  Icons.lightbulb_outline,
-                  color: Colors.orange,
-                  size: isTablet ? 28.0 : 24.0,
-                ),
-              ),
-              SizedBox(width: isTablet ? 20.0 : 16.0),
-              Expanded(
-                child: Text(
-                  '💡 Conseils pour l\'Aura',
-                  style: TextStyle(
-                    fontSize: isTablet ? 24.0 : 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: isTablet ? 24.0 : 20.0),
-          _buildTipItem(
-            '🎯 Complétez vos objectifs quotidiennement pour gagner de l\'aura',
-            Colors.green,
-            isTablet,
-          ),
-          SizedBox(height: isTablet ? 16.0 : 12.0),
-          _buildTipItem(
-            '🔥 Maintenez des séries consécutives pour des bonus d\'aura',
-            Colors.orange,
-            isTablet,
-          ),
-          SizedBox(height: isTablet ? 16.0 : 12.0),
-          _buildTipItem(
-            '⚠️ Évitez de manquer des jours pour ne pas perdre d\'aura',
-            Colors.red,
-            isTablet,
-          ),
-          SizedBox(height: isTablet ? 16.0 : 12.0),
-          _buildTipItem(
-            '🏆 Débloquez des badges tous les 5 niveaux d\'aura',
-            Colors.purple,
-            isTablet,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHistoryItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-    bool isTablet,
-  ) {
-    return Container(
-      padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: isTablet ? 24.0 : 20.0),
-          SizedBox(width: isTablet ? 16.0 : 12.0),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: isTablet ? 18.0 : 16.0,
-                color: Colors.grey[700],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: isTablet ? 20.0 : 18.0,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTipItem(String tip, Color color, bool isTablet) {
-    return Container(
-      padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
-      ),
-      child: Text(
-        tip,
-        style: TextStyle(
-          fontSize: isTablet ? 18.0 : 16.0,
-          color: color.withOpacity(0.8),
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
   void _showProfileSettings(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('⚙️ Paramètres du Profil'),
-        content: const Text('Options de configuration du profil utilisateur'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Fermer'),
+        title: Text(
+          '⚙️ Paramètres du Profil',
+          style: TextStyle(
+            color: ProfileScreenColors.darkColor,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
-        ],
-      ),
-    );
-  }
-
-  void _showAuraInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('✨ Qu\'est-ce que l\'Aura ?'),
-        content: const Text(
-          'L\'Aura est votre énergie de progression. Gagnez-en en complétant vos objectifs et maintenez des séries consécutives pour des bonus. Évitez de manquer des jours pour ne pas en perdre !',
+        ),
+        content: Text(
+          'Options de configuration du profil utilisateur',
+          style: TextStyle(color: ProfileScreenColors.darkColor, fontSize: 16),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Compris !'),
+            child: Text(
+              'Fermer',
+              style: TextStyle(
+                color: ProfileScreenColors.primaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),

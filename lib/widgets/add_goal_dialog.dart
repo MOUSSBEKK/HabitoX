@@ -3,6 +3,17 @@ import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 
+// Couleurs du design épuré
+class AddGoalDialogColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
+
 class AddGoalDialog extends StatefulWidget {
   final Goal? goal;
 
@@ -54,10 +65,10 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 400),
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(28),
         child: Form(
           key: _formKey,
           child: Column(
@@ -67,35 +78,43 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
               // Titre du dialogue
               Row(
                 children: [
-                  Icon(
-                    widget.goal != null ? Icons.edit : Icons.add,
-                    color: Colors.indigo,
-                    size: 24,
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AddGoalDialogColors.primaryColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      widget.goal != null ? Icons.edit : Icons.add,
+                      color: AddGoalDialogColors.primaryColor,
+                      size: 24,
+                    ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   Text(
                     widget.goal != null
                         ? 'Modifier l\'objectif'
                         : 'Nouvel objectif',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: AddGoalDialogColors.darkColor,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
               // Sélection de l'icône et de la couleur
               _buildIconColorSelector(),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               // Champ titre
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Titre de l\'objectif',
                   hintText: 'Ex: Apprendre la guitare',
                   border: OutlineInputBorder(
@@ -116,7 +135,7 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
               // Champ description
               TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Description',
                   hintText: 'Décrivez votre objectif...',
                   border: OutlineInputBorder(
@@ -138,7 +157,7 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
               // Champ nombre de jours cible
               TextFormField(
                 controller: _targetDaysController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Nombre de jours cible',
                   hintText: '30',
                   border: OutlineInputBorder(
@@ -184,7 +203,7 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
                     child: ElevatedButton(
                       onPressed: _saveGoal,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
+                        backgroundColor: AddGoalDialogColors.primaryColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -277,7 +296,7 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
 
         goalService.updateGoal(updatedGoal);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Objectif modifié avec succès !'),
             backgroundColor: Colors.green,
           ),
@@ -297,7 +316,7 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
 
         goalService.addGoal(newGoal);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Objectif créé avec succès !'),
             backgroundColor: Colors.green,
           ),
@@ -308,4 +327,3 @@ class _AddGoalDialogState extends State<AddGoalDialog> {
     }
   }
 }
-

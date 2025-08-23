@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import '../models/goal.dart';
 
+// Couleurs du design épuré
+class GoalCardColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
+
 class GoalCard extends StatelessWidget {
   final Goal goal;
   final VoidCallback? onTap;
@@ -20,17 +31,20 @@ class GoalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
-      shadowColor: goal.color.withOpacity(0.3),
+      elevation: 0,
+      shadowColor: GoalCardColors.darkColor.withOpacity(0.1),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: goal.color.withOpacity(0.2), width: 1),
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: GoalCardColors.lightColor.withOpacity(0.4),
+          width: 1,
+        ),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -39,15 +53,19 @@ class GoalCard extends StatelessWidget {
                 children: [
                   // Icône de l'objectif
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: goal.color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      color: GoalCardColors.primaryColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Icon(goal.icon, color: goal.color, size: 28),
+                    child: Icon(
+                      goal.icon,
+                      color: GoalCardColors.primaryColor,
+                      size: 28,
+                    ),
                   ),
 
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 20),
 
                   // Titre et description
                   Expanded(
@@ -59,9 +77,10 @@ class GoalCard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 goal.title,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: GoalCardColors.darkColor,
                                 ),
                               ),
                             ),
@@ -69,12 +88,13 @@ class GoalCard extends StatelessWidget {
                             _buildStatusBadge(),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 6),
                         Text(
                           goal.description,
                           style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                            fontSize: 15,
+                            color: GoalCardColors.darkColor.withOpacity(0.7),
+                            height: 1.3,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -88,7 +108,10 @@ class GoalCard extends StatelessWidget {
                       onDelete != null ||
                       onToggleStatus != null)
                     PopupMenuButton<String>(
-                      icon: Icon(Icons.more_vert, color: Colors.grey[600]),
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: GoalCardColors.darkColor.withOpacity(0.6),
+                      ),
                       onSelected: (value) {
                         switch (value) {
                           case 'edit':
@@ -235,7 +258,7 @@ class GoalCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: goal.color,
+                color: GoalCardColors.primaryColor,
               ),
             ),
           ],
@@ -245,7 +268,7 @@ class GoalCard extends StatelessWidget {
           value: goal.progress,
           minHeight: 8,
           backgroundColor: Colors.grey[300],
-          color: goal.color,
+          color: GoalCardColors.primaryColor,
           borderRadius: BorderRadius.circular(4),
         ),
         const SizedBox(height: 4),

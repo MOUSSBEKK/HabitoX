@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
+import '../constants/app_colors.dart';
 
 class GlobalStatsWidget extends StatelessWidget {
   const GlobalStatsWidget({super.key});
@@ -19,9 +20,9 @@ class GlobalStatsWidget extends StatelessWidget {
               child: Text(
                 'Vos Statistiques Globales',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+                  color: AppColors.darkColor,
                 ),
               ),
             ),
@@ -54,7 +55,7 @@ class GlobalStatsWidget extends StatelessWidget {
               'Objectifs complétés',
               '${goalService.totalCompletedGoals}',
               Icons.flag,
-              Colors.green,
+              AppColors.primaryColor,
             ),
           ),
           const SizedBox(width: 16),
@@ -63,7 +64,7 @@ class GlobalStatsWidget extends StatelessWidget {
               'Jours totaux',
               '${goalService.totalDaysAcrossAllGoals}',
               Icons.calendar_today,
-              Colors.blue,
+              AppColors.lightColor,
             ),
           ),
           const SizedBox(width: 16),
@@ -72,7 +73,7 @@ class GlobalStatsWidget extends StatelessWidget {
               'Meilleure série',
               '${goalService.bestStreakEver}',
               Icons.local_fire_department,
-              Colors.orange,
+              AppColors.primaryColor,
             ),
           ),
         ],
@@ -95,20 +96,23 @@ class GlobalStatsWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
+          Icon(icon, color: color, size: 28),
+          const SizedBox(height: 10),
           Text(
             value,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: color,
+              color: AppColors.darkColor,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
             title,
-            style: TextStyle(fontSize: 12, color: color.withOpacity(0.8)),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.darkColor.withOpacity(0.8),
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -128,19 +132,19 @@ class GlobalStatsWidget extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              highestGrade.color.withOpacity(0.2),
-              highestGrade.color.withOpacity(0.1),
+              AppColors.primaryColor.withOpacity(0.2),
+              AppColors.primaryColor.withOpacity(0.1),
             ],
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: highestGrade.color.withOpacity(0.3)),
+          border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: highestGrade.color.withOpacity(0.2),
+                color: AppColors.primaryColor.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: Text(
@@ -156,26 +160,26 @@ class GlobalStatsWidget extends StatelessWidget {
                   Text(
                     'Grade le plus élevé',
                     style: TextStyle(
-                      fontSize: 14,
-                      color: highestGrade.color.withOpacity(0.8),
+                      fontSize: 16,
+                      color: AppColors.darkColor.withOpacity(0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     highestGrade.title,
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: highestGrade.color,
+                      color: AppColors.darkColor,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     '${highestGrade.minDays}+ jours d\'expérience',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: highestGrade.color.withOpacity(0.7),
+                      fontSize: 14,
+                      color: AppColors.darkColor.withOpacity(0.7),
                     ),
                   ),
                 ],
@@ -196,30 +200,33 @@ class GlobalStatsWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: AppColors.lightColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: AppColors.lightColor.withOpacity(0.3)),
           ),
           child: Column(
             children: [
               Icon(
                 Icons.emoji_events_outlined,
-                size: 48,
-                color: Colors.grey[400],
+                size: 56,
+                color: AppColors.lightColor,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               Text(
                 'Aucun objectif complété',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[600],
+                  color: AppColors.darkColor,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Text(
                 'Complétez votre premier objectif pour commencer votre collection de trophées !',
-                style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.darkColor.withOpacity(0.7),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -236,9 +243,9 @@ class GlobalStatsWidget extends StatelessWidget {
           child: Text(
             'Objectifs Complétés (${completedGoals.length})',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+              color: AppColors.darkColor,
             ),
           ),
         ),
@@ -255,23 +262,30 @@ class GlobalStatsWidget extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: goal.color.withOpacity(0.1),
+                  color: AppColors.primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: goal.color.withOpacity(0.3)),
+                  border: Border.all(
+                    color: AppColors.primaryColor.withOpacity(0.3),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Icon(goal.icon, color: goal.color, size: 20),
-                        const SizedBox(width: 8),
+                        Icon(
+                          goal.icon,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             goal.title,
-                            style: const TextStyle(
-                              fontSize: 14,
+                            style: TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: AppColors.darkColor,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -282,22 +296,25 @@ class GlobalStatsWidget extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Complété le ${_formatDate(goal.completedAt!)}',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.darkColor.withOpacity(0.7),
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Icon(
                           Icons.emoji_events,
-                          size: 16,
-                          color: goal.currentGrade.color,
+                          size: 18,
+                          color: AppColors.primaryColor,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 6),
                         Text(
                           goal.currentGrade.title,
                           style: TextStyle(
-                            fontSize: 12,
-                            color: goal.currentGrade.color,
+                            fontSize: 14,
+                            color: AppColors.primaryColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -305,8 +322,8 @@ class GlobalStatsWidget extends StatelessWidget {
                         Text(
                           '${goal.totalDays} jours',
                           style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                            fontSize: 14,
+                            color: AppColors.darkColor.withOpacity(0.7),
                           ),
                         ),
                       ],

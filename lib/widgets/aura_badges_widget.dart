@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../models/user_profile.dart';
+import '../constants/app_colors.dart';
 
 class AuraBadgesWidget extends StatelessWidget {
   const AuraBadgesWidget({super.key});
@@ -17,6 +18,7 @@ class AuraBadgesWidget extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Titre de la section
               Row(
@@ -24,23 +26,23 @@ class AuraBadgesWidget extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.indigo.withOpacity(0.2),
+                      color: AppColors.primaryColor.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.auto_awesome,
-                      color: Colors.indigo,
+                      color: AppColors.primaryColor,
                       size: 24,
                     ),
                   ),
                   const SizedBox(width: 16),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Badges d\'Aura',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                        color: AppColors.darkColor,
                       ),
                     ),
                   ),
@@ -49,26 +51,53 @@ class AuraBadgesWidget extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Grille des badges avec Flexible pour éviter le débordement
-              Flexible(
-                child: unlockedBadges.isEmpty
-                    ? _buildEmptyState()
-                    : GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1.2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                            ),
-                        itemCount: unlockedBadges.length,
-                        itemBuilder: (context, index) {
-                          return _buildBadgeCard(unlockedBadges[index]);
-                        },
+              // Grille des badges débloqués avec icônes
+              unlockedBadges.isEmpty
+                  ? Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.primaryColor.withOpacity(0.3),
+                        ),
                       ),
-              ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.emoji_events_outlined,
+                            size: 32,
+                            color: AppColors.primaryColor,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Aucun badge d\'aura débloqué',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.darkColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1.1,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                      itemCount: unlockedBadges.length,
+                      itemBuilder: (context, index) {
+                        return _buildBadgeCard(unlockedBadges[index]);
+                      },
+                    ),
             ],
           ),
         );
@@ -82,21 +111,28 @@ class AuraBadgesWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.auto_awesome_outlined, size: 64, color: Colors.grey[400]),
+          Icon(
+            Icons.auto_awesome_outlined,
+            size: 64,
+            color: AppColors.lightColor,
+          ),
           const SizedBox(height: 16),
           Text(
             'Aucun badge d\'aura débloqué',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              color: AppColors.darkColor,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             'Complétez vos objectifs pour débloquer des badges !',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.darkColor.withOpacity(0.7),
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -110,13 +146,19 @@ class AuraBadgesWidget extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [badge.color.withOpacity(0.1), badge.color.withOpacity(0.05)],
+          colors: [
+            AppColors.primaryColor.withOpacity(0.1),
+            AppColors.primaryColor.withOpacity(0.05),
+          ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: badge.color.withOpacity(0.3), width: 1.5),
+        border: Border.all(
+          color: AppColors.primaryColor.withOpacity(0.3),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: badge.color.withOpacity(0.1),
+            color: AppColors.primaryColor.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -128,21 +170,21 @@ class AuraBadgesWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: badge.color.withOpacity(0.2),
+              color: AppColors.primaryColor.withOpacity(0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text(
               badge.emoji,
-              style: TextStyle(fontSize: 32, color: badge.color),
+              style: const TextStyle(fontSize: 32, color: Colors.white),
             ),
           ),
           const SizedBox(height: 12),
           Text(
             badge.name,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: badge.color,
+              color: Colors.white,
             ),
             textAlign: TextAlign.center,
             maxLines: 2,
@@ -151,9 +193,9 @@ class AuraBadgesWidget extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Niveau ${badge.level}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
-              color: badge.color.withOpacity(0.7),
+              color: Colors.white,
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,

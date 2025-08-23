@@ -77,9 +77,38 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
         final profile = profileService.userProfile;
-        if (profile == null) return const SizedBox.shrink();
+        
+        // If profile is null, show a loading or error state
+        if (profile == null) {
+          return Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              child: const Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text(
+                      'Chargement du profil...',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
 
         final stats = profileService.getAuraStats();
+        
+        // Ensure stats has all required values with defaults
+        final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
+        final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
 
         return Card(
           elevation: 8,
@@ -93,8 +122,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  stats['auraColor'].withOpacity(0.1),
-                  stats['auraColor'].withOpacity(0.05),
+                  auraColor.withOpacity(0.1),
+                  auraColor.withOpacity(0.05),
                 ],
               ),
             ),
@@ -119,6 +148,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
   }
 
   Widget _buildProfileHeader(UserProfile profile, Map<String, dynamic> stats) {
+    // Get safe values from stats
+    final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
+    final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
+    
     return Row(
       children: [
         // Avatar avec effet de pulsation
@@ -134,14 +167,14 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      stats['auraColor'],
-                      stats['auraColor'].withOpacity(0.7),
-                      stats['auraColor'].withOpacity(0.3),
+                      auraColor,
+                      auraColor.withOpacity(0.7),
+                      auraColor.withOpacity(0.3),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: stats['auraColor'].withOpacity(0.5),
+                      color: auraColor.withOpacity(0.5),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -149,7 +182,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 ),
                 child: Center(
                   child: Text(
-                    stats['auraEmoji'],
+                    auraEmoji,
                     style: const TextStyle(fontSize: 40),
                   ),
                 ),
@@ -260,6 +293,12 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     UserProfileService profileService,
     Map<String, dynamic> stats,
   ) {
+    // Get safe values from stats
+    final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
+    final currentPoints = stats['currentPoints'] as int? ?? 0;
+    final progressToNext = stats['progressToNext'] as double? ?? 0.0;
+    final currentLevel = stats['currentLevel'] as int? ?? 1;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -275,11 +314,11 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
               ),
             ),
             Text(
-              '${stats['currentPoints']} / ${stats['currentPoints'] + profileService.pointsNeededForNextLevel}',
+              '$currentPoints / ${currentPoints + profileService.pointsNeededForNextLevel}',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: stats['auraColor'],
+                color: auraColor,
               ),
             ),
           ],
@@ -297,7 +336,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: stats['auraColor'].withOpacity(0.3),
+                    color: auraColor.withOpacity(0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -322,19 +361,19 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                         width:
                             MediaQuery.of(context).size.width *
                             0.7 *
-                            stats['progressToNext'],
+                            progressToNext,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           gradient: LinearGradient(
                             colors: [
-                              stats['auraColor'],
-                              stats['auraColor'].withOpacity(0.8),
-                              stats['auraColor'].withOpacity(0.6),
+                              auraColor,
+                              auraColor.withOpacity(0.8),
+                              auraColor.withOpacity(0.6),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: stats['auraColor'].withOpacity(
+                              color: auraColor.withOpacity(
                                 0.5 + _glowAnimation.value * 0.3,
                               ),
                               blurRadius: 15 + _glowAnimation.value * 10,
@@ -352,7 +391,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                       left:
                           (MediaQuery.of(context).size.width *
                               0.7 *
-                              stats['progressToNext'] *
+                              progressToNext *
                               (0.2 + index * 0.15)) %
                           (MediaQuery.of(context).size.width * 0.7),
                       top: 2 + (index % 2) * 8,
@@ -383,7 +422,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
         const SizedBox(height: 8),
 
         Text(
-          'Progression vers le niveau ${stats['currentLevel'] + 1}',
+          'Progression vers le niveau ${currentLevel + 1}',
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
       ],
