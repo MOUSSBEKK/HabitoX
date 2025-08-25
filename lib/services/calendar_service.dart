@@ -96,9 +96,7 @@ class CalendarService extends ChangeNotifier {
     final newShape = CalendarShape.generateRandomShape();
     _shapes.add(newShape);
 
-    if (_currentShape == null) {
-      _currentShape = newShape;
-    }
+    _currentShape ??= newShape;
 
     await _saveData();
     notifyListeners();
@@ -107,6 +105,28 @@ class CalendarService extends ChangeNotifier {
   Future<void> setCurrentShape(String shapeId) async {
     final shape = _shapes.firstWhere((s) => s.id == shapeId);
     _currentShape = shape;
+    await _saveData();
+    notifyListeners();
+  }
+
+  // Ensure there is a current shape that matches the active goal target days.
+  // If a matching shape exists (same totalDays), select it. Otherwise create one.
+  Future<void> ensureShapeForTargetDays(int targetDays) async {
+    if (targetDays <= 0) return;
+
+    // Try to find an existing shape with same totalDays
+    final existing = _shapes.where((s) => s.totalDays == targetDays).toList();
+    if (existing.isNotEmpty) {
+      _currentShape = existing.first;
+      await _saveData();
+      notifyListeners();
+      return;
+    }
+
+    // Create a new tailored heatmap shape
+    final newShape = CalendarShape.createForTargetDays(targetDays);
+    _shapes.add(newShape);
+    _currentShape = newShape;
     await _saveData();
     notifyListeners();
   }

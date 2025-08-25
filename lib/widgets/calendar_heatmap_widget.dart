@@ -11,8 +11,16 @@ class CalendarHeatmapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<CalendarService, GoalService>(
       builder: (context, calendarService, goalService, child) {
-        final currentShape = calendarService.currentShape;
         final activeGoal = goalService.activeGoal;
+        final currentShape = calendarService.currentShape;
+
+        // Synchroniser la forme avec le nombre de jours cible de l'objectif actif
+        if (activeGoal != null &&
+            (currentShape == null ||
+                currentShape.totalDays != activeGoal.targetDays)) {
+          // Appel non bloquant; le widget sera reconstruit après notifyListeners
+          calendarService.ensureShapeForTargetDays(activeGoal.targetDays);
+        }
 
         if (currentShape == null) {
           return _buildEmptyState();
@@ -127,16 +135,15 @@ class CalendarHeatmapWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey[200]!),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Calendar grid
               _buildCalendarMatrix(shape, progress, maxDays),
               const SizedBox(height: 16),
-              // Progress bar
               LinearProgressIndicator(
                 value: completionRatio,
                 minHeight: 8,
@@ -152,6 +159,7 @@ class CalendarHeatmapWidget extends StatelessWidget {
                   color: Colors.grey[600],
                   fontWeight: FontWeight.w500,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -166,27 +174,7 @@ class CalendarHeatmapWidget extends StatelessWidget {
 
     return Column(
       children: [
-        // Day labels
-        Row(
-          children: [
-            const SizedBox(width: 20), // Space for week labels
-            ...['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(
-              (day) => Expanded(
-                child: Center(
-                  child: Text(
-                    day,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         // Calendar grid
         ...daysToShow.asMap().entries.map((entry) {
           final weekIndex = entry.key;
@@ -194,18 +182,6 @@ class CalendarHeatmapWidget extends StatelessWidget {
 
           return Row(
             children: [
-              // Week label
-              SizedBox(
-                width: 20,
-                child: Text(
-                  'S${weekIndex + 1}',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey[500],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
               // Week days
               ...week.asMap().entries.map((dayEntry) {
                 final dayIndex = dayEntry.key;
@@ -221,41 +197,29 @@ class CalendarHeatmapWidget extends StatelessWidget {
                 }
 
                 final dayNumber = weekIndex * 7 + dayIndex + 1;
-                final isCompleted = dayNumber <= daysCompleted;
-                final isInRange = dayNumber <= maxDays;
+                final isVisibleCell = shouldShow && dayNumber <= maxDays;
+                final isCompleted = isVisibleCell && dayNumber <= daysCompleted;
 
                 return Expanded(
-                  child: Container(
-                    height: 20,
-                    margin: const EdgeInsets.all(1),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                    height: 14,
+                    margin: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       color: isCompleted
                           ? shape.color
-                          : isInRange
-                          ? shape.color.withOpacity(0.3)
-                          : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                      border: Border.all(
-                        color: isCompleted ? shape.color : Colors.grey[400]!,
-                        width: 0.5,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        dayNumber.toString(),
-                        style: TextStyle(
-                          fontSize: 8,
-                          color: isCompleted ? Colors.white : Colors.grey[600],
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                          : isVisibleCell
+                          ? shape.color.withOpacity(0.25)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           );
-        }).toList(),
+        }),
       ],
     );
   }

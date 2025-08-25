@@ -208,6 +208,11 @@ class GoalService extends ChangeNotifier {
           completedSessions: newCompletedSessions,
         );
 
+        // Si c'est l'objectif actif, on met aussi à jour sa référence
+        if (_activeGoal?.id == goal.id) {
+          _activeGoal = _goals[index];
+        }
+
         // Vérifier si l'objectif est complété
         if (newProgress >= 1.0) {
           await completeGoal(goalId);

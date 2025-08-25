@@ -62,16 +62,7 @@ class ActiveGoalWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            'Commencez par créer votre premier objectif pour commencer votre voyage !',
-            style: TextStyle(
-              fontSize: 16,
-              color: darkColor.withOpacity(0.7),
-              height: 1.4,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
+
           ElevatedButton.icon(
             onPressed: () {
               if (onSwitchTab != null) {
@@ -170,11 +161,10 @@ class ActiveGoalWidget extends StatelessWidget {
           // Statistiques
           _buildStatsSection(goal),
 
-          const SizedBox(height: 32),
+          // const SizedBox(height: 32),
 
           // Message de motivation
-          _buildMotivationSection(goal),
-
+          // _buildMotivationSection(goal),
           const SizedBox(height: 32),
 
           // Actions
@@ -367,74 +357,83 @@ class ActiveGoalWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMotivationSection(Goal goal) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: primaryColor.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withOpacity(0.2), width: 1),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(Icons.lightbulb_outline, color: primaryColor, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              goal.motivationMessage,
-              style: TextStyle(
-                fontSize: 16,
-                color: darkColor.withOpacity(0.8),
-                fontWeight: FontWeight.w500,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildMotivationSection(Goal goal) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(20),
+  //     decoration: BoxDecoration(
+  //       color: primaryColor.withOpacity(0.08),
+  //       borderRadius: BorderRadius.circular(16),
+  //       border: Border.all(color: primaryColor.withOpacity(0.2), width: 1),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         Container(
+  //           padding: const EdgeInsets.all(10),
+  //           decoration: BoxDecoration(
+  //             color: primaryColor.withOpacity(0.15),
+  //             borderRadius: BorderRadius.circular(10),
+  //           ),
+  //           child: Icon(Icons.lightbulb_outline, color: primaryColor, size: 20),
+  //         ),
+  //         const SizedBox(width: 16),
+  //         Expanded(
+  //           child: Text(
+  //             goal.motivationMessage,
+  //             style: TextStyle(
+  //               fontSize: 16,
+  //               color: darkColor.withOpacity(0.8),
+  //               fontWeight: FontWeight.w500,
+  //               height: 1.4,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildActionsSection(
     BuildContext context,
     Goal goal,
     GoalService goalService,
   ) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final alreadyCompletedToday = goal.completedSessions.any(
+      (session) => DateTime(session.year, session.month, session.day) == today,
+    );
     return Row(
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () {
-              goalService.updateProgress(goal.id);
-              BadgeSyncService.checkAndUnlockBadges(context);
-              final profileService = context.read<UserProfileService>();
-              goalService.updateAura(profileService);
+            onPressed: alreadyCompletedToday
+                ? null
+                : () {
+                    goalService.updateProgress(goal.id);
+                    BadgeSyncService.checkAndUnlockBadges(context);
+                    final profileService = context.read<UserProfileService>();
+                    goalService.updateAura(profileService);
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Session marquée comme complétée ! +100 Aura'),
-                  backgroundColor: primaryColor,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  action: SnackBarAction(
-                    label: 'Annuler',
-                    textColor: lightColor,
-                    onPressed: () {
-                      // Logique pour annuler la session
-                    },
-                  ),
-                ),
-              );
-            },
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Session marquée comme complétée ! +100 Aura',
+                        ),
+                        backgroundColor: primaryColor,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        action: SnackBarAction(
+                          label: 'Annuler',
+                          textColor: lightColor,
+                          onPressed: () {
+                            // Logique pour annuler la session
+                          },
+                        ),
+                      ),
+                    );
+                  },
             icon: const Icon(Icons.check, size: 20),
             label: const Text(
               'Marquer session',

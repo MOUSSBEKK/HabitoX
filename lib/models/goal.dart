@@ -90,15 +90,15 @@ class Goal {
       currentStreak == 0 && totalDays > 0; // En difficulté si pas de streak
   bool get isConsistent => currentStreak >= 7; // Consistant après 7 jours
 
-  String get motivationMessage {
-    if (isCompleted) return "🎉 Objectif accompli ! Vous êtes incroyable !";
-    if (isConsistent)
-      return "🔥 Incroyable ! Vous maintenez une série parfaite !";
-    if (isOnTrack)
-      return "💪 Continuez comme ça ! Vous êtes sur la bonne voie !";
-    if (isStruggling) return "💪 Ne lâchez rien ! Chaque jour compte !";
-    return "🚀 Commencez votre voyage vers le succès !";
-  }
+  // String get motivationMessage {
+  //   if (isCompleted) return "🎉 Objectif accompli ! Vous êtes incroyable !";
+  //   if (isConsistent)
+  //     return "🔥 Incroyable ! Vous maintenez une série parfaite !";
+  //   if (isOnTrack)
+  //     return "💪 Continuez comme ça ! Vous êtes sur la bonne voie !";
+  //   if (isStruggling) return "💪 Ne lâchez rien ! Chaque jour compte !";
+  //   return "🚀 Commencez votre voyage vers le succès !";
+  // }
 
   Map<String, dynamic> toJson() {
     return {

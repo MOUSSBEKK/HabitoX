@@ -136,6 +136,48 @@ class CalendarShape {
     return pattern;
   }
 
+  // Generate a rectangular heatmap pattern (weeks x 7 days)
+  // that contains exactly `targetDays` visible cells, filled sequentially.
+  static List<List<bool>> generateHeatmapPatternForTargetDays(int targetDays) {
+    if (targetDays <= 0) {
+      return [List<bool>.filled(7, false)];
+    }
+
+    final weeks = (targetDays / 7).ceil();
+    final pattern = <List<bool>>[];
+    int remaining = targetDays;
+
+    for (int week = 0; week < weeks; week++) {
+      final weekPattern = <bool>[];
+      for (int day = 0; day < 7; day++) {
+        if (remaining > 0) {
+          weekPattern.add(true);
+          remaining--;
+        } else {
+          weekPattern.add(false);
+        }
+      }
+      pattern.add(weekPattern);
+    }
+
+    return pattern;
+  }
+
+  // Create a heatmap CalendarShape tailored for a goal with `targetDays`.
+  // Name is explicit to reflect the goal target, while type is set to a default.
+  static CalendarShape createForTargetDays(int targetDays) {
+    final pattern = generateHeatmapPatternForTargetDays(targetDays);
+    return CalendarShape(
+      id: _generateId(),
+      type: CalendarShapeType.star,
+      name: 'Objectif $targetDays jours',
+      emoji: '⭐',
+      color: _generateRandomColor(),
+      pattern: pattern,
+      totalDays: targetDays,
+    );
+  }
+
   static int _countTrueCells(List<List<bool>> pattern) {
     int count = 0;
     for (final row in pattern) {
