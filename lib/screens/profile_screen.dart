@@ -124,8 +124,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                               Consumer<UserProfileService>(
                                 builder: (context, profileService, child) {
                                   final profile = profileService.userProfile;
-                                  if (profile == null)
+                                  if (profile == null) {
                                     return const SizedBox.shrink();
+                                  }
 
                                   return Text(
                                     profile.username,
@@ -146,8 +147,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 builder: (context, profileService, child) {
                                   final auraStats = profileService
                                       .getAuraStats();
-                                  if (auraStats.isEmpty)
+                                  if (auraStats.isEmpty) {
                                     return const SizedBox.shrink();
+                                  }
 
                                   return Container(
                                     width: double.infinity,
@@ -674,8 +676,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     SizedBox(height: isTablet ? 16.0 : 12.0),
                     ...completedGoals
                         .take(3)
-                        .map((goal) => _buildGoalCard(goal, false, isTablet))
-                        .toList(),
+                        .map((goal) => _buildGoalCard(goal, false, isTablet)),
                   ],
                 ],
               );
