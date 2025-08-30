@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 /// Couleurs du design épuré global de l'application HabitoX
 class AppColors {
   // Couleurs principales
-  static const Color primaryColor = Color(
-    0xFFA7C6A5,
+  static const Color primaryColor = Color.fromARGB(
+    255,
+    209,
+    113,
+    50,
   ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color lightColor = Color.fromARGB(
+    255,
+    38,
+    132,
+    167,
+  ); // Bleu clair pour fonds
   static const Color darkColor = Color(
     0xFF1F4843,
   ); // Vert foncé pour TOUT le texte

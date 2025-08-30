@@ -42,7 +42,8 @@ class CalendarHeatmapWidget extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildProgressInfo(currentShape, activeGoal, calendarService),
                 const SizedBox(height: 20),
-                _buildActions(context, calendarService),
+                // ! boutons "nouvelle forme" et "changer forme"
+                // _buildActions(context, calendarService),
               ],
             ),
           ),
@@ -73,10 +74,6 @@ class CalendarHeatmapWidget extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-              Text(
-                '${shape.totalDays} jours à compléter',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
             ],
           ),
@@ -143,14 +140,6 @@ class CalendarHeatmapWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildCalendarMatrix(shape, progress, maxDays),
-              const SizedBox(height: 16),
-              LinearProgressIndicator(
-                value: completionRatio,
-                minHeight: 8,
-                backgroundColor: Colors.grey[300],
-                color: shape.color,
-                borderRadius: BorderRadius.circular(4),
-              ),
               const SizedBox(height: 8),
               Text(
                 '$progress / $maxDays jours complétés',
@@ -319,35 +308,36 @@ class CalendarHeatmapWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActions(BuildContext context, CalendarService calendarService) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () => calendarService.generateNewShape(),
-            icon: const Icon(Icons.refresh),
-            label: const Text('Nouvelle forme'),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () => _showShapeSelection(context, calendarService),
-            icon: const Icon(Icons.grid_view),
-            label: const Text('Changer forme'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.indigo,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // ! boutons "nouvelle forme" et "changer forme"
+  // Widget _buildActions(BuildContext context, CalendarService calendarService) {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: OutlinedButton.icon(
+  //           onPressed: () => calendarService.generateNewShape(),
+  //           icon: const Icon(Icons.refresh),
+  //           label: const Text('Nouvelle forme'),
+  //           style: OutlinedButton.styleFrom(
+  //             padding: const EdgeInsets.symmetric(vertical: 12),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(width: 12),
+  //       Expanded(
+  //         child: ElevatedButton.icon(
+  //           onPressed: () => _showShapeSelection(context, calendarService),
+  //           icon: const Icon(Icons.grid_view),
+  //           label: const Text('Changer forme'),
+  //           style: ElevatedButton.styleFrom(
+  //             backgroundColor: Colors.indigo,
+  //             foregroundColor: Colors.white,
+  //             padding: const EdgeInsets.symmetric(vertical: 12),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   void _showShapeSelection(
     BuildContext context,

@@ -154,8 +154,7 @@ class ActiveGoalWidget extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Barre de progression principale
-          _buildMainProgressSection(goal),
-
+          // _buildMainProgressSection(goal),
           const SizedBox(height: 32),
 
           // Statistiques
@@ -239,51 +238,51 @@ class ActiveGoalWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMainProgressSection(Goal goal) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Progression vers l\'objectif',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                color: darkColor,
-              ),
-            ),
-            Text(
-              '${(goal.progress * 100).toInt()}%',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: primaryColor,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        LinearProgressIndicator(
-          value: goal.progress,
-          minHeight: 14,
-          backgroundColor: lightColor.withOpacity(0.3),
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(7),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          '${goal.totalDays} jours sur ${goal.targetDays}',
-          style: TextStyle(
-            fontSize: 15,
-            color: darkColor.withOpacity(0.7),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildMainProgressSection(Goal goal) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             'Progression vers l\'objectif',
+  //             style: TextStyle(
+  //               fontSize: 17,
+  //               fontWeight: FontWeight.w600,
+  //               color: darkColor,
+  //             ),
+  //           ),
+  //           Text(
+  //             '${(goal.progress * 100).toInt()}%',
+  //             style: TextStyle(
+  //               fontSize: 18,
+  //               fontWeight: FontWeight.w600,
+  //               color: primaryColor,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 16),
+  //       LinearProgressIndicator(
+  //         value: goal.progress,
+  //         minHeight: 14,
+  //         backgroundColor: lightColor.withOpacity(0.3),
+  //         color: primaryColor,
+  //         borderRadius: BorderRadius.circular(7),
+  //       ),
+  //       const SizedBox(height: 12),
+  //       Text(
+  //         '${goal.totalDays} jours sur ${goal.targetDays}',
+  //         style: TextStyle(
+  //           fontSize: 15,
+  //           color: darkColor.withOpacity(0.7),
+  //           fontWeight: FontWeight.w500,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildStatsSection(Goal goal) {
     return Row(
