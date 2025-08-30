@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/user_profile_service.dart';
 import '../widgets/png_badges_grid.dart';
 
 // Couleurs du design épuré
@@ -66,54 +68,82 @@ class _BadgesScreenState extends State<BadgesScreen>
               child: Column(
                 children: [
                   SizedBox(height: isTablet ? 24.0 : 20.0),
-                  // Contenu des onglets
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        // Onglet Badges Calendrier (PNG)
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: padding),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              isTablet ? 28.0 : 24.0,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: BadgesScreenColors.darkColor.withValues(
-                                  alpha: 0.1,
-                                ),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
+                  // Dernier badge débloqué (grand)
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: padding),
+                    padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(
+                        isTablet ? 24.0 : 20.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: BadgesScreenColors.darkColor.withValues(
+                            alpha: 0.06,
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: PngBadgesGrid(),
-                          ),
-                        ),
-
-                        // Onglet Badges Aura
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: padding),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              isTablet ? 28.0 : 24.0,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: BadgesScreenColors.lightColor.withValues(
-                                  alpha: 0.1,
-                                ),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          // child: const AuraBadgesWidget(),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
                         ),
                       ],
+                    ),
+                    child: Consumer<UserProfileService>(
+                      builder: (context, profileService, child) {
+                        final level =
+                            profileService.userProfile?.auraLevel ?? 1;
+                        final assetPath = _getBadgeAssetForLevel(level);
+                        final imageSize = isTablet ? 160.0 : 120.0;
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: imageSize,
+                              child: Image.asset(
+                                assetPath,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
+                                      Icons.emoji_events_outlined,
+                                      color: Colors.grey[400],
+                                      size: imageSize * 0.7,
+                                    ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Level $level',
+                              style: TextStyle(
+                                fontSize: isTablet ? 20.0 : 16.0,
+                                fontWeight: FontWeight.w700,
+                                color: BadgesScreenColors.darkColor,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  // Contenu des onglets
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: padding),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          isTablet ? 28.0 : 24.0,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: BadgesScreenColors.darkColor.withValues(
+                              alpha: 0.1,
+                            ),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: PngBadgesGrid(),
+                      ),
                     ),
                   ),
                 ],
@@ -123,5 +153,22 @@ class _BadgesScreenState extends State<BadgesScreen>
         );
       },
     );
+  }
+
+  String _getBadgeAssetForLevel(int level) {
+    final List<String> assetFiles = [
+      'BADGE1.png',
+      'BADGE2.png',
+      'BADGE3.png',
+      'BADGE4.png',
+      'BADGE5.png',
+      'BADGE6.png',
+      'BADGE7.png',
+      'BADGE8.png',
+      'BADGE9.png',
+      'BADGE10.png',
+    ];
+    final index = (level - 1).clamp(0, assetFiles.length - 1);
+    return 'assets/badges/${assetFiles[index]}';
   }
 }

@@ -55,7 +55,9 @@ class GoalCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: GoalCardColors.primaryColor.withValues(alpha: 0.15),
+                      color: GoalCardColors.primaryColor.withValues(
+                        alpha: 0.15,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
@@ -93,7 +95,9 @@ class GoalCard extends StatelessWidget {
                           goal.description,
                           style: TextStyle(
                             fontSize: 15,
-                            color: GoalCardColors.darkColor.withValues(alpha: 0.7),
+                            color: GoalCardColors.darkColor.withValues(
+                              alpha: 0.7,
+                            ),
                             height: 1.3,
                           ),
                           maxLines: 2,
@@ -183,10 +187,10 @@ class GoalCard extends StatelessWidget {
               _buildStatsSection(),
 
               // Actions rapides (seulement pour les objectifs actifs)
-              if (goal.isActive && onTap != null) ...[
-                const SizedBox(height: 20),
-                _buildQuickActions(context),
-              ],
+              // if (goal.isActive && onTap != null) ...[
+              //   const SizedBox(height: 20),
+              //   _buildQuickActions(context),
+              // ],
             ],
           ),
         ),
@@ -350,50 +354,6 @@ class GoalCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: onTap,
-            icon: const Icon(Icons.check, size: 18),
-            label: const Text('Marquer session'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () {
-              // Reset streak action
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Fonctionnalité à implémenter'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-            },
-            icon: const Icon(Icons.refresh, size: 18),
-            label: const Text('Reset série'),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
