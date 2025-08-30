@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/goal.dart';
 import '../models/calendar_shape.dart';
@@ -43,11 +44,48 @@ class GoalService extends ChangeNotifier {
   }
 
   Future<void> _loadGoals() async {
-    final prefs = await SharedPreferences.getInstance();
-    final goalsJson = prefs.getStringList(_goalsKey) ?? [];
-    final activeGoalId = prefs.getString(_activeGoalKey);
+    await initLocalStorage();
+    // 1) Lire depuis localstorage (source de vérité)
+    final String? storedGoalsJson = localStorage.getItem(_goalsKey);
+    List<dynamic> rawGoalsList = [];
+    String? activeGoalId = localStorage.getItem(_activeGoalKey);
 
-    _goals = goalsJson.map((json) => Goal.fromJson(jsonDecode(json))).toList();
+    if (storedGoalsJson != null) {
+      try {
+        final decoded = jsonDecode(storedGoalsJson);
+        if (decoded is List) {
+          rawGoalsList = decoded;
+        }
+      } catch (_) {
+        rawGoalsList = [];
+      }
+    } else {
+      // 2) Migration depuis SharedPreferences (ancienne version)
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final goalsJsonList = prefs.getStringList(_goalsKey) ?? [];
+        rawGoalsList = goalsJsonList.map((json) => jsonDecode(json)).toList();
+        activeGoalId = prefs.getString(_activeGoalKey);
+
+        // Sauvegarder dans localstorage au nouveau format (liste de maps)
+        localStorage.setItem(_goalsKey, jsonEncode(rawGoalsList));
+        if (activeGoalId != null) {
+          localStorage.setItem(_activeGoalKey, activeGoalId);
+        }
+      } catch (_) {
+        rawGoalsList = [];
+      }
+    }
+
+    _goals = rawGoalsList.map<Goal>((raw) {
+      if (raw is Map<String, dynamic>) {
+        return Goal.fromJson(raw);
+      }
+      if (raw is Map) {
+        return Goal.fromJson(Map<String, dynamic>.from(raw));
+      }
+      return Goal.fromJson(jsonDecode(raw.toString()));
+    }).toList();
 
     if (activeGoalId != null) {
       try {
@@ -75,13 +113,11 @@ class GoalService extends ChangeNotifier {
   }
 
   Future<void> _saveGoals() async {
-    final prefs = await SharedPreferences.getInstance();
-    final goalsJson = _goals.map((goal) => jsonEncode(goal.toJson())).toList();
-
-    await prefs.setStringList(_goalsKey, goalsJson);
-
+    await initLocalStorage();
+    final goalsList = _goals.map((goal) => goal.toJson()).toList();
+    localStorage.setItem(_goalsKey, jsonEncode(goalsList));
     if (_activeGoal != null) {
-      await prefs.setString(_activeGoalKey, _activeGoal!.id);
+      localStorage.setItem(_activeGoalKey, _activeGoal!.id);
     }
   }
 

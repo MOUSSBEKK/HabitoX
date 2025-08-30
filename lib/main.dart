@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'services/goal_service.dart';
 import 'services/calendar_service.dart';
@@ -6,7 +7,9 @@ import 'services/user_profile_service.dart';
 import 'screens/home_screen.dart';
 import 'constants/app_colors.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initLocalStorage();
   runApp(const HabitoXApp());
 }
 
