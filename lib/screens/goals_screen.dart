@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../widgets/goal_card.dart';
-import '../widgets/add_goal_dialog.dart';
+import '../widgets/add_goal_bottom_sheet.dart';
 
 // Couleurs du design épuré
 class GoalsColors {
@@ -45,7 +45,7 @@ class _GoalsScreenState extends State<GoalsScreen>
       builder: (context, constraints) {
         final isTablet = constraints.maxWidth > 600;
         final padding = isTablet ? 32.0 : 20.0;
-        final headerPadding = isTablet ? 80.0 : 60.0;
+        // final headerPadding = isTablet ? 80.0 : 60.0;
 
         return Scaffold(
           body: Container(
@@ -56,159 +56,125 @@ class _GoalsScreenState extends State<GoalsScreen>
               child: Column(
                 children: [
                   // Header avec design épuré
-                  Container(
-                    padding: EdgeInsets.fromLTRB(
-                      padding,
-                      headerPadding,
-                      padding,
-                      padding,
-                    ),
-                    decoration: BoxDecoration(
-                      color: GoalsColors.lightColor.withOpacity(0.3),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
-                              decoration: BoxDecoration(
-                                color: GoalsColors.primaryColor.withOpacity(
-                                  0.15,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  isTablet ? 24.0 : 20.0,
-                                ),
-                                border: Border.all(
-                                  color: GoalsColors.primaryColor.withOpacity(
-                                    0.3,
-                                  ),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.flag,
-                                size: isTablet ? 40.0 : 32.0,
-                                color: GoalsColors.primaryColor,
-                              ),
-                            ),
-                            SizedBox(width: isTablet ? 20.0 : 16.0),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '🎯 Mes Objectifs',
-                                    style: TextStyle(
-                                      fontSize: isTablet ? 32.0 : 28.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: GoalsColors.darkColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Définissez et suivez vos objectifs personnels',
-                                    style: TextStyle(
-                                      fontSize: isTablet ? 18.0 : 16.0,
-                                      color: GoalsColors.darkColor.withOpacity(
-                                        0.7,
-                                      ),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: isTablet ? 24.0 : 20.0),
+                  // Container(
+                  //   padding: EdgeInsets.fromLTRB(
+                  //     padding,
+                  //     headerPadding,
+                  //     padding,
+                  //     padding,
+                  //   ),
+                  //   decoration: BoxDecoration(
+                  //     color: GoalsColors.lightColor.withOpacity(0.3),
+                  //     borderRadius: const BorderRadius.only(
+                  //       bottomLeft: Radius.circular(30),
+                  //       bottomRight: Radius.circular(30),
+                  //     ),
+                  //   ),
+                  //   child: Column(
+                  //     children: [
+                  //       Row(
+                  //         children: [
+                  //           Container(
+                  //             padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
+                  //             decoration: BoxDecoration(
+                  //               color: GoalsColors.primaryColor.withOpacity(
+                  //                 0.15,
+                  //               ),
+                  //               borderRadius: BorderRadius.circular(
+                  //                 isTablet ? 24.0 : 20.0,
+                  //               ),
+                  //               border: Border.all(
+                  //                 color: GoalsColors.primaryColor.withOpacity(
+                  //                   0.3,
+                  //                 ),
+                  //                 width: 1.5,
+                  //               ),
+                  //             ),
+                  //             child: Icon(
+                  //               Icons.flag,
+                  //               size: isTablet ? 40.0 : 32.0,
+                  //               color: GoalsColors.primaryColor,
+                  //             ),
+                  //           ),
+                  //           SizedBox(width: isTablet ? 20.0 : 16.0),
+                  //           Expanded(
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Text(
+                  //                   '🎯 Mes Objectifs',
+                  //                   style: TextStyle(
+                  //                     fontSize: isTablet ? 32.0 : 28.0,
+                  //                     fontWeight: FontWeight.w600,
+                  //                     color: GoalsColors.darkColor,
+                  //                   ),
+                  //                 ),
+                  //                 const SizedBox(height: 4),
+                  //                 Text(
+                  //                   'Définissez et suivez vos objectifs personnels',
+                  //                   style: TextStyle(
+                  //                     fontSize: isTablet ? 18.0 : 16.0,
+                  //                     color: GoalsColors.darkColor.withOpacity(
+                  //                       0.7,
+                  //                     ),
+                  //                     fontWeight: FontWeight.w500,
+                  //                   ),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       SizedBox(height: isTablet ? 24.0 : 20.0),
 
-                        // Statistiques des objectifs
-                        Consumer<GoalService>(
-                          builder: (context, goalService, child) {
-                            final totalGoals = goalService.goals.length;
-                            final activeGoals = goalService.goals
-                                .where((g) => g.isActive)
-                                .length;
-                            final completedGoals =
-                                goalService.completedGoals.length;
+                  //       // Statistiques des objectifs
+                  //       Consumer<GoalService>(
+                  //         builder: (context, goalService, child) {
+                  //           final totalGoals = goalService.goals.length;
+                  //           final activeGoals = goalService.goals
+                  //               .where((g) => g.isActive)
+                  //               .length;
+                  //           final completedGoals =
+                  //               goalService.completedGoals.length;
 
-                            return Row(
-                              children: [
-                                Expanded(
-                                  child: _buildStatCard(
-                                    'Total',
-                                    '$totalGoals',
-                                    Icons.list,
-                                    GoalsColors.primaryColor,
-                                    isTablet,
-                                  ),
-                                ),
-                                SizedBox(width: isTablet ? 20.0 : 16.0),
-                                Expanded(
-                                  child: _buildStatCard(
-                                    'Actifs',
-                                    '$activeGoals',
-                                    Icons.play_circle,
-                                    GoalsColors.primaryColor,
-                                    isTablet,
-                                  ),
-                                ),
-                                SizedBox(width: isTablet ? 20.0 : 16.0),
-                                Expanded(
-                                  child: _buildStatCard(
-                                    'Complétés',
-                                    '$completedGoals',
-                                    Icons.check_circle,
-                                    GoalsColors.primaryColor,
-                                    isTablet,
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: isTablet ? 24.0 : 20.0),
-
-                  // Bouton d'ajout d'objectif
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: padding),
-                    child: ElevatedButton.icon(
-                      onPressed: () => _showAddGoalDialog(context),
-                      icon: Icon(Icons.add, size: isTablet ? 24.0 : 20.0),
-                      label: Text(
-                        'Ajouter un objectif',
-                        style: TextStyle(
-                          fontSize: isTablet ? 18.0 : 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: GoalsColors.primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isTablet ? 32.0 : 24.0,
-                          vertical: isTablet ? 20.0 : 16.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            isTablet ? 20.0 : 16.0,
-                          ),
-                        ),
-                        elevation: 8,
-                        shadowColor: Colors.blue.withOpacity(0.3),
-                      ),
-                    ),
-                  ),
-
+                  //           return Row(
+                  //             children: [
+                  //               Expanded(
+                  //                 child: _buildStatCard(
+                  //                   'Total',
+                  //                   '$totalGoals',
+                  //                   Icons.list,
+                  //                   GoalsColors.primaryColor,
+                  //                   isTablet,
+                  //                 ),
+                  //               ),
+                  //               SizedBox(width: isTablet ? 20.0 : 16.0),
+                  //               Expanded(
+                  //                 child: _buildStatCard(
+                  //                   'Actifs',
+                  //                   '$activeGoals',
+                  //                   Icons.play_circle,
+                  //                   GoalsColors.primaryColor,
+                  //                   isTablet,
+                  //                 ),
+                  //               ),
+                  //               SizedBox(width: isTablet ? 20.0 : 16.0),
+                  //               Expanded(
+                  //                 child: _buildStatCard(
+                  //                   'Complétés',
+                  //                   '$completedGoals',
+                  //                   Icons.check_circle,
+                  //                   GoalsColors.primaryColor,
+                  //                   isTablet,
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           );
+                  //         },
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   SizedBox(height: isTablet ? 24.0 : 20.0),
 
                   // Onglets stylisés
@@ -350,7 +316,7 @@ class _GoalsScreenState extends State<GoalsScreen>
                         .toList()) ...[
                   SizedBox(height: isTablet ? 32.0 : 24.0),
                   ElevatedButton.icon(
-                    onPressed: () => _showAddGoalDialog(context),
+                    onPressed: () => _showAddGoalBottomSheet(context),
                     icon: Icon(Icons.add, size: isTablet ? 24.0 : 20.0),
                     label: Text(
                       'Créer un objectif',
@@ -400,49 +366,13 @@ class _GoalsScreenState extends State<GoalsScreen>
     );
   }
 
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-    bool isTablet,
-  ) {
-    return Container(
-      padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(isTablet ? 20.0 : 16.0),
-        border: Border.all(color: color.withOpacity(0.3), width: 1.5),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: isTablet ? 28.0 : 24.0),
-          SizedBox(height: isTablet ? 10.0 : 8.0),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: isTablet ? 24.0 : 20.0,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          SizedBox(height: isTablet ? 6.0 : 4.0),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: isTablet ? 14.0 : 12.0,
-              color: color.withOpacity(0.8),
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+  void _showAddGoalBottomSheet(BuildContext context, {Goal? goal}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => AddGoalBottomSheet(goal: goal),
     );
-  }
-
-  void _showAddGoalDialog(BuildContext context) {
-    showDialog(context: context, builder: (context) => const AddGoalDialog());
   }
 
   void _showGoalDetails(BuildContext context, Goal goal) {
@@ -474,10 +404,7 @@ class _GoalsScreenState extends State<GoalsScreen>
   }
 
   void _showEditGoalDialog(BuildContext context, Goal goal) {
-    showDialog(
-      context: context,
-      builder: (context) => AddGoalDialog(goal: goal),
-    );
+    _showAddGoalBottomSheet(context, goal: goal);
   }
 
   void _showDeleteConfirmation(BuildContext context, Goal goal) {

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'goals_screen.dart';
 import 'profile_screen.dart';
-import 'test_screen.dart';
 import 'badges_screen.dart';
 import '../widgets/skill_progress_widget.dart';
+import '../models/goal.dart';
+import '../services/goal_service.dart';
+import '../widgets/goal_card.dart';
+import '../widgets/add_goal_bottom_sheet.dart';
 
 // Couleurs du design épuré
 class HomeColors {
@@ -32,6 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _showAddGoalBottomSheet(BuildContext context, {Goal? goal}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => AddGoalBottomSheet(goal: goal),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -47,9 +59,16 @@ class _HomeScreenState extends State<HomeScreen> {
               const GoalsScreen(),
               const BadgesScreen(),
               const ProfileScreen(),
-              const TestScreen(),
             ],
           ),
+          floatingActionButton: _currentIndex == 0
+              ? FloatingActionButton(
+                  onPressed: () => _showAddGoalBottomSheet(context),
+                  backgroundColor: HomeColors.primaryColor,
+                  foregroundColor: Colors.white,
+                  child: const Icon(Icons.add),
+                )
+              : null,
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -86,8 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard, size: isTablet ? 28.0 : 24.0),
-                  label: 'Tableau de Bord',
+                  icon: Icon(
+                    Icons.dashboard_outlined,
+                    size: isTablet ? 28.0 : 24.0,
+                  ),
+                  label: 'Home',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.flag, size: isTablet ? 28.0 : 24.0),
@@ -100,10 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person, size: isTablet ? 28.0 : 24.0),
                   label: 'Profil',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.science, size: isTablet ? 28.0 : 24.0),
-                  label: 'Test',
                 ),
               ],
             ),
