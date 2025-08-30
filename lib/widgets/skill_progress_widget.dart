@@ -12,6 +12,16 @@ class SkillProgressColors {
   ); // Vert foncé pour TOUT le texte
 }
 
+class HomeColors {
+  static const Color primaryColor = Color(
+    0xFFA7C6A5,
+  ); // Vert clair pour onglets/boutons
+  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
+  static const Color darkColor = Color(
+    0xFF1F4843,
+  ); // Vert foncé pour TOUT le texte
+}
+
 class SkillProgressWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
 
@@ -36,10 +46,17 @@ class SkillProgressWidget extends StatelessWidget {
             ),
             elevation: 0,
             centerTitle: true,
+            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
+            foregroundColor: Colors.white,
           ),
           body: Container(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.1),
+              color: const Color.fromARGB(
+                255,
+                255,
+                255,
+                255,
+              ).withValues(alpha: 0.1),
             ),
             child: SafeArea(
               child: SingleChildScrollView(

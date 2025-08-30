@@ -49,7 +49,7 @@ class BadgesWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.amber.withOpacity(0.1),
+            color: Colors.amber.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Icon(Icons.emoji_events, size: 24, color: Colors.amber),
@@ -73,9 +73,9 @@ class BadgesWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.amber.withOpacity(0.1),
+            color: Colors.amber.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.amber.withOpacity(0.3)),
+            border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
           ),
           child: Text(
             '${((unlockedCount / totalShapes) * 100).toInt()}%',
@@ -157,10 +157,14 @@ class BadgesWidget extends StatelessWidget {
   Widget _buildBadgeCard(models.Badge badge, bool isUnlocked) {
     return Container(
       decoration: BoxDecoration(
-        color: isUnlocked ? badge.color.withOpacity(0.1) : Colors.grey[100],
+        color: isUnlocked
+            ? badge.color.withValues(alpha: 0.1)
+            : Colors.grey[100],
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isUnlocked ? badge.color.withOpacity(0.3) : Colors.grey[300]!,
+          color: isUnlocked
+              ? badge.color.withValues(alpha: 0.3)
+              : Colors.grey[300]!,
           width: 1,
         ),
       ),
@@ -171,7 +175,7 @@ class BadgesWidget extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isUnlocked
-                  ? badge.color.withOpacity(0.2)
+                  ? badge.color.withValues(alpha: 0.2)
                   : Colors.grey[300],
               shape: BoxShape.circle,
             ),
@@ -290,50 +294,45 @@ class BadgesWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ...calendarService.shapes
-                    .map(
-                      (shape) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            Text(
-                              shape.emoji,
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    shape.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${shape.totalDays} jours à compléter',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
+                ...calendarService.shapes.map(
+                  (shape) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        Text(shape.emoji, style: const TextStyle(fontSize: 20)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                shape.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            if (shape.isUnlocked)
-                              Icon(
-                                Icons.check_circle,
-                                color: Colors.green,
-                                size: 20,
-                              )
-                            else
-                              Icon(Icons.lock, color: Colors.grey, size: 20),
-                          ],
+                              Text(
+                                '${shape.totalDays} jours à compléter',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                    .toList(),
+                        if (shape.isUnlocked)
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 20,
+                          )
+                        else
+                          Icon(Icons.lock, color: Colors.grey, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

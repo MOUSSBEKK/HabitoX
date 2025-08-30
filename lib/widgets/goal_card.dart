@@ -32,11 +32,11 @@ class GoalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      shadowColor: GoalCardColors.darkColor.withOpacity(0.1),
+      shadowColor: GoalCardColors.darkColor.withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
-          color: GoalCardColors.lightColor.withOpacity(0.4),
+          color: GoalCardColors.lightColor.withValues(alpha: 0.4),
           width: 1,
         ),
       ),
@@ -55,7 +55,7 @@ class GoalCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: GoalCardColors.primaryColor.withOpacity(0.15),
+                      color: GoalCardColors.primaryColor.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
@@ -93,7 +93,7 @@ class GoalCard extends StatelessWidget {
                           goal.description,
                           style: TextStyle(
                             fontSize: 15,
-                            color: GoalCardColors.darkColor.withOpacity(0.7),
+                            color: GoalCardColors.darkColor.withValues(alpha: 0.7),
                             height: 1.3,
                           ),
                           maxLines: 2,
@@ -110,7 +110,7 @@ class GoalCard extends StatelessWidget {
                     PopupMenuButton<String>(
                       icon: Icon(
                         Icons.more_vert,
-                        color: GoalCardColors.darkColor.withOpacity(0.6),
+                        color: GoalCardColors.darkColor.withValues(alpha: 0.6),
                       ),
                       onSelected: (value) {
                         switch (value) {
@@ -216,9 +216,9 @@ class GoalCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: badgeColor.withOpacity(0.1),
+        color: badgeColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: badgeColor.withOpacity(0.3)),
+        border: Border.all(color: badgeColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -322,9 +322,9 @@ class GoalCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -343,7 +343,7 @@ class GoalCard extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 10,
-              color: color.withOpacity(0.8),
+              color: color.withValues(alpha: 0.8),
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,

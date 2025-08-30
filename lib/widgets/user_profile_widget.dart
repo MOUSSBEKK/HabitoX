@@ -77,7 +77,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
         final profile = profileService.userProfile;
-        
+
         // If profile is null, show a loading or error state
         if (profile == null) {
           return Card(
@@ -105,7 +105,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
         }
 
         final stats = profileService.getAuraStats();
-        
+
         // Ensure stats has all required values with defaults
         final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
         final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
@@ -122,8 +122,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  auraColor.withOpacity(0.1),
-                  auraColor.withOpacity(0.05),
+                  auraColor.withValues(alpha: 0.1),
+                  auraColor.withValues(alpha: 0.05),
                 ],
               ),
             ),
@@ -151,7 +151,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     // Get safe values from stats
     final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
     final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
-    
+
     return Row(
       children: [
         // Avatar avec effet de pulsation
@@ -168,23 +168,20 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                   gradient: RadialGradient(
                     colors: [
                       auraColor,
-                      auraColor.withOpacity(0.7),
-                      auraColor.withOpacity(0.3),
+                      auraColor.withValues(alpha: 0.7),
+                      auraColor.withValues(alpha: 0.3),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: auraColor.withOpacity(0.5),
+                      color: auraColor.withValues(alpha: 0.5),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
                   ],
                 ),
                 child: Center(
-                  child: Text(
-                    auraEmoji,
-                    style: const TextStyle(fontSize: 40),
-                  ),
+                  child: Text(auraEmoji, style: const TextStyle(fontSize: 40)),
                 ),
               ),
             );
@@ -265,10 +262,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: stats['auraColor'].withOpacity(0.2),
+                      color: stats['auraColor'].withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: stats['auraColor'].withOpacity(0.3),
+                        color: stats['auraColor'].withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
@@ -298,7 +295,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     final currentPoints = stats['currentPoints'] as int? ?? 0;
     final progressToNext = stats['progressToNext'] as double? ?? 0.0;
     final currentLevel = stats['currentLevel'] as int? ?? 1;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -336,7 +333,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: auraColor.withOpacity(0.3),
+                    color: auraColor.withValues(alpha: 0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -367,14 +364,14 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                           gradient: LinearGradient(
                             colors: [
                               auraColor,
-                              auraColor.withOpacity(0.8),
-                              auraColor.withOpacity(0.6),
+                              auraColor.withValues(alpha: 0.8),
+                              auraColor.withValues(alpha: 0.6),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: auraColor.withOpacity(
-                                0.5 + _glowAnimation.value * 0.3,
+                              color: auraColor.withValues(
+                                alpha: 0.5 + _glowAnimation.value * 0.3,
                               ),
                               blurRadius: 15 + _glowAnimation.value * 10,
                               spreadRadius: 2,
@@ -404,7 +401,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                               width: 4,
                               height: 4,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha: 0.8),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -480,9 +477,9 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -499,7 +496,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
           const SizedBox(height: 2),
           Text(
             title,
-            style: TextStyle(fontSize: 10, color: color.withOpacity(0.8)),
+            style: TextStyle(fontSize: 10, color: color.withValues(alpha: 0.8)),
             textAlign: TextAlign.center,
           ),
         ],

@@ -90,9 +90,9 @@ class GlobalStatsWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -111,7 +111,7 @@ class GlobalStatsWidget extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.darkColor.withOpacity(0.8),
+              color: AppColors.darkColor.withValues(alpha: 0.8),
             ),
             textAlign: TextAlign.center,
           ),
@@ -132,19 +132,19 @@ class GlobalStatsWidget extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primaryColor.withOpacity(0.2),
-              AppColors.primaryColor.withOpacity(0.1),
+              AppColors.primaryColor.withValues(alpha: 0.2),
+              AppColors.primaryColor.withValues(alpha: 0.1),
             ],
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
+          border: Border.all(color: AppColors.primaryColor.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.2),
+                color: AppColors.primaryColor.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: Text(
@@ -161,7 +161,7 @@ class GlobalStatsWidget extends StatelessWidget {
                     'Grade le plus élevé',
                     style: TextStyle(
                       fontSize: 16,
-                      color: AppColors.darkColor.withOpacity(0.8),
+                      color: AppColors.darkColor.withValues(alpha: 0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -179,7 +179,7 @@ class GlobalStatsWidget extends StatelessWidget {
                     '${highestGrade.minDays}+ jours d\'expérience',
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.darkColor.withOpacity(0.7),
+                      color: AppColors.darkColor.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -200,9 +200,9 @@ class GlobalStatsWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.lightColor.withOpacity(0.1),
+            color: AppColors.lightColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.lightColor.withOpacity(0.3)),
+            border: Border.all(color: AppColors.lightColor.withValues(alpha: 0.3)),
           ),
           child: Column(
             children: [
@@ -225,7 +225,7 @@ class GlobalStatsWidget extends StatelessWidget {
                 'Complétez votre premier objectif pour commencer votre collection de trophées !',
                 style: TextStyle(
                   fontSize: 16,
-                  color: AppColors.darkColor.withOpacity(0.7),
+                  color: AppColors.darkColor.withValues(alpha: 0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -262,10 +262,10 @@ class GlobalStatsWidget extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withOpacity(0.1),
+                  color: AppColors.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.primaryColor.withOpacity(0.3),
+                    color: AppColors.primaryColor.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(
@@ -298,7 +298,7 @@ class GlobalStatsWidget extends StatelessWidget {
                       'Complété le ${_formatDate(goal.completedAt!)}',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppColors.darkColor.withOpacity(0.7),
+                        color: AppColors.darkColor.withValues(alpha: 0.7),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -323,7 +323,7 @@ class GlobalStatsWidget extends StatelessWidget {
                           '${goal.totalDays} jours',
                           style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.darkColor.withOpacity(0.7),
+                            color: AppColors.darkColor.withValues(alpha: 0.7),
                           ),
                         ),
                       ],

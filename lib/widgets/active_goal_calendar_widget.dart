@@ -73,7 +73,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: primaryColor.withOpacity(0.15),
+            color: primaryColor.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(icon, size: 28, color: primaryColor),
@@ -96,7 +96,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 description,
                 style: TextStyle(
                   fontSize: 15,
-                  color: darkColor.withOpacity(0.7),
+                  color: darkColor.withValues(alpha: 0.7),
                   height: 1.3,
                 ),
                 maxLines: 2,
@@ -197,7 +197,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                       color: isCompleted
                           ? shape.color
                           : isVisibleCell
-                          ? shape.color.withOpacity(0.25)
+                          ? shape.color.withValues(alpha: 0.25)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(3),
                     ),
@@ -272,9 +272,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -294,7 +294,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             title,
-            style: TextStyle(fontSize: 10, color: color.withOpacity(0.8)),
+            style: TextStyle(fontSize: 10, color: color.withValues(alpha: 0.8)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -350,7 +350,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
-          shadowColor: primaryColor.withOpacity(0.3),
+          shadowColor: primaryColor.withValues(alpha: 0.3),
         ),
       ),
     );
@@ -369,7 +369,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.1),
+              color: primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(Icons.flag_outlined, size: 48, color: primaryColor),
@@ -403,7 +403,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               elevation: 0,
-              shadowColor: primaryColor.withOpacity(0.3),
+              shadowColor: primaryColor.withValues(alpha: 0.3),
             ),
           ),
         ],
