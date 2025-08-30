@@ -5,6 +5,7 @@ import 'badges_screen.dart';
 import '../widgets/skill_progress_widget.dart';
 import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Couleurs du design épuré
 class HomeColors {
@@ -103,22 +104,31 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.dashboard_outlined,
+                  icon: FaIcon(
+                    FontAwesomeIcons.house,
                     size: isTablet ? 28.0 : 24.0,
                   ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.flag, size: isTablet ? 28.0 : 24.0),
+                  icon: FaIcon(
+                    FontAwesomeIcons.bullseye,
+                    size: isTablet ? 28.0 : 24.0,
+                  ),
                   label: 'Objectifs',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.emoji_events, size: isTablet ? 28.0 : 24.0),
+                  icon: FaIcon(
+                    FontAwesomeIcons.trophy,
+                    size: isTablet ? 28.0 : 24.0,
+                  ),
                   label: 'Badges',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person, size: isTablet ? 28.0 : 24.0),
+                  icon: FaIcon(
+                    FontAwesomeIcons.user,
+                    size: isTablet ? 28.0 : 24.0,
+                  ),
                   label: 'Profil',
                 ),
               ],
