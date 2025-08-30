@@ -21,13 +21,19 @@ class UserProfileService extends ChangeNotifier {
 
     if (profileJson != null) {
       _userProfile = UserProfile.fromJson(jsonDecode(profileJson));
+      // S'assurer que l'utilisateur a au moins le premier badge
+      _ensureFirstBadgeUnlocked();
     } else {
-      // Créer un profil par défaut
+      // Créer un profil par défaut avec le premier badge débloqué
+      final defaultBadges = [
+        AuraBadge.createForLevel(1),
+      ]; // Premier badge niveau 1
       _userProfile = UserProfile(
         id: _generateId(),
         username: 'HabitoX_User',
         lastActivityDate: DateTime.now(),
         createdAt: DateTime.now(),
+        unlockedBadges: defaultBadges,
       );
       await _saveProfile();
     }
@@ -60,11 +66,15 @@ class UserProfileService extends ChangeNotifier {
   }
 
   Future<void> resetProfile() async {
+    final defaultBadges = [
+      AuraBadge.createForLevel(1),
+    ]; // Premier badge niveau 1
     _userProfile = UserProfile(
       id: _generateId(),
       username: 'HabitoX_User',
       lastActivityDate: DateTime.now(),
       createdAt: DateTime.now(),
+      unlockedBadges: defaultBadges,
     );
     await _saveProfile();
     notifyListeners();
@@ -140,6 +150,14 @@ class UserProfileService extends ChangeNotifier {
     final nextLevelPoints = pow(currentLevel * 100, 2).toInt();
     final currentPoints = _userProfile?.auraPoints ?? 0;
     return nextLevelPoints - currentPoints;
+  }
+
+  // S'assurer que l'utilisateur a au moins le premier badge
+  void _ensureFirstBadgeUnlocked() {
+    if (_userProfile != null && _userProfile!.unlockedBadges.isEmpty) {
+      _userProfile!.unlockedBadges.add(AuraBadge.createForLevel(1));
+      _saveProfile();
+    }
   }
 
   String _generateId() {

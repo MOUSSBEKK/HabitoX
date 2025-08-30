@@ -49,9 +49,9 @@ class UserProfile {
 
       // Bonus d'aura pour les séries
       int bonus = 0;
-      if (consecutiveDays >= 7)
+      if (consecutiveDays >= 7) {
         bonus = 50; // 7 jours = +50
-      else if (consecutiveDays >= 3)
+      } else if (consecutiveDays >= 3)
         bonus = 20; // 3 jours = +20
 
       auraPoints += 100 + bonus; // Base 100 + bonus série
@@ -83,15 +83,24 @@ class UserProfile {
   // Vérifier les nouveaux badges
   void _checkForNewBadges() {
     final newLevel = auraLevel;
-    final badgeLevel =
-        ((newLevel - 1) ~/ 5) * 5 + 5; // Badge tous les 5 niveaux
 
-    if (badgeLevel > 0 && badgeLevel <= newLevel) {
+    // Vérifier le premier badge au niveau 1
+    if (newLevel >= 1) {
       final existingBadge = unlockedBadges
-          .where((badge) => badge.level == badgeLevel)
+          .where((badge) => badge.level == 1)
           .firstOrNull;
       if (existingBadge == null) {
-        unlockedBadges.add(AuraBadge.createForLevel(badgeLevel));
+        unlockedBadges.add(AuraBadge.createForLevel(1));
+      }
+    }
+
+    // Vérifier les autres badges tous les 5 niveaux (5, 10, 15, 20, 25, etc.)
+    for (int level = 5; level <= newLevel; level += 5) {
+      final existingBadge = unlockedBadges
+          .where((badge) => badge.level == level)
+          .firstOrNull;
+      if (existingBadge == null) {
+        unlockedBadges.add(AuraBadge.createForLevel(level));
       }
     }
   }
@@ -236,42 +245,42 @@ class AuraBadge {
 
   static Map<String, dynamic> _getBadgeDataForLevel(int level) {
     switch (level) {
-      case 5:
+      case 1:
         return {
           'name': 'Apprenti Brillant',
           'description': 'Premier pas dans le monde de l\'aura',
           'emoji': '🔮',
           'color': Colors.green,
         };
-      case 10:
+      case 5:
         return {
           'name': 'Initié Radieux',
           'description': 'L\'aura commence à briller',
           'emoji': '⚡',
           'color': Colors.teal,
         };
-      case 15:
+      case 10:
         return {
           'name': 'Adepte Lumineux',
           'description': 'La lumière de l\'aura grandit',
           'emoji': '⭐',
           'color': Colors.blue,
         };
-      case 20:
+      case 15:
         return {
           'name': 'Gardien Céleste',
           'description': 'Protecteur de l\'énergie astrale',
           'emoji': '💫',
           'color': Colors.indigo,
         };
-      case 25:
+      case 20:
         return {
           'name': 'Maître Éthéré',
           'description': 'Maîtrise des forces éthérées',
           'emoji': '✨',
           'color': Colors.deepPurple,
         };
-      case 30:
+      case 25:
         return {
           'name': 'Légende Astrale',
           'description': 'Légende vivante de l\'aura',

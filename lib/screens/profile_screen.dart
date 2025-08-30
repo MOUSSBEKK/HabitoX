@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
+import '../models/user_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,6 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<Offset> _slideAnimation;
+  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -35,6 +38,22 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     _fadeController.forward();
     _slideController.forward();
+    _loadDarkModePreference();
+  }
+
+  Future<void> _loadDarkModePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDarkMode = prefs.getBool('dark_mode') ?? false;
+    });
+  }
+
+  Future<void> _toggleDarkMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
+    await prefs.setBool('dark_mode', _isDarkMode);
   }
 
   @override
@@ -57,16 +76,24 @@ class _ProfileScreenState extends State<ProfileScreen>
               'Account',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: Colors.greenAccent,
+                color: _isDarkMode
+                    ? AppColors.primaryColor
+                    : AppColors.darkColor,
                 fontSize: isTablet ? 28.0 : 24.0,
               ),
             ),
             elevation: 0,
             centerTitle: true,
-            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-            foregroundColor: Colors.white,
+            backgroundColor: _isDarkMode
+                ? AppColors.darkColor
+                : AppColors.lightColor,
+            foregroundColor: _isDarkMode
+                ? AppColors.primaryColor
+                : Colors.white,
           ),
-          backgroundColor: const Color(0xFFF8FAFC),
+          backgroundColor: _isDarkMode
+              ? AppColors.darkColor
+              : AppColors.scaffoldBackgroundColor,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(padding),
@@ -98,20 +125,20 @@ extension on _ProfileScreenState {
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
       onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Premium requis pour upgrader')),
+        const SnackBar(content: Text('Premium required to upgrade')),
       ),
       child: Container(
         padding: EdgeInsets.all(isTablet ? 20 : 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF7C4DFF), Color(0xFF9B72FF)],
+          gradient: LinearGradient(
+            colors: [AppColors.primaryColor, AppColors.primaryDark],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.deepPurple.withOpacity(0.25),
+              color: AppColors.primaryColor.withValues(alpha: 0.25),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -122,7 +149,7 @@ extension on _ProfileScreenState {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(Icons.auto_awesome, color: Colors.white),
@@ -143,7 +170,7 @@ extension on _ProfileScreenState {
                   Text(
                     'Enjoy all the benefits and explore more possibilities',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.95),
+                      color: Colors.white.withValues(alpha: 0.95),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -162,18 +189,27 @@ extension on _ProfileScreenState {
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
         final level = profileService.userProfile?.auraLevel ?? 1;
-        final emoji = profileService.userProfile?.auraEmoji ?? '💎';
-        final color =
-            profileService.userProfile?.auraColor ?? AppColors.primaryColor;
+        final unlockedBadges = profileService.userProfile?.unlockedBadges ?? [];
+
+        // Get the highest level badge
+        AuraBadge? highestBadge;
+        if (unlockedBadges.isNotEmpty) {
+          highestBadge = unlockedBadges.reduce(
+            (a, b) => a.level > b.level ? a : b,
+          );
+        }
+
+        final emoji = highestBadge?.emoji ?? '💎';
+        final color = highestBadge?.color ?? AppColors.primaryColor;
 
         return Container(
           padding: EdgeInsets.all(isTablet ? 18 : 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _isDarkMode ? AppColors.darkColor : Colors.white,
             borderRadius: BorderRadius.circular(isTablet ? 18 : 16),
             boxShadow: [
               BoxShadow(
-                color: AppColors.darkColor.withOpacity(0.06),
+                color: AppColors.darkColor.withValues(alpha: 0.06),
                 blurRadius: 14,
                 offset: const Offset(0, 6),
               ),
@@ -184,7 +220,7 @@ extension on _ProfileScreenState {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(emoji, style: const TextStyle(fontSize: 24)),
@@ -199,21 +235,34 @@ extension on _ProfileScreenState {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.darkColor,
+                        color: _isDarkMode
+                            ? AppColors.primaryColor
+                            : AppColors.darkColor,
                       ),
                     ),
                     Text(
-                      'You are a rising star! Keep going!',
+                      highestBadge?.name ??
+                          'You are a rising star! Keep going!',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.darkColor.withOpacity(0.7),
+                        color:
+                            (_isDarkMode
+                                    ? AppColors.primaryColor
+                                    : AppColors.darkColor)
+                                .withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: _isDarkMode
+                    ? AppColors.primaryColor
+                    : AppColors.darkColor,
+              ),
             ],
           ),
         );
@@ -226,20 +275,20 @@ extension on _ProfileScreenState {
       _SettingItem(Icons.tune, 'Preferences'),
       _SettingItem(Icons.credit_card, 'Payment Methods'),
       _SettingItem(Icons.subscriptions, 'Billing & Subscriptions'),
-      _SettingItem(Icons.security, 'Account & Security'),
+      _SettingItem(Icons.security, 'Terms of Service & Privacy Policy'),
       _SettingItem(Icons.file_download, 'Import', locked: true),
       _SettingItem(Icons.file_upload, 'Export', locked: true),
-      _SettingItem(Icons.color_lens, 'App Appearance'),
+      _SettingItem(Icons.color_lens, 'App Appearance', isToggle: true),
       _SettingItem(Icons.insights, 'Data & Analytics'),
     ];
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: _isDarkMode ? AppColors.darkColor : Colors.white,
         borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -250,7 +299,10 @@ extension on _ProfileScreenState {
           for (int i = 0; i < items.length; i++) ...[
             _buildSettingTile(items[i], isTablet),
             if (i != items.length - 1)
-              Divider(height: 1, color: AppColors.lightColor.withOpacity(0.2)),
+              Divider(
+                height: 1,
+                color: AppColors.lightColor.withValues(alpha: 0.2),
+              ),
           ],
         ],
       ),
@@ -262,30 +314,56 @@ extension on _ProfileScreenState {
       fontSize: isTablet ? 16 : 14,
       fontWeight: FontWeight.w600,
       color: item.locked
-          ? AppColors.darkColor.withOpacity(0.4)
-          : AppColors.darkColor,
+          ? (_isDarkMode ? AppColors.primaryColor : AppColors.darkColor)
+                .withValues(alpha: 0.4)
+          : (_isDarkMode ? AppColors.primaryColor : AppColors.darkColor),
     );
 
-    return ListTile(
+    Widget tile = ListTile(
       leading: Icon(
         item.icon,
-        color: item.locked ? Colors.grey : AppColors.darkColor,
+        color: item.locked
+            ? Colors.grey
+            : (_isDarkMode ? AppColors.primaryColor : AppColors.darkColor),
       ),
       title: Text(item.title, style: titleStyle),
-      trailing: item.locked
+      trailing: item.isToggle
+          ? Switch(
+              value: _isDarkMode,
+              onChanged: (value) => _toggleDarkMode(),
+              activeThumbColor: AppColors.primaryColor,
+            )
+          : item.locked
           ? const Icon(Icons.lock, color: Colors.grey)
-          : const Icon(Icons.chevron_right),
-      onTap: item.locked
-          ? () => ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Premium requis')))
+          : Icon(
+              Icons.chevron_right,
+              color: _isDarkMode ? AppColors.primaryColor : AppColors.darkColor,
+            ),
+      onTap: item.isToggle
+          ? null
+          : item.locked
+          ? () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Premium required to access this feature'),
+              ),
+            )
           : () {},
-      enabled: !item.locked,
+      enabled: !item.locked && !item.isToggle,
       contentPadding: EdgeInsets.symmetric(
         horizontal: isTablet ? 18 : 14,
         vertical: isTablet ? 6 : 2,
       ),
     );
+
+    // Add tooltip for locked items
+    if (item.locked) {
+      return Tooltip(
+        message: 'Premium required to access this feature',
+        child: tile,
+      );
+    }
+
+    return tile;
   }
 }
 
@@ -293,5 +371,11 @@ class _SettingItem {
   final IconData icon;
   final String title;
   final bool locked;
-  _SettingItem(this.icon, this.title, {this.locked = false});
+  final bool isToggle;
+  _SettingItem(
+    this.icon,
+    this.title, {
+    this.locked = false,
+    this.isToggle = false,
+  });
 }
