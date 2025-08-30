@@ -4,8 +4,6 @@ import 'profile_screen.dart';
 import 'badges_screen.dart';
 import '../widgets/skill_progress_widget.dart';
 import '../models/goal.dart';
-import '../services/goal_service.dart';
-import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 
 // Couleurs du design épuré
@@ -74,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: HomeColors.darkColor.withOpacity(0.08),
+                  color: HomeColors.darkColor.withValues(alpha: 0.08),
                   blurRadius: 20,
                   offset: const Offset(0, -5),
                 ),
@@ -92,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
               selectedItemColor: HomeColors.primaryColor,
-              unselectedItemColor: HomeColors.darkColor.withOpacity(0.5),
+              unselectedItemColor: HomeColors.darkColor.withValues(alpha: 0.5),
               selectedLabelStyle: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: isTablet ? 14.0 : 12.0,
@@ -100,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               unselectedLabelStyle: TextStyle(
                 fontSize: isTablet ? 14.0 : 12.0,
-                color: HomeColors.darkColor.withOpacity(0.5),
+                color: HomeColors.darkColor.withValues(alpha: 0.5),
               ),
               elevation: 0,
               items: [
