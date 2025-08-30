@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/goal_service.dart';
+import '../services/user_profile_service.dart';
+import '../constants/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -51,190 +52,246 @@ class _ProfileScreenState extends State<ProfileScreen>
         final padding = isTablet ? 32.0 : 20.0;
 
         return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Account',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.greenAccent,
+                fontSize: isTablet ? 28.0 : 24.0,
+              ),
+            ),
+            elevation: 0,
+            centerTitle: true,
+            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
+            foregroundColor: Colors.white,
+          ),
           backgroundColor: const Color(0xFFF8FAFC),
           body: SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // Modern Header with Username and Aura Level
-                SliverToBoxAdapter(
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: Padding(
-                      padding: EdgeInsets.all(padding),
-                      child: Column(
-                        children: [
-                          // User Grade/Rank Section
-                          _buildGradeSection(isTablet),
-
-                          SizedBox(height: isTablet ? 32.0 : 24.0),
-
-                          // Objectives/Goals Section
-                        ],
-                      ),
-                    ),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(padding),
+              child: FadeTransition(
+                opacity: _fadeController,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildUpgradeCard(isTablet),
+                      const SizedBox(height: 16),
+                      _buildLevelCard(isTablet),
+                      const SizedBox(height: 16),
+                      _buildSettingsGroup(isTablet),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildGradeSection(bool isTablet) {
-    return Consumer<GoalService>(
-      builder: (context, goalService, child) {
-        final highestGrade = goalService.highestGradeAchieved;
-
-        return Container(
-          padding: EdgeInsets.all(isTablet ? 24.0 : 20.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
+extension on _ProfileScreenState {
+  Widget _buildUpgradeCard(bool isTablet) {
+    return GestureDetector(
+      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Premium requis pour upgrader')),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(isTablet ? 20 : 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF7C4DFF), Color(0xFF9B72FF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.25),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.auto_awesome, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(isTablet ? 16.0 : 12.0),
-                    decoration: BoxDecoration(
-                      color: highestGrade.color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      highestGrade.emoji,
-                      style: TextStyle(fontSize: isTablet ? 32.0 : 28.0),
+                  const Text(
+                    'Upgrade Plan Now!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
                     ),
                   ),
-                  SizedBox(width: isTablet ? 20.0 : 16.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Grade Actuel',
-                          style: TextStyle(
-                            fontSize: isTablet ? 16.0 : 14.0,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          highestGrade.title,
-                          style: TextStyle(
-                            fontSize: isTablet ? 24.0 : 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-                      ],
+                  Text(
+                    'Enjoy all the benefits and explore more possibilities',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.95),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: isTablet ? 20.0 : 16.0),
+            ),
+            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
 
-              // Progress to next grade
-              Consumer<GoalService>(
-                builder: (context, goalService, child) {
-                  final goals = goalService.goals;
-                  if (goals.isEmpty) return const SizedBox.shrink();
+  Widget _buildLevelCard(bool isTablet) {
+    return Consumer<UserProfileService>(
+      builder: (context, profileService, child) {
+        final level = profileService.userProfile?.auraLevel ?? 1;
+        final emoji = profileService.userProfile?.auraEmoji ?? '💎';
+        final color =
+            profileService.userProfile?.auraColor ?? AppColors.primaryColor;
 
-                  final totalDays = goalService.totalDaysAcrossAllGoals;
-                  final nextGrade = highestGrade.nextGrade;
-
-                  if (nextGrade == null) {
-                    return Container(
-                      padding: EdgeInsets.all(isTablet ? 16.0 : 12.0),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 20,
-                          ),
-                          SizedBox(width: 12),
-                          Text(
-                            'Grade maximum atteint !',
-                            style: TextStyle(
-                              color: Colors.green[700],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  final progress =
-                      (totalDays - highestGrade.minDays) /
-                      (nextGrade.minDays - highestGrade.minDays);
-                  final progressPercent = (progress * 100).clamp(0.0, 100.0);
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Prochain grade: ${nextGrade.title}',
-                            style: TextStyle(
-                              fontSize: isTablet ? 16.0 : 14.0,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            '${progressPercent.round()}%',
-                            style: TextStyle(
-                              fontSize: isTablet ? 16.0 : 14.0,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      LinearProgressIndicator(
-                        value: progress.clamp(0.0, 1.0),
-                        backgroundColor: Colors.grey[200],
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          highestGrade.color,
-                        ),
-                        minHeight: 8,
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '$totalDays jours / ${nextGrade.minDays} jours requis',
-                        style: TextStyle(
-                          fontSize: isTablet ? 14.0 : 12.0,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                    ],
-                  );
-                },
+        return Container(
+          padding: EdgeInsets.all(isTablet ? 18 : 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(isTablet ? 18 : 16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.darkColor.withOpacity(0.06),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
               ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(emoji, style: const TextStyle(fontSize: 24)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Level $level',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.darkColor,
+                      ),
+                    ),
+                    Text(
+                      'You are a rising star! Keep going!',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.darkColor.withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16),
             ],
           ),
         );
       },
     );
   }
+
+  Widget _buildSettingsGroup(bool isTablet) {
+    final items = <_SettingItem>[
+      _SettingItem(Icons.tune, 'Preferences'),
+      _SettingItem(Icons.credit_card, 'Payment Methods'),
+      _SettingItem(Icons.subscriptions, 'Billing & Subscriptions'),
+      _SettingItem(Icons.security, 'Account & Security'),
+      _SettingItem(Icons.file_download, 'Import', locked: true),
+      _SettingItem(Icons.file_upload, 'Export', locked: true),
+      _SettingItem(Icons.color_lens, 'App Appearance'),
+      _SettingItem(Icons.insights, 'Data & Analytics'),
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < items.length; i++) ...[
+            _buildSettingTile(items[i], isTablet),
+            if (i != items.length - 1)
+              Divider(height: 1, color: AppColors.lightColor.withOpacity(0.2)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingTile(_SettingItem item, bool isTablet) {
+    final titleStyle = TextStyle(
+      fontSize: isTablet ? 16 : 14,
+      fontWeight: FontWeight.w600,
+      color: item.locked
+          ? AppColors.darkColor.withOpacity(0.4)
+          : AppColors.darkColor,
+    );
+
+    return ListTile(
+      leading: Icon(
+        item.icon,
+        color: item.locked ? Colors.grey : AppColors.darkColor,
+      ),
+      title: Text(item.title, style: titleStyle),
+      trailing: item.locked
+          ? const Icon(Icons.lock, color: Colors.grey)
+          : const Icon(Icons.chevron_right),
+      onTap: item.locked
+          ? () => ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Premium requis')))
+          : () {},
+      enabled: !item.locked,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: isTablet ? 18 : 14,
+        vertical: isTablet ? 6 : 2,
+      ),
+    );
+  }
+}
+
+class _SettingItem {
+  final IconData icon;
+  final String title;
+  final bool locked;
+  _SettingItem(this.icon, this.title, {this.locked = false});
 }
