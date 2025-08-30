@@ -358,18 +358,26 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
   Widget _buildNoActiveGoal(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color.fromARGB(138, 255, 255, 255),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.grey[200]!),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: primaryColor.withValues(alpha: 0.1),
+              color: const Color.fromARGB(
+                255,
+                136,
+                239,
+                128,
+              ).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(Icons.flag_outlined, size: 48, color: primaryColor),
@@ -381,29 +389,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               fontSize: 22,
               fontWeight: FontWeight.w600,
               color: darkColor,
-            ),
-          ),
-          const SizedBox(height: 12),
-          ElevatedButton.icon(
-            onPressed: () {
-              if (onSwitchTab != null) {
-                onSwitchTab!(1);
-              }
-            },
-            icon: const Icon(Icons.add, size: 20),
-            label: const Text(
-              'Créer un objectif',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 0,
-              shadowColor: primaryColor.withValues(alpha: 0.3),
             ),
           ),
         ],

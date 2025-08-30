@@ -122,6 +122,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                       },
                     ),
                   ),
+                  SizedBox(height: isTablet ? 24.0 : 20.0),
                   // Contenu des onglets
                   Expanded(
                     child: Container(

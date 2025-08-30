@@ -23,20 +23,12 @@ class GoalsScreen extends StatefulWidget {
   State<GoalsScreen> createState() => _GoalsScreenState();
 }
 
-class _GoalsScreenState extends State<GoalsScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _GoalsScreenState extends State<GoalsScreen> {
+  int _selectedIndex = 0; // 0: Actifs, 1: Complétés, 2: Archivés
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
@@ -70,9 +62,10 @@ class _GoalsScreenState extends State<GoalsScreen>
               child: Column(
                 children: [
                   SizedBox(height: isTablet ? 24.0 : 20.0),
-                  // Onglets stylisés
+                  // Boutons segmentés (Actifs, Complétés, Archivés)
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: padding),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(
@@ -80,78 +73,25 @@ class _GoalsScreenState extends State<GoalsScreen>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withValues(alpha: 0.1),
+                          color: Colors.black.withOpacity(0.06),
                           blurRadius: 10,
                           offset: const Offset(0, 5),
                         ),
                       ],
                     ),
-                    child: TabBar(
-                      controller: _tabController,
-                      labelColor: Colors.blue,
-                      unselectedLabelColor: Colors.grey[600],
-                      indicatorColor: Colors.blue,
-                      indicatorWeight: 3,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: isTablet ? 18.0 : 16.0,
-                      ),
-                      unselectedLabelStyle: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: isTablet ? 18.0 : 16.0,
-                      ),
-                      tabs: const [
-                        Tab(icon: Icon(Icons.play_circle), text: 'Actifs'),
-                        Tab(icon: Icon(Icons.check_circle), text: 'Complétés'),
-                        Tab(icon: Icon(Icons.archive), text: 'Archivés'),
+                    child: Row(
+                      children: [
+                        _buildSegmentButton('Actifs', 0, isTablet),
+                        _buildSegmentButton('Complétés', 1, isTablet),
+                        _buildSegmentButton('Archivés', 2, isTablet),
                       ],
                     ),
                   ),
 
                   SizedBox(height: isTablet ? 24.0 : 20.0),
 
-                  // Contenu des onglets
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        // Onglet Objectifs Actifs
-                        _buildGoalsList(
-                          context,
-                          (goalService) => goalService.goals
-                              .where((g) => g.isActive)
-                              .toList(),
-                          'Aucun objectif actif',
-                          'Commencez par créer votre premier objectif !',
-                          Icons.flag_outlined,
-                          isTablet,
-                        ),
-
-                        // Onglet Objectifs Complétés
-                        _buildGoalsList(
-                          context,
-                          (goalService) => goalService.completedGoals,
-                          'Aucun objectif complété',
-                          'Complétez vos objectifs pour les voir ici !',
-                          Icons.check_circle_outline,
-                          isTablet,
-                        ),
-
-                        // Onglet Objectifs Archivés
-                        _buildGoalsList(
-                          context,
-                          (goalService) => goalService.goals
-                              .where((g) => !g.isActive && !g.isCompleted)
-                              .toList(),
-                          'Aucun objectif archivé',
-                          'Archivez vos objectifs pour les organiser !',
-                          Icons.archive_outlined,
-                          isTablet,
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Contenu selon l'onglet sélectionné
+                  Expanded(child: _buildCurrentTabContent(isTablet)),
                 ],
               ),
             ),
@@ -256,6 +196,70 @@ class _GoalsScreenState extends State<GoalsScreen>
           },
         );
       },
+    );
+  }
+
+  // Bouton segmenté réutilisable
+  Widget _buildSegmentButton(String label, int index, bool isTablet) {
+    final bool isSelected = _selectedIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedIndex = index),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeInOut,
+          padding: EdgeInsets.symmetric(vertical: isTablet ? 14 : 12),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            color: isSelected ? GoalsColors.primaryColor : Colors.white,
+            borderRadius: BorderRadius.circular(isTablet ? 14 : 12),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: isTablet ? 16 : 14,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.white : Colors.black87,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Contenu en fonction de l'onglet sélectionné
+  Widget _buildCurrentTabContent(bool isTablet) {
+    if (_selectedIndex == 0) {
+      return _buildGoalsList(
+        context,
+        (goalService) => goalService.goals.where((g) => g.isActive).toList(),
+        'Aucun objectif actif',
+        'Commencez par créer votre premier objectif !',
+        Icons.flag_outlined,
+        isTablet,
+      );
+    }
+    if (_selectedIndex == 1) {
+      return _buildGoalsList(
+        context,
+        (goalService) => goalService.completedGoals,
+        'Aucun objectif complété',
+        'Complétez vos objectifs pour les voir ici !',
+        Icons.check_circle_outline,
+        isTablet,
+      );
+    }
+    return _buildGoalsList(
+      context,
+      (goalService) => goalService.goals
+          .where((g) => !g.isActive && !g.isCompleted)
+          .toList(),
+      'Aucun objectif archivé',
+      'Archivez vos objectifs pour les organiser !',
+      Icons.archive_outlined,
+      isTablet,
     );
   }
 
