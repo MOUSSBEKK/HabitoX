@@ -39,7 +39,7 @@ class BadgeSyncService {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: shape.color.withOpacity(0.1),
+                color: shape.color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Text(shape.emoji, style: const TextStyle(fontSize: 60)),

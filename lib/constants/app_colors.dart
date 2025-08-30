@@ -37,14 +37,6 @@ class AppColors {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
 
-  // Méthodes utilitaires pour les opacités
-  static Color primaryWithOpacity(double opacity) =>
-      primaryColor.withOpacity(opacity);
-  static Color lightWithOpacity(double opacity) =>
-      lightColor.withOpacity(opacity);
-  static Color darkWithOpacity(double opacity) =>
-      darkColor.withOpacity(opacity);
-
   // Couleurs de surface
   static const Color surfaceColor = white;
   static const Color scaffoldBackgroundColor = Color(0xFFF8F9FA);

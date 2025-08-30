@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/aura_badges_widget.dart';
 import '../widgets/png_badges_grid.dart';
 
 // Couleurs du design épuré
