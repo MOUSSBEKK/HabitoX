@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
-import '../models/user_profile.dart';
+import '../models/user_profile.dart' as models;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -188,11 +188,11 @@ extension on _ProfileScreenState {
   Widget _buildLevelCard(bool isTablet) {
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
-        final level = profileService.userProfile?.auraLevel ?? 1;
+        final level = profileService.userProfile?.level ?? 1;
         final unlockedBadges = profileService.userProfile?.unlockedBadges ?? [];
 
         // Get the highest level badge
-        AuraBadge? highestBadge;
+        models.Badge? highestBadge;
         if (unlockedBadges.isNotEmpty) {
           highestBadge = unlockedBadges.reduce(
             (a, b) => a.level > b.level ? a : b,

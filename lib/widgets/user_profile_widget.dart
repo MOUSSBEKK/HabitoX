@@ -12,10 +12,10 @@ class UserProfileWidget extends StatefulWidget {
 
 class _UserProfileWidgetState extends State<UserProfileWidget>
     with TickerProviderStateMixin {
-  late AnimationController _auraController;
+  late AnimationController _levelController;
   late AnimationController _pulseController;
   late AnimationController _glowController;
-  late Animation<double> _auraAnimation;
+  late Animation<double> _levelAnimation;
   late Animation<double> _pulseAnimation;
   late Animation<double> _glowAnimation;
 
@@ -26,7 +26,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
   void initState() {
     super.initState();
 
-    _auraController = AnimationController(
+    _levelController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
@@ -41,8 +41,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
       vsync: this,
     );
 
-    _auraAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _auraController, curve: Curves.easeInOut),
+    _levelAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _levelController, curve: Curves.easeInOut),
     );
 
     _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
@@ -58,14 +58,14 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
   }
 
   void _startAnimations() {
-    _auraController.repeat(reverse: true);
+    _levelController.repeat(reverse: true);
     _pulseController.repeat(reverse: true);
     _glowController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _auraController.dispose();
+    _levelController.dispose();
     _pulseController.dispose();
     _glowController.dispose();
     _usernameController.dispose();
@@ -104,11 +104,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
           );
         }
 
-        final stats = profileService.getAuraStats();
+        final stats = profileService.getProfileStats();
 
         // Ensure stats has all required values with defaults
-        final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
-        final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
+        final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
 
         return Card(
           elevation: 8,
@@ -122,8 +121,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  auraColor.withValues(alpha: 0.1),
-                  auraColor.withValues(alpha: 0.05),
+                  levelColor.withValues(alpha: 0.1),
+                  levelColor.withValues(alpha: 0.05),
                 ],
               ),
             ),
@@ -133,9 +132,9 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 children: [
                   _buildProfileHeader(profile, stats),
                   const SizedBox(height: 24),
-                  _buildAuraBar(profileService, stats),
+                  _buildLevelBar(profileService, stats),
                   const SizedBox(height: 24),
-                  _buildAuraStats(profile, stats),
+                  _buildProfileStats(profile, stats),
                   const SizedBox(height: 24),
                   _buildActions(profileService),
                 ],
@@ -149,8 +148,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
   Widget _buildProfileHeader(UserProfile profile, Map<String, dynamic> stats) {
     // Get safe values from stats
-    final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
-    final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
+    final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
+    final levelEmoji = stats['levelEmoji'] as String? ?? '💎';
 
     return Row(
       children: [
@@ -167,21 +166,21 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      auraColor,
-                      auraColor.withValues(alpha: 0.7),
-                      auraColor.withValues(alpha: 0.3),
+                      levelColor,
+                      levelColor.withValues(alpha: 0.7),
+                      levelColor.withValues(alpha: 0.3),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: auraColor.withValues(alpha: 0.5),
+                      color: levelColor.withValues(alpha: 0.5),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
                   ],
                 ),
                 child: Center(
-                  child: Text(auraEmoji, style: const TextStyle(fontSize: 40)),
+                  child: Text(levelEmoji, style: const TextStyle(fontSize: 40)),
                 ),
               ),
             );
@@ -244,7 +243,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
               const SizedBox(height: 8),
 
-              // Niveau d'aura
+              // Niveau avec badges
               Row(
                 children: [
                   Text(
@@ -252,7 +251,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: stats['auraColor'],
+                      color: stats['levelColor'],
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -262,10 +261,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: stats['auraColor'].withValues(alpha: 0.2),
+                      color: stats['levelColor'].withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: stats['auraColor'].withValues(alpha: 0.3),
+                        color: stats['levelColor'].withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
@@ -273,10 +272,13 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: stats['auraColor'],
+                        color: stats['levelColor'],
                       ),
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  // Afficher les badges gagnés
+                  _buildBadgesDisplay(),
                 ],
               ),
             ],
@@ -286,13 +288,12 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     );
   }
 
-  Widget _buildAuraBar(
+  Widget _buildLevelBar(
     UserProfileService profileService,
     Map<String, dynamic> stats,
   ) {
     // Get safe values from stats
-    final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
-    final currentPoints = stats['currentPoints'] as int? ?? 0;
+    final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
     final progressToNext = stats['progressToNext'] as double? ?? 0.0;
     final currentLevel = stats['currentLevel'] as int? ?? 1;
 
@@ -303,7 +304,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Barre d\'Aura',
+              'Progression',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -311,11 +312,11 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
               ),
             ),
             Text(
-              '$currentPoints / ${currentPoints + profileService.pointsNeededForNextLevel}',
+              'Niveau $currentLevel',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: auraColor,
+                color: levelColor,
               ),
             ),
           ],
@@ -323,9 +324,9 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
         const SizedBox(height: 12),
 
-        // Barre d'aura animée
+        // Barre de progression animée
         AnimatedBuilder(
-          animation: _auraAnimation,
+          animation: _levelAnimation,
           builder: (context, child) {
             return Container(
               height: 20,
@@ -333,7 +334,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: auraColor.withValues(alpha: 0.3),
+                    color: levelColor.withValues(alpha: 0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -350,7 +351,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                     ),
                   ),
 
-                  // Progression de l'aura
+                  // Progression du niveau
                   AnimatedBuilder(
                     animation: _glowAnimation,
                     builder: (context, child) {
@@ -363,14 +364,14 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                           borderRadius: BorderRadius.circular(10),
                           gradient: LinearGradient(
                             colors: [
-                              auraColor,
-                              auraColor.withValues(alpha: 0.8),
-                              auraColor.withValues(alpha: 0.6),
+                              levelColor,
+                              levelColor.withValues(alpha: 0.8),
+                              levelColor.withValues(alpha: 0.6),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: auraColor.withValues(
+                              color: levelColor.withValues(
                                 alpha: 0.5 + _glowAnimation.value * 0.3,
                               ),
                               blurRadius: 15 + _glowAnimation.value * 10,
@@ -393,10 +394,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                           (MediaQuery.of(context).size.width * 0.7),
                       top: 2 + (index % 2) * 8,
                       child: AnimatedBuilder(
-                        animation: _auraAnimation,
+                        animation: _levelAnimation,
                         builder: (context, child) {
                           return Transform.translate(
-                            offset: Offset(0, _auraAnimation.value * 4),
+                            offset: Offset(0, _levelAnimation.value * 4),
                             child: Container(
                               width: 4,
                               height: 4,
@@ -419,14 +420,14 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
         const SizedBox(height: 8),
 
         Text(
-          'Progression vers le niveau ${currentLevel + 1}',
+          'Prochain niveau: ${currentLevel + 1}',
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
       ],
     );
   }
 
-  Widget _buildAuraStats(UserProfile profile, Map<String, dynamic> stats) {
+  Widget _buildProfileStats(UserProfile profile, Map<String, dynamic> stats) {
     return Row(
       children: [
         Expanded(
@@ -504,14 +505,38 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     );
   }
 
+  Widget _buildBadgesDisplay() {
+    final profile = context.read<UserProfileService>().userProfile;
+    if (profile == null || profile.unlockedBadges.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Afficher le badge le plus récent (le dernier débloqué)
+    final latestBadge = profile.unlockedBadges.last;
+
+    return Container(
+      margin: const EdgeInsets.only(left: 8),
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: latestBadge.color.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: latestBadge.color.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Text(latestBadge.emoji, style: const TextStyle(fontSize: 18)),
+    );
+  }
+
   Widget _buildActions(UserProfileService profileService) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () => _showAuraInfo(context),
+            onPressed: () => _showLevelInfo(context),
             icon: const Icon(Icons.info_outline),
-            label: const Text('Info Aura'),
+            label: const Text('Info Niveaux'),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
@@ -558,31 +583,31 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     });
   }
 
-  void _showAuraInfo(BuildContext context) {
+  void _showLevelInfo(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Système d\'Aura'),
+        title: const Text('Système de Niveaux'),
         content: const SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Comment fonctionne l\'Aura :',
+                'Comment fonctionne le système de niveaux :',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 12),
-              Text('• +100 points d\'aura par jour complété'),
-              Text('• +20 bonus pour 3+ jours consécutifs'),
-              Text('• +50 bonus pour 7+ jours consécutifs'),
+              Text('• 1 jour complété = 1 niveau'),
+              Text('• Commence au niveau 1'),
+              Text('• Passe au niveau 2 après la première session'),
               SizedBox(height: 8),
-              Text('⚠️ Perte exponentielle d\'aura :'),
-              Text('• 1 jour manqué : -75 points'),
-              Text('• 2 jours manqués : -112 points'),
-              Text('• 3 jours manqués : -168 points'),
-              SizedBox(height: 8),
-              Text('🏆 Badges débloqués tous les 5 niveaux'),
+              Text('🏆 Badges débloqués :'),
+              Text('• Badge 1: Niveau 2 (1 jour)'),
+              Text('• Badge 2: Niveau 5 (4 jours)'),
+              Text('• Badge 3: Niveau 10 (9 jours)'),
+              Text('• Badge 4: Niveau 20 (19 jours)'),
+              Text('• Et ainsi de suite...'),
             ],
           ),
         ),
@@ -606,7 +631,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
         title: const Text('Reset du Profil'),
         content: const Text(
           'Êtes-vous sûr de vouloir réinitialiser votre profil ?\n\n'
-          'Cela supprimera toute votre progression d\'aura, vos badges et vos statistiques.\n\n'
+          'Cela supprimera toute votre progression, vos badges et vos statistiques.\n\n'
           'Cette action est irréversible.',
         ),
         actions: [

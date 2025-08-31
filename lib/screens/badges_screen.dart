@@ -89,36 +89,104 @@ class _BadgesScreenState extends State<BadgesScreen>
                     ),
                     child: Consumer<UserProfileService>(
                       builder: (context, profileService, child) {
-                        final level =
-                            profileService.userProfile?.auraLevel ?? 1;
-                        final assetPath = _getBadgeAssetForLevel(level);
+                        final level = profileService.userProfile?.level ?? 1;
+                        final unlockedBadges =
+                            profileService.userProfile?.unlockedBadges ?? [];
                         final imageSize = isTablet ? 160.0 : 120.0;
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: imageSize,
-                              child: Image.asset(
-                                assetPath,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(
-                                      Icons.emoji_events_outlined,
-                                      color: Colors.grey[400],
-                                      size: imageSize * 0.7,
+
+                        // Afficher le badge le plus récent s'il y en a un, sinon afficher le niveau
+                        if (unlockedBadges.isNotEmpty) {
+                          final latestBadge = unlockedBadges.last;
+                          return Column(
+                            children: [
+                              Container(
+                                height: imageSize,
+                                width: imageSize,
+                                decoration: BoxDecoration(
+                                  color: latestBadge.color.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: latestBadge.color.withValues(
+                                      alpha: 0.3,
                                     ),
+                                    width: 3,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    latestBadge.emoji,
+                                    style: TextStyle(fontSize: imageSize * 0.4),
+                                  ),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Level $level',
-                              style: TextStyle(
-                                fontSize: isTablet ? 20.0 : 16.0,
-                                fontWeight: FontWeight.w700,
-                                color: BadgesScreenColors.darkColor,
+                              const SizedBox(height: 8),
+                              Text(
+                                latestBadge.name,
+                                style: TextStyle(
+                                  fontSize: isTablet ? 18.0 : 14.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: latestBadge.color,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                          ],
-                        );
+                              const SizedBox(height: 4),
+                              Text(
+                                'Level $level',
+                                style: TextStyle(
+                                  fontSize: isTablet ? 16.0 : 12.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: BadgesScreenColors.darkColor
+                                      .withValues(alpha: 0.7),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          // Aucun badge débloqué, afficher le niveau
+                          return Column(
+                            children: [
+                              Container(
+                                height: imageSize,
+                                width: imageSize,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.grey[400]!,
+                                    width: 3,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.emoji_events_outlined,
+                                    color: Colors.grey[400],
+                                    size: imageSize * 0.4,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Level $level',
+                                style: TextStyle(
+                                  fontSize: isTablet ? 20.0 : 16.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: BadgesScreenColors.darkColor,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Aucun badge débloqué',
+                                style: TextStyle(
+                                  fontSize: isTablet ? 14.0 : 12.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          );
+                        }
                       },
                     ),
                   ),
@@ -154,22 +222,5 @@ class _BadgesScreenState extends State<BadgesScreen>
         );
       },
     );
-  }
-
-  String _getBadgeAssetForLevel(int level) {
-    final List<String> assetFiles = [
-      'BADGE1.png',
-      'BADGE2.png',
-      'BADGE3.png',
-      'BADGE4.png',
-      'BADGE5.png',
-      'BADGE6.png',
-      'BADGE7.png',
-      'BADGE8.png',
-      'BADGE9.png',
-      'BADGE10.png',
-    ];
-    final index = (level - 1).clamp(0, assetFiles.length - 1);
-    return 'assets/badges/${assetFiles[index]}';
   }
 }

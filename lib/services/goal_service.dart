@@ -256,13 +256,16 @@ class GoalService extends ChangeNotifier {
           await _saveGoals();
           notifyListeners();
         }
+
+        // Mettre à jour le profil et vérifier si on a monté de niveau
+        // La notification sera gérée par le widget qui appelle cette méthode
       }
     }
   }
 
-  // Méthode pour mettre à jour l'aura (appelée depuis l'extérieur)
-  void updateAura(UserProfileService profileService) {
-    profileService.addAuraForDay();
+  // Méthode pour mettre à jour le profil (appelée depuis l'extérieur)
+  Future<bool> updateProfile(UserProfileService profileService) async {
+    return await profileService.addDayCompleted();
   }
 
   Future<void> resetStreak(String goalId) async {
@@ -314,5 +317,77 @@ class GoalService extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  // Afficher la notification de montée de niveau
+  static void showLevelUpNotification(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Text('🎉', style: TextStyle(fontSize: 60)),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Félicitations !',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Vous avez monté un niveau !',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.green,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Continuez comme ça !',
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Continuer',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
