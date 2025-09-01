@@ -22,11 +22,12 @@ class PngBadgesGrid extends StatelessWidget {
       builder: (context, profileService, child) {
         final level = profileService.userProfile?.currentLevel ?? 1;
 
-        // 8 badges, le premier débloqué par défaut (Level 1)
-        final totalBadges = 8;
+        // Badges avec niveaux clés seulement
+        final badgeLevels = [1, 4, 9, 19, 29, 39, 49, 59]; // Niveaux où on débloque des badges
+        final totalBadges = badgeLevels.length;
         final badges = List.generate(totalBadges, (index) {
-          final badgeLevel = index + 1; // Level 1..10
-          final isUnlocked = badgeLevel == 1 || level >= badgeLevel;
+          final badgeLevel = badgeLevels[index];
+          final isUnlocked = level >= badgeLevel;
           return _BadgeMeta(
             assetPath: 'assets/badges/${assetPaths[index]}',
             requiredLevel: badgeLevel,
