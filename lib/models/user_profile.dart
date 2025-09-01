@@ -139,12 +139,32 @@ class UserProfile {
 
   // ============ NOUVEAU SYSTÈME XP ============
 
-  // Calculer l'XP requis pour un niveau donné: 10 * (1.5^(N-1)) arrondi à la dizaine supérieure
+  // Calculer l'XP requis pour un niveau donné selon la nouvelle progression
   static int getXpRequiredForLevel(int level) {
     if (level <= 1) return 0;
-    final baseXp = 10 * pow(1.5, level - 2);
-    final roundedXp = (baseXp / 10).ceil() * 10;
-    return roundedXp;
+    
+    // Table de progression manuelle pour plus de contrôle
+    final xpTable = {
+      2: 10,   // Niveau 1 → 2
+      3: 20,   // Niveau 2 → 3
+      4: 30,   // Niveau 3 → 4
+      5: 50,   // Niveau 4 → 5
+      6: 70,   // Niveau 5 → 6
+      7: 110,  // Niveau 6 → 7
+      8: 170,  // Niveau 7 → 8
+      9: 250,  // Niveau 8 → 9
+      10: 380, // Niveau 9 → 10
+      11: 570, // Niveau 10 → 11
+    };
+    
+    // Pour les niveaux au-delà de 11, utiliser la formule exponentielle
+    if (xpTable.containsKey(level)) {
+      return xpTable[level]!;
+    } else {
+      // Formule pour niveaux élevés: base 570 * 1.5^(level-11)
+      final baseXp = 570 * pow(1.5, level - 11);
+      return (baseXp / 10).ceil() * 10;
+    }
   }
 
   // Calculer l'XP total requis pour atteindre un niveau
@@ -177,16 +197,26 @@ class UserProfile {
 
   // Gérer le passage de niveau
   void _onLevelUp(int oldLevel, int newLevel) {
-    // Débloquer le badge du nouveau niveau
-    final existingBadge = unlockedBadges
-        .where((badge) => badge.level == newLevel)
-        .firstOrNull;
-    if (existingBadge == null) {
-      unlockedBadges.add(AuraBadge.createForLevel(newLevel));
+    // Débloquer un badge seulement aux niveaux clés
+    if (_shouldUnlockBadgeAtLevel(newLevel)) {
+      final existingBadge = unlockedBadges
+          .where((badge) => badge.level == newLevel)
+          .firstOrNull;
+      if (existingBadge == null) {
+        unlockedBadges.add(AuraBadge.createForLevel(newLevel));
+      }
     }
     
     // Vérifier les badges spéciaux
     _checkSpecialBadges();
+  }
+
+  // Vérifier si un badge doit être débloqué à ce niveau
+  bool _shouldUnlockBadgeAtLevel(int level) {
+    // Badges seulement aux niveaux: 1, 4, 9, puis tous les 10 niveaux
+    if (level == 1 || level == 4 || level == 9) return true;
+    if (level >= 10 && (level - 9) % 10 == 0) return true; // 19, 29, 39, etc.
+    return false;
   }
 
   // Ajouter de l'XP et calculer les gains de niveau
@@ -236,8 +266,6 @@ class UserProfile {
 
   // Nouveau getter: progression vers le prochain niveau (système XP)
   double get xpProgressToNextLevel {
-    if (currentLevel >= 8) return 1.0; // Niveau max atteint
-    
     final currentLevelTotalXp = getTotalXpForLevel(currentLevel);
     final nextLevelTotalXp = getTotalXpForLevel(currentLevel + 1);
     final xpInCurrentLevel = experiencePoints - currentLevelTotalXp;
@@ -248,7 +276,6 @@ class UserProfile {
 
   // XP nécessaire pour le prochain niveau
   int get xpNeededForNextLevel {
-    if (currentLevel >= 8) return 0;
     final nextLevelTotalXp = getTotalXpForLevel(currentLevel + 1);
     return nextLevelTotalXp - experiencePoints;
   }
@@ -261,38 +288,29 @@ class UserProfile {
 
   // XP total requis pour le niveau suivant
   int get xpRequiredForCurrentLevel {
-    if (currentLevel >= 8) return getXpRequiredForLevel(8);
     return getXpRequiredForLevel(currentLevel + 1);
   }
 
   // Obtenir le nom du niveau selon le nouveau système
   String get levelName {
-    switch (currentLevel) {
-      case 1: return 'Débutant';
-      case 2: return 'Apprenti';
-      case 3: return 'Persévérant';
-      case 4: return 'Déterminé';
-      case 5: return 'Expert';
-      case 6: return 'Maître';
-      case 7: return 'Champion';
-      case 8: return 'Légende';
-      default: return 'Débutant';
-    }
+    if (currentLevel >= 49) return 'Transcendant';
+    if (currentLevel >= 39) return 'Légende';
+    if (currentLevel >= 29) return 'Champion';
+    if (currentLevel >= 19) return 'Maître';
+    if (currentLevel >= 9) return 'Elite';
+    if (currentLevel >= 4) return 'Déterminé';
+    return 'Débutant';
   }
 
   // Obtenir la couleur du niveau
   Color get levelColor {
-    switch (currentLevel) {
-      case 1: return Colors.grey[600]!;
-      case 2: return Colors.blue[600]!;
-      case 3: return Colors.green[600]!;
-      case 4: return Colors.orange[600]!;
-      case 5: return Colors.purple[600]!;
-      case 6: return Colors.red[600]!;
-      case 7: return Colors.amber[600]!;
-      case 8: return Colors.deepPurple[600]!;
-      default: return Colors.grey[600]!;
-    }
+    if (currentLevel >= 49) return Colors.deepPurple[800]!;
+    if (currentLevel >= 39) return Colors.deepPurple[600]!;
+    if (currentLevel >= 29) return Colors.amber[600]!;
+    if (currentLevel >= 19) return Colors.red[600]!;
+    if (currentLevel >= 9) return Colors.purple[600]!;
+    if (currentLevel >= 4) return Colors.orange[600]!;
+    return Colors.grey[600]!;
   }
 
   // Vérifier les badges spéciaux
@@ -481,97 +499,58 @@ class AuraBadge {
           'emoji': '💎',
           'color': Colors.grey[600],
         };
-      case 2:
-        return {
-          'name': 'Apprenti',
-          'description': 'Vous progressez avec détermination !',
-          'emoji': '⭐',
-          'color': Colors.blue[600],
-        };
-      case 3:
-        return {
-          'name': 'Persévérant',
-          'description': 'Votre persévérance porte ses fruits !',
-          'emoji': '🔥',
-          'color': Colors.green[600],
-        };
       case 4:
         return {
           'name': 'Déterminé',
-          'description': 'Rien ne peut vous arrêter maintenant !',
+          'description': 'Votre détermination commence à porter ses fruits !',
           'emoji': '⚡',
           'color': Colors.orange[600],
         };
-      case 5:
+      case 9:
         return {
-          'name': 'Expert',
-          'description': 'Vous maîtrisez l\'art de la constance !',
-          'emoji': '🔮',
+          'name': 'Elite',
+          'description': 'Vous faites partie de l\'élite des utilisateurs !',
+          'emoji': '🏆',
           'color': Colors.purple[600],
         };
-      case 6:
+      case 19:
         return {
           'name': 'Maître',
-          'description': 'Votre discipline est exemplaire !',
+          'description': 'Votre maîtrise est exceptionnelle !',
           'emoji': '👑',
           'color': Colors.red[600],
         };
-      case 7:
+      case 29:
         return {
           'name': 'Champion',
-          'description': 'Vous êtes une source d\'inspiration !',
-          'emoji': '🏆',
+          'description': 'Vous êtes un véritable champion !',
+          'emoji': '🌟',
           'color': Colors.amber[600],
         };
-      case 8:
+      case 39:
         return {
           'name': 'Légende',
-          'description': 'Vous avez atteint la maîtrise absolue !',
-          'emoji': '🌟',
+          'description': 'Votre légende inspire les autres !',
+          'emoji': '⚡',
           'color': Colors.deepPurple[600],
         };
-      case 10:
-        return {
-          'name': 'Initié Radieux',
-          'description': 'L\'aura commence à briller',
-          'emoji': '⚡',
-          'color': Colors.teal,
-        };
-      case 15:
-        return {
-          'name': 'Adepte Lumineux',
-          'description': 'La lumière de l\'aura grandit',
-          'emoji': '⭐',
-          'color': Colors.blue,
-        };
-      case 20:
-        return {
-          'name': 'Gardien Céleste',
-          'description': 'Protecteur de l\'énergie astrale',
-          'emoji': '💫',
-          'color': Colors.indigo,
-        };
-      case 25:
-        return {
-          'name': 'Maître Éthéré',
-          'description': 'Maîtrise des forces éthérées',
-          'emoji': '✨',
-          'color': Colors.deepPurple,
-        };
-      case 30:
-        return {
-          'name': 'Légende Astrale',
-          'description': 'Légende vivante de l\'aura',
-          'emoji': '🌟',
-          'color': Colors.purple,
-        };
       default:
-        return {
-          'name': 'Niveau $level',
-          'description': 'Badge de niveau $level',
-          'emoji': '💎',
-          'color': Colors.grey,
-        };
+        // Pour les niveaux de badges non définis spécifiquement
+        if (level >= 49) {
+          return {
+            'name': 'Transcendant',
+            'description': 'Vous avez transcendé tous les niveaux !',
+            'emoji': '🌌',
+            'color': Colors.deepPurple[800],
+          };
+        } else {
+          return {
+            'name': 'Badge Niveau $level',
+            'description': 'Badge exceptionnel de niveau $level',
+            'emoji': '🏅',
+            'color': Colors.amber[600],
+          };
+        }
     }
   }
 

@@ -161,10 +161,14 @@ extension on _ProfileScreenState {
   Widget _buildLevelCard(bool isTablet) {
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
-        final level = profileService.userProfile?.auraLevel ?? 1;
-        final emoji = profileService.userProfile?.auraEmoji ?? '💎';
-        final color =
-            profileService.userProfile?.auraColor ?? AppColors.primaryColor;
+        final stats = profileService.getXpStats();
+        final level = stats['currentLevel'] as int? ?? 1;
+        final levelName = stats['levelName'] as String? ?? 'Débutant';
+        final levelColor = stats['levelColor'] as Color? ?? AppColors.primaryColor;
+        final experiencePoints = stats['experiencePoints'] as int? ?? 0;
+        final xpInCurrentLevel = stats['xpInCurrentLevel'] as int? ?? 0;
+        final xpRequiredForCurrentLevel = stats['xpRequiredForCurrentLevel'] as int? ?? 10;
+        final xpProgressToNext = stats['xpProgressToNext'] as double? ?? 0.0;
 
         return Container(
           padding: EdgeInsets.all(isTablet ? 18 : 16),
@@ -179,41 +183,137 @@ extension on _ProfileScreenState {
               ),
             ],
           ),
-          child: Row(
+          child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(emoji, style: const TextStyle(fontSize: 24)),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Level $level',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.darkColor,
-                      ),
+              // Header avec niveau et badge
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: levelColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Text(
-                      'You are a rising star! Keep going!',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.darkColor.withOpacity(0.7),
-                        fontWeight: FontWeight.w500,
-                      ),
+                    child: Icon(
+                      Icons.workspace_premium,
+                      color: levelColor,
+                      size: 24,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Niveau $level',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.darkColor,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: levelColor.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                levelName,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: levelColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$experiencePoints XP Total',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.darkColor.withOpacity(0.7),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.arrow_forward_ios, size: 16),
+                ],
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16),
+              
+              const SizedBox(height: 16),
+              
+              // Barre de progression XP
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Progression XP',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.darkColor.withOpacity(0.8),
+                        ),
+                      ),
+                      Text(
+                        '$xpInCurrentLevel / $xpRequiredForCurrentLevel XP',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: levelColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Stack(
+                    children: [
+                      // Fond de la barre
+                      Container(
+                        height: 8,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      // Progression
+                      Container(
+                        height: 8,
+                        width: MediaQuery.of(context).size.width * xpProgressToNext * 0.8,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              levelColor,
+                              levelColor.withOpacity(0.7),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Prochain niveau: ${level + 1}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: AppColors.darkColor.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );

@@ -416,7 +416,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                             ),
                           ],
                         ),
-                        child: currentLevel < 8 ? Container(
+                        child: xpProgressToNext > 0.1 ? Container(
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.only(right: 8),
                           child: Text(
@@ -475,13 +475,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
         const SizedBox(height: 8),
 
         Text(
-          currentLevel >= 8 
-            ? 'Niveau maximum atteint ! 🎉'
-            : 'Progression vers le niveau ${currentLevel + 1}',
+          'Progression vers le niveau ${currentLevel + 1}',
           style: TextStyle(
             fontSize: 12, 
-            color: currentLevel >= 8 ? levelColor : Colors.grey[600],
-            fontWeight: currentLevel >= 8 ? FontWeight.w600 : FontWeight.normal,
+            color: Colors.grey[600],
           ),
         ),
       ],
