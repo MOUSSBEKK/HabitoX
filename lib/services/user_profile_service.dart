@@ -21,19 +21,13 @@ class UserProfileService extends ChangeNotifier {
 
     if (profileJson != null) {
       _userProfile = UserProfile.fromJson(jsonDecode(profileJson));
-      // S'assurer que l'utilisateur a au moins le premier badge
-      _ensureFirstBadgeUnlocked();
     } else {
-      // Créer un profil par défaut avec le premier badge débloqué
-      final defaultBadges = [
-        AuraBadge.createForLevel(1),
-      ]; // Premier badge niveau 1
+      // Créer un profil par défaut
       _userProfile = UserProfile(
         id: _generateId(),
         username: 'HabitoX_User',
         lastActivityDate: DateTime.now(),
         createdAt: DateTime.now(),
-        unlockedBadges: defaultBadges,
       );
       await _saveProfile();
     }
@@ -65,16 +59,46 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
+  // Méthode appelée quand un objectif est terminé (ancien système)
+  Future<void> onGoalCompleted() async {
+    if (_userProfile != null) {
+      _userProfile!.onGoalCompleted();
+      await _saveProfile();
+      notifyListeners();
+    }
+  }
+
+  // Nouvelle méthode pour ajouter de l'XP
+  Future<LevelUpResult?> addExperience(int xp, {bool isConsistencyBonus = false}) async {
+    if (_userProfile != null) {
+      final result = _userProfile!.addExperience(xp, isConsistencyBonus: isConsistencyBonus);
+      await _saveProfile();
+      notifyListeners();
+      return result;
+    }
+    return null;
+  }
+
+  // Méthode pour completion d'objectif avec nouveau système XP
+  Future<LevelUpResult?> onGoalCompletedXP(int targetDays, {bool completedEarly = false}) async {
+    if (_userProfile != null) {
+      final xp = UserProfile.calculateGoalXp(targetDays, completedEarly: completedEarly);
+      _userProfile!.totalCompletedGoals++;
+      
+      final result = _userProfile!.addExperience(xp, isConsistencyBonus: completedEarly);
+      await _saveProfile();
+      notifyListeners();
+      return result;
+    }
+    return null;
+  }
+
   Future<void> resetProfile() async {
-    final defaultBadges = [
-      AuraBadge.createForLevel(1),
-    ]; // Premier badge niveau 1
     _userProfile = UserProfile(
       id: _generateId(),
       username: 'HabitoX_User',
       lastActivityDate: DateTime.now(),
       createdAt: DateTime.now(),
-      unlockedBadges: defaultBadges,
     );
     await _saveProfile();
     notifyListeners();
@@ -93,7 +117,7 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
-  // Obtenir les statistiques d'aura
+  // Obtenir les statistiques d'aura (ancien système, maintenu)
   Map<String, dynamic> getAuraStats() {
     if (_userProfile == null) return {};
 
@@ -108,6 +132,25 @@ class UserProfileService extends ChangeNotifier {
       'maxConsecutiveDays': _userProfile!.maxConsecutiveDays,
       'totalDaysCompleted': _userProfile!.totalDaysCompleted,
       'badgesCount': _userProfile!.unlockedBadges.length,
+    };
+  }
+
+  // Nouvelles statistiques XP
+  Map<String, dynamic> getXpStats() {
+    if (_userProfile == null) return {};
+
+    return {
+      'currentLevel': _userProfile!.currentLevel,
+      'experiencePoints': _userProfile!.experiencePoints,
+      'xpProgressToNext': _userProfile!.xpProgressToNextLevel,
+      'xpNeededForNext': _userProfile!.xpNeededForNextLevel,
+      'xpInCurrentLevel': _userProfile!.xpInCurrentLevel,
+      'xpRequiredForCurrentLevel': _userProfile!.xpRequiredForCurrentLevel,
+      'levelName': _userProfile!.levelName,
+      'levelColor': _userProfile!.levelColor,
+      'totalCompletedGoals': _userProfile!.totalCompletedGoals,
+      'badgesCount': _userProfile!.unlockedBadges.length,
+      'specialBadgesCount': _userProfile!.specialBadges.length,
     };
   }
 
@@ -150,14 +193,6 @@ class UserProfileService extends ChangeNotifier {
     final nextLevelPoints = pow(currentLevel * 100, 2).toInt();
     final currentPoints = _userProfile?.auraPoints ?? 0;
     return nextLevelPoints - currentPoints;
-  }
-
-  // S'assurer que l'utilisateur a au moins le premier badge
-  void _ensureFirstBadgeUnlocked() {
-    if (_userProfile != null && _userProfile!.unlockedBadges.isEmpty) {
-      _userProfile!.unlockedBadges.add(AuraBadge.createForLevel(1));
-      _saveProfile();
-    }
   }
 
   String _generateId() {

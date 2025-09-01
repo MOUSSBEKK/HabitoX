@@ -5,6 +5,7 @@ import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
 import '../services/badge_sync_service.dart';
 import '../services/user_profile_service.dart';
+import 'level_up_dialog.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -318,16 +319,43 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: alreadyCompletedToday
             ? null
-            : () {
-                goalService.updateProgress(goal.id);
-                BadgeSyncService.checkAndUnlockBadges(context);
+            : () async {
                 final profileService = context.read<UserProfileService>();
-                goalService.updateAura(profileService);
+                
+                // Utiliser le nouveau système XP
+                final levelUpResult = await profileService.addExperience(10); // XP pour session quotidienne
+                
+                // Afficher animation XP
+                if (context.mounted) {
+                  // Pour l'instant, on ne fait qu'un print, on ajoutera l'animation plus tard
+                  print('Gained 10 XP!');
+                }
+                
+                // Si level up, afficher popup
+                if (levelUpResult != null && levelUpResult.hasLeveledUp && context.mounted) {
+                  final badgeAsset = 'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                  final badgeName = profileService.userProfile?.levelName ?? 'Niveau ${levelUpResult.newLevel}';
+                  final badgeDescription = 'Félicitations ! Vous avez atteint le niveau ${levelUpResult.newLevel} !';
+                  
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => LevelUpDialog(
+                      levelUpResult: levelUpResult,
+                      badgeAssetPath: badgeAsset,
+                      badgeName: badgeName,
+                      badgeDescription: badgeDescription,
+                    ),
+                  );
+                }
+                
+                goalService.updateProgress(goal.id, profileService);
+                BadgeSyncService.checkAndUnlockBadges(context);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      'Session marquée comme complétée ! +100 Aura',
+                      'Session marquée comme complétée ! +10 XP',
                     ),
                     backgroundColor: primaryColor,
                     behavior: SnackBarBehavior.floating,

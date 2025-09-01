@@ -72,6 +72,24 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     super.dispose();
   }
 
+  // Méthode pour obtenir le chemin du badge selon le niveau
+  String _getBadgeAssetForLevel(int level) {
+    final List<String> assetFiles = [
+      'BADGE1.png',
+      'BADGE2.png',
+      'BADGE3.png',
+      'BADGE4.png',
+      'BADGE5.png',
+      'BADGE6.png',
+      'BADGE7.png',
+      'BADGE8.png',
+      'BADGE9.png',
+      'BADGE10.png',
+    ];
+    final index = (level - 1).clamp(0, assetFiles.length - 1);
+    return 'assets/badges/${assetFiles[index]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProfileService>(
@@ -104,11 +122,11 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
           );
         }
 
-        final stats = profileService.getAuraStats();
+        // Utiliser le nouveau système XP
+        final stats = profileService.getXpStats();
 
         // Ensure stats has all required values with defaults
-        final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
-        final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
+        final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
 
         return Card(
           elevation: 8,
@@ -122,8 +140,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  auraColor.withValues(alpha: 0.1),
-                  auraColor.withValues(alpha: 0.05),
+                  levelColor.withValues(alpha: 0.1),
+                  levelColor.withValues(alpha: 0.05),
                 ],
               ),
             ),
@@ -133,9 +151,9 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                 children: [
                   _buildProfileHeader(profile, stats),
                   const SizedBox(height: 24),
-                  _buildAuraBar(profileService, stats),
+                  _buildXpBar(profileService, stats),
                   const SizedBox(height: 24),
-                  _buildAuraStats(profile, stats),
+                  _buildXpStats(profile, stats),
                   const SizedBox(height: 24),
                   _buildActions(profileService),
                 ],
@@ -149,15 +167,15 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
   Widget _buildProfileHeader(UserProfile profile, Map<String, dynamic> stats) {
     // Get safe values from stats
-    final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
-    final auraEmoji = stats['auraEmoji'] as String? ?? '💎';
+    final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
 
     return Row(
       children: [
-        // Avatar avec effet de pulsation
+        // Badge actuel avec effet de pulsation
         AnimatedBuilder(
           animation: _pulseAnimation,
           builder: (context, child) {
+            final badgeAsset = _getBadgeAssetForLevel(profile.currentLevel);
             return Transform.scale(
               scale: _pulseAnimation.value,
               child: Container(
@@ -167,21 +185,40 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      auraColor,
-                      auraColor.withValues(alpha: 0.7),
-                      auraColor.withValues(alpha: 0.3),
+                      levelColor.withValues(alpha: 0.3),
+                      levelColor.withValues(alpha: 0.1),
+                      Colors.transparent,
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: auraColor.withValues(alpha: 0.5),
+                      color: levelColor.withValues(alpha: 0.5),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
                   ],
                 ),
-                child: Center(
-                  child: Text(auraEmoji, style: const TextStyle(fontSize: 40)),
+                child: ClipOval(
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Image.asset(
+                      badgeAsset,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: levelColor.withValues(alpha: 0.2),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.workspace_premium,
+                            size: 40,
+                            color: levelColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             );
@@ -244,15 +281,15 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
               const SizedBox(height: 8),
 
-              // Niveau d'aura
+              // Niveau utilisateur
               Row(
                 children: [
                   Text(
-                    stats['levelName'],
+                    stats['levelName'] ?? 'Débutant',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: stats['auraColor'],
+                      color: levelColor,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -262,10 +299,10 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: stats['auraColor'].withValues(alpha: 0.2),
+                      color: levelColor.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: stats['auraColor'].withValues(alpha: 0.3),
+                        color: levelColor.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
@@ -273,7 +310,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: stats['auraColor'],
+                        color: levelColor,
                       ),
                     ),
                   ),
@@ -286,14 +323,15 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     );
   }
 
-  Widget _buildAuraBar(
+  Widget _buildXpBar(
     UserProfileService profileService,
     Map<String, dynamic> stats,
   ) {
     // Get safe values from stats
-    final auraColor = stats['auraColor'] as Color? ?? Colors.grey;
-    final currentPoints = stats['currentPoints'] as int? ?? 0;
-    final progressToNext = stats['progressToNext'] as double? ?? 0.0;
+    final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
+    final xpProgressToNext = stats['xpProgressToNext'] as double? ?? 0.0;
+    final xpInCurrentLevel = stats['xpInCurrentLevel'] as int? ?? 0;
+    final xpRequiredForCurrentLevel = stats['xpRequiredForCurrentLevel'] as int? ?? 10;
     final currentLevel = stats['currentLevel'] as int? ?? 1;
 
     return Column(
@@ -303,7 +341,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Barre d\'Aura',
+              'Progression XP',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -311,11 +349,11 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
               ),
             ),
             Text(
-              '$currentPoints / ${currentPoints + profileService.pointsNeededForNextLevel}',
+              '$xpInCurrentLevel / $xpRequiredForCurrentLevel XP',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: auraColor,
+                color: levelColor,
               ),
             ),
           ],
@@ -323,17 +361,17 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
         const SizedBox(height: 12),
 
-        // Barre d'aura animée
+        // Barre XP animée
         AnimatedBuilder(
           animation: _auraAnimation,
           builder: (context, child) {
             return Container(
-              height: 20,
+              height: 24,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: auraColor.withValues(alpha: 0.3),
+                    color: levelColor.withValues(alpha: 0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -345,12 +383,12 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       color: Colors.grey[200],
                     ),
                   ),
 
-                  // Progression de l'aura
+                  // Progression XP
                   AnimatedBuilder(
                     animation: _glowAnimation,
                     builder: (context, child) {
@@ -358,19 +396,19 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                         width:
                             MediaQuery.of(context).size.width *
                             0.7 *
-                            progressToNext,
+                            xpProgressToNext,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           gradient: LinearGradient(
                             colors: [
-                              auraColor,
-                              auraColor.withValues(alpha: 0.8),
-                              auraColor.withValues(alpha: 0.6),
+                              levelColor,
+                              levelColor.withValues(alpha: 0.8),
+                              levelColor.withValues(alpha: 0.6),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: auraColor.withValues(
+                              color: levelColor.withValues(
                                 alpha: 0.5 + _glowAnimation.value * 0.3,
                               ),
                               blurRadius: 15 + _glowAnimation.value * 10,
@@ -378,31 +416,49 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                             ),
                           ],
                         ),
+                        child: currentLevel < 8 ? Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Text(
+                            '${(xpProgressToNext * 100).round()}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ) : null,
                       );
                     },
                   ),
 
-                  // Effet de particules flottantes
-                  ...List.generate(5, (index) {
+                  // Effet de particules flottantes XP
+                  if (xpProgressToNext > 0) ...List.generate(3, (index) {
                     return Positioned(
                       left:
                           (MediaQuery.of(context).size.width *
                               0.7 *
-                              progressToNext *
-                              (0.2 + index * 0.15)) %
+                              xpProgressToNext *
+                              (0.3 + index * 0.2)) %
                           (MediaQuery.of(context).size.width * 0.7),
-                      top: 2 + (index % 2) * 8,
+                      top: 4 + (index % 2) * 6,
                       child: AnimatedBuilder(
                         animation: _auraAnimation,
                         builder: (context, child) {
                           return Transform.translate(
-                            offset: Offset(0, _auraAnimation.value * 4),
+                            offset: Offset(0, _auraAnimation.value * 3),
                             child: Container(
-                              width: 4,
-                              height: 4,
+                              width: 6,
+                              height: 6,
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.8),
+                                color: Colors.white.withValues(alpha: 0.9),
                                 shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.white.withValues(alpha: 0.5),
+                                    blurRadius: 4,
+                                  ),
+                                ],
                               ),
                             ),
                           );
@@ -419,40 +475,37 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
         const SizedBox(height: 8),
 
         Text(
-          'Progression vers le niveau ${currentLevel + 1}',
-          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          currentLevel >= 8 
+            ? 'Niveau maximum atteint ! 🎉'
+            : 'Progression vers le niveau ${currentLevel + 1}',
+          style: TextStyle(
+            fontSize: 12, 
+            color: currentLevel >= 8 ? levelColor : Colors.grey[600],
+            fontWeight: currentLevel >= 8 ? FontWeight.w600 : FontWeight.normal,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildAuraStats(UserProfile profile, Map<String, dynamic> stats) {
+  Widget _buildXpStats(UserProfile profile, Map<String, dynamic> stats) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
-            'Jours consécutifs',
-            '${stats['consecutiveDays']}',
-            Icons.local_fire_department,
-            Colors.orange,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            'Meilleure série',
-            '${stats['maxConsecutiveDays']}',
-            Icons.emoji_events,
+            'XP Total',
+            '${stats['experiencePoints']}',
+            Icons.star,
             Colors.amber,
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
-            'Total jours',
-            '${stats['totalDaysCompleted']}',
-            Icons.calendar_today,
-            Colors.blue,
+            'Objectifs',
+            '${stats['totalCompletedGoals']}',
+            Icons.check_circle,
+            Colors.green,
           ),
         ),
         const SizedBox(width: 12),
@@ -462,6 +515,15 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
             '${stats['badgesCount']}',
             Icons.workspace_premium,
             Colors.purple,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            'Spéciaux',
+            '${stats['specialBadgesCount']}',
+            Icons.military_tech,
+            Colors.orange,
           ),
         ),
       ],

@@ -15,14 +15,15 @@ class PngBadgesGrid extends StatelessWidget {
       "BADGE4.png",
       "BADGE5.png",
       "BADGE6.png",
+      "BADGE7.png",
       "BADGE8.png",
     ];
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
-        final level = profileService.userProfile?.auraLevel ?? 1;
+        final level = profileService.userProfile?.currentLevel ?? 1;
 
-        // 10 badges, le premier débloqué par défaut (Level 1)
-        final totalBadges = 7;
+        // 8 badges, le premier débloqué par défaut (Level 1)
+        final totalBadges = 8;
         final badges = List.generate(totalBadges, (index) {
           final badgeLevel = index + 1; // Level 1..10
           final isUnlocked = badgeLevel == 1 || level >= badgeLevel;
