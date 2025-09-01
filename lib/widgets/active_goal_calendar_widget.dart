@@ -28,8 +28,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         final currentShape = calendarService.currentShape;
         if (currentShape == null ||
             currentShape.totalDays != activeGoal.targetDays) {
-          // S'assurer qu'il y a une forme de calendrier appropriée
-          // Cette méthode sera appelée de manière asynchrone si nécessaire
+          calendarService.ensureShapeForTargetDays(activeGoal.targetDays);
         }
 
         return Container(
@@ -319,36 +318,24 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: alreadyCompletedToday
             ? null
-            : () async {
-                // Marquer la session comme complétée
-                await goalService.updateProgress(goal.id);
-
-                // Mettre à jour le profil et vérifier si on a monté de niveau
+            : () {
+                goalService.updateProgress(goal.id);
+                BadgeSyncService.checkAndUnlockBadges(context);
                 final profileService = context.read<UserProfileService>();
-                final leveledUp = await profileService.addDayCompleted();
+                goalService.updateAura(profileService);
 
-                // Vérifier si le widget est encore monté avant d'utiliser le contexte
-                if (context.mounted) {
-                  BadgeSyncService.checkAndUnlockBadges(context);
-
-                  // Afficher la notification de montée de niveau si nécessaire
-                  if (leveledUp) {
-                    GoalService.showLevelUpNotification(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Session marquée comme complétée ! +1 Niveau',
-                        ),
-                        backgroundColor: primaryColor,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    );
-                  }
-                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Session marquée comme complétée ! +100 Aura',
+                    ),
+                    backgroundColor: primaryColor,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
               },
         icon: const Icon(Icons.check, size: 20),
         label: const Text(

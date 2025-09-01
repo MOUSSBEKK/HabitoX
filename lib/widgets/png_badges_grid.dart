@@ -19,25 +19,16 @@ class PngBadgesGrid extends StatelessWidget {
     ];
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
-        final level = profileService.userProfile?.level ?? 1;
+        final level = profileService.userProfile?.auraLevel ?? 1;
 
-        // 7 badges avec progression exponentielle
+        // 10 badges, le premier débloqué par défaut (Level 1)
         final totalBadges = 7;
-        final badgeLevels = [
-          2,
-          5,
-          10,
-          20,
-          40,
-          80,
-          160,
-        ]; // Niveaux requis pour chaque badge
         final badges = List.generate(totalBadges, (index) {
-          final requiredLevel = badgeLevels[index];
-          final isUnlocked = level >= requiredLevel;
+          final badgeLevel = index + 1; // Level 1..10
+          final isUnlocked = badgeLevel == 1 || level >= badgeLevel;
           return _BadgeMeta(
             assetPath: 'assets/badges/${assetPaths[index]}',
-            requiredLevel: requiredLevel,
+            requiredLevel: badgeLevel,
             isUnlocked: isUnlocked,
           );
         });
@@ -118,15 +109,11 @@ class _BadgeTile extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            meta.isUnlocked
-                ? 'Level ${meta.requiredLevel}'
-                : 'Level ${meta.requiredLevel}',
+            'Level ${meta.requiredLevel}',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: meta.isUnlocked
-                  ? AppColors.darkColor.withValues(alpha: 0.8)
-                  : Colors.grey[600],
+              color: AppColors.darkColor.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 8),

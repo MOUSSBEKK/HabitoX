@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_profile.dart' as models;
+import '../models/user_profile.dart';
+import 'dart:math';
 
 class UserProfileService extends ChangeNotifier {
   static const String _profileKey = 'userProfile';
-  models.UserProfile? _userProfile;
+  UserProfile? _userProfile;
 
-  models.UserProfile? get userProfile => _userProfile;
+  UserProfile? get userProfile => _userProfile;
   bool get hasProfile => _userProfile != null;
 
   UserProfileService() {
@@ -19,17 +20,14 @@ class UserProfileService extends ChangeNotifier {
     final profileJson = prefs.getString(_profileKey);
 
     if (profileJson != null) {
-      _userProfile = models.UserProfile.fromJson(jsonDecode(profileJson));
-      // S'assurer que l'utilisateur a au moins le premier badge
-      _ensureFirstBadgeUnlocked();
+      _userProfile = UserProfile.fromJson(jsonDecode(profileJson));
     } else {
-      // Créer un profil par défaut sans badges débloqués
-      _userProfile = models.UserProfile(
+      // Créer un profil par défaut
+      _userProfile = UserProfile(
         id: _generateId(),
         username: 'HabitoX_User',
         lastActivityDate: DateTime.now(),
         createdAt: DateTime.now(),
-        unlockedBadges: [], // Aucun badge débloqué par défaut
       );
       await _saveProfile();
     }
@@ -53,38 +51,49 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
-  Future<bool> addDayCompleted() async {
+  Future<void> addAuraForDay() async {
     if (_userProfile != null) {
-      final leveledUp = _userProfile!.addDayCompleted();
+      _userProfile!.addAuraForDay();
       await _saveProfile();
       notifyListeners();
-      return leveledUp;
     }
-    return false;
   }
 
   Future<void> resetProfile() async {
-    _userProfile = models.UserProfile(
+    _userProfile = UserProfile(
       id: _generateId(),
       username: 'HabitoX_User',
       lastActivityDate: DateTime.now(),
       createdAt: DateTime.now(),
-      unlockedBadges: [], // Aucun badge débloqué par défaut
     );
     await _saveProfile();
     notifyListeners();
   }
 
-  // Obtenir les statistiques du profil
-  Map<String, dynamic> getProfileStats() {
+  // Simuler une perte d'aura (pour les tests)
+  Future<void> simulateMissedDay() async {
+    if (_userProfile != null) {
+      final now = DateTime.now();
+      final yesterday = now.subtract(const Duration(days: 1));
+
+      _userProfile = _userProfile!.copyWith(lastActivityDate: yesterday);
+
+      // Ajouter de l'aura pour déclencher la perte
+      addAuraForDay();
+    }
+  }
+
+  // Obtenir les statistiques d'aura
+  Map<String, dynamic> getAuraStats() {
     if (_userProfile == null) return {};
 
     return {
-      'currentLevel': _userProfile!.level,
+      'currentLevel': _userProfile!.auraLevel,
+      'currentPoints': _userProfile!.auraPoints,
       'progressToNext': _userProfile!.progressToNextLevel,
-      'levelName': _userProfile!.levelName,
-      'levelColor': _userProfile!.levelColor,
-      'levelEmoji': _userProfile!.levelEmoji,
+      'levelName': _userProfile!.auraLevelName,
+      'auraColor': _userProfile!.auraColor,
+      'auraEmoji': _userProfile!.auraEmoji,
       'consecutiveDays': _userProfile!.consecutiveDays,
       'maxConsecutiveDays': _userProfile!.maxConsecutiveDays,
       'totalDaysCompleted': _userProfile!.totalDaysCompleted,
@@ -93,7 +102,7 @@ class UserProfileService extends ChangeNotifier {
   }
 
   // Obtenir les badges débloqués
-  List<models.Badge> get unlockedBadges {
+  List<AuraBadge> get unlockedBadges {
     return _userProfile?.unlockedBadges ?? [];
   }
 
@@ -114,20 +123,23 @@ class UserProfileService extends ChangeNotifier {
     return false;
   }
 
-  // Obtenir le prochain niveau
-  int get nextLevel {
-    return (_userProfile?.level ?? 1) + 1;
+  // Calculer la perte d'aura pour X jours manqués
+  int calculateAuraLossForDays(int daysMissed) {
+    if (daysMissed <= 0) return 0;
+    return (50 * pow(1.5, daysMissed)).round();
   }
 
-  // Obtenir les jours nécessaires pour le prochain niveau
-  int get daysNeededForNextLevel {
-    // Avec le nouveau système, il faut 1 jour complété pour monter de niveau
-    return 1;
+  // Obtenir le prochain niveau d'aura
+  int get nextAuraLevel {
+    return (_userProfile?.auraLevel ?? 1) + 1;
   }
 
-  // S'assurer que l'utilisateur a au moins le premier badge
-  void _ensureFirstBadgeUnlocked() {
-    // Ne plus donner de badge par défaut - ils se débloquent selon la progression
+  // Obtenir les points nécessaires pour le prochain niveau
+  int get pointsNeededForNextLevel {
+    final currentLevel = _userProfile?.auraLevel ?? 1;
+    final nextLevelPoints = pow(currentLevel * 100, 2).toInt();
+    final currentPoints = _userProfile?.auraPoints ?? 0;
+    return nextLevelPoints - currentPoints;
   }
 
   String _generateId() {

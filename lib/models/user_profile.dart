@@ -4,34 +4,36 @@ import 'dart:math';
 class UserProfile {
   final String id;
   final String username;
-  int level;
+  int auraPoints;
+  int auraLevel;
   int totalDaysCompleted;
   int consecutiveDays;
   int maxConsecutiveDays;
   DateTime lastActivityDate;
   DateTime createdAt;
-  List<Badge> unlockedBadges;
+  List<AuraBadge> unlockedBadges;
 
   UserProfile({
     required this.id,
     required this.username,
-    this.level = 1,
+    this.auraPoints = 0,
+    this.auraLevel = 1,
     this.totalDaysCompleted = 0,
     this.consecutiveDays = 0,
     this.maxConsecutiveDays = 0,
     required this.lastActivityDate,
     required this.createdAt,
-    List<Badge>? unlockedBadges,
+    List<AuraBadge>? unlockedBadges,
   }) : unlockedBadges = unlockedBadges ?? [];
 
-  // Calculer le niveau basé sur les jours complétés
-  void calculateLevel() {
-    // Système simple: commence niveau 1, puis 1 jour complété = 1 niveau supplémentaire
-    level = 1 + totalDaysCompleted;
+  // Calculer le niveau d'aura basé sur les points
+  void calculateAuraLevel() {
+    // Formule: niveau = 1 + sqrt(points / 100)
+    auraLevel = 1 + sqrt(auraPoints / 100).floor();
   }
 
-  // Ajouter un jour complété
-  bool addDayCompleted() {
+  // Ajouter de l'aura pour un jour complété
+  void addAuraForDay() {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final lastDay = DateTime(
@@ -44,93 +46,96 @@ class UserProfile {
       // Jour consécutif
       consecutiveDays++;
       maxConsecutiveDays = max(maxConsecutiveDays, consecutiveDays);
+
+      // Bonus d'aura pour les séries
+      int bonus = 0;
+      if (consecutiveDays >= 7)
+        bonus = 50; // 7 jours = +50
+      else if (consecutiveDays >= 3)
+        bonus = 20; // 3 jours = +20
+
+      auraPoints += 100 + bonus; // Base 100 + bonus série
     } else if (today.difference(lastDay).inDays > 1) {
-      // Jour manqué - reset de la série
+      // Jour manqué - perte exponentielle d'aura
+      int daysMissed = today.difference(lastDay).inDays - 1;
+      int auraLost = _calculateExponentialAuraLoss(daysMissed);
+      auraPoints = max(0, auraPoints - auraLost);
+
+      // Reset de la série
       consecutiveDays = 1;
     } else {
       // Même jour - pas de changement
-      return false;
+      return;
     }
 
-    // Incrémenter le nombre total de jours complétés
     totalDaysCompleted++;
     lastActivityDate = now;
-
-    // Calculer le nouveau niveau basé sur les jours complétés
-    final oldLevel = level;
-    calculateLevel();
-
-    // Vérifier si on a monté de niveau
-    final leveledUp = level > oldLevel;
-
+    calculateAuraLevel();
     _checkForNewBadges();
-
-    // Retourner si on a monté de niveau
-    return leveledUp;
   }
 
-  // Vérifier les nouveaux badges avec progression exponentielle
+  // Calculer la perte d'aura exponentielle
+  int _calculateExponentialAuraLoss(int daysMissed) {
+    // Formule: perte = 50 * (1.5 ^ jours_manqués)
+    return (50 * pow(1.5, daysMissed)).round();
+  }
+
+  // Vérifier les nouveaux badges
   void _checkForNewBadges() {
-    final newLevel = level;
+    final newLevel = auraLevel;
+    final badgeLevel =
+        ((newLevel - 1) ~/ 5) * 5 + 5; // Badge tous les 5 niveaux
 
-    // Progression exponentielle pour les badges
-    // Badge 1: niveau 2 (après 1 jour complété)
-    // Badge 2: niveau 5 (après 4 jours complétés)
-    // Badge 3: niveau 10 (après 9 jours complétés)
-    // Badge 4: niveau 20 (après 19 jours complétés)
-    // Badge 5: niveau 40 (après 39 jours complétés)
-    // Badge 6: niveau 80 (après 79 jours complétés)
-    // etc.
-    final badgeLevels = [2, 5, 10, 20, 40, 80, 160, 320, 640, 1280];
-
-    for (int badgeLevel in badgeLevels) {
-      if (newLevel >= badgeLevel) {
-        final existingBadge = unlockedBadges
-            .where((badge) => badge.level == badgeLevel)
-            .firstOrNull;
-        if (existingBadge == null) {
-          unlockedBadges.add(Badge.createForLevel(badgeLevel));
-        }
+    if (badgeLevel > 0 && badgeLevel <= newLevel) {
+      final existingBadge = unlockedBadges
+          .where((badge) => badge.level == badgeLevel)
+          .firstOrNull;
+      if (existingBadge == null) {
+        unlockedBadges.add(AuraBadge.createForLevel(badgeLevel));
       }
     }
   }
 
   // Obtenir la progression vers le prochain niveau
   double get progressToNextLevel {
-    // Système simple: chaque jour complété = 1 niveau
-    return 0.0; // Toujours 0% car on monte d'un niveau par jour complété
+    final currentLevelPoints = pow((auraLevel - 1) * 100, 2).toInt();
+    final nextLevelPoints = pow(auraLevel * 100, 2).toInt();
+    final pointsInCurrentLevel = auraPoints - currentLevelPoints;
+    final pointsNeededForLevel = nextLevelPoints - currentLevelPoints;
+
+    return (pointsInCurrentLevel / pointsNeededForLevel).clamp(0.0, 1.0);
   }
 
-  // Obtenir le nom du niveau
-  String get levelName {
-    if (level >= 50) return 'Légende';
-    if (level >= 40) return 'Maître';
-    if (level >= 30) return 'Expert';
-    if (level >= 20) return 'Adepte';
-    if (level >= 10) return 'Initié';
-    if (level >= 5) return 'Apprenti';
-    return 'Novice';
+  // Obtenir le nom du niveau d'aura
+  String get auraLevelName {
+    if (auraLevel >= 50) return 'Légende Astrale';
+    if (auraLevel >= 40) return 'Maître Éthéré';
+    if (auraLevel >= 30) return 'Gardien Céleste';
+    if (auraLevel >= 20) return 'Adepte Lumineux';
+    if (auraLevel >= 10) return 'Initié Radieux';
+    if (auraLevel >= 5) return 'Apprenti Brillant';
+    return 'Novice Aura';
   }
 
-  // Obtenir la couleur basée sur le niveau
-  Color get levelColor {
-    if (level >= 50) return Colors.purple;
-    if (level >= 40) return Colors.deepPurple;
-    if (level >= 30) return Colors.indigo;
-    if (level >= 20) return Colors.blue;
-    if (level >= 10) return Colors.teal;
-    if (level >= 5) return Colors.green;
+  // Obtenir la couleur de l'aura basée sur le niveau
+  Color get auraColor {
+    if (auraLevel >= 50) return Colors.purple;
+    if (auraLevel >= 40) return Colors.deepPurple;
+    if (auraLevel >= 30) return Colors.indigo;
+    if (auraLevel >= 20) return Colors.blue;
+    if (auraLevel >= 10) return Colors.teal;
+    if (auraLevel >= 5) return Colors.green;
     return Colors.grey;
   }
 
-  // Obtenir l'emoji basé sur le niveau
-  String get levelEmoji {
-    if (level >= 50) return '🌟';
-    if (level >= 40) return '✨';
-    if (level >= 30) return '💫';
-    if (level >= 20) return '⭐';
-    if (level >= 10) return '⚡';
-    if (level >= 5) return '🔮';
+  // Obtenir l'emoji de l'aura basé sur le niveau
+  String get auraEmoji {
+    if (auraLevel >= 50) return '🌟';
+    if (auraLevel >= 40) return '✨';
+    if (auraLevel >= 30) return '💫';
+    if (auraLevel >= 20) return '⭐';
+    if (auraLevel >= 10) return '⚡';
+    if (auraLevel >= 5) return '🔮';
     return '💎';
   }
 
@@ -138,7 +143,8 @@ class UserProfile {
     return {
       'id': id,
       'username': username,
-      'level': level,
+      'auraPoints': auraPoints,
+      'auraLevel': auraLevel,
       'totalDaysCompleted': totalDaysCompleted,
       'consecutiveDays': consecutiveDays,
       'maxConsecutiveDays': maxConsecutiveDays,
@@ -152,7 +158,8 @@ class UserProfile {
     return UserProfile(
       id: json['id'],
       username: json['username'],
-      level: json['level'] ?? 1,
+      auraPoints: json['auraPoints'] ?? 0,
+      auraLevel: json['auraLevel'] ?? 1,
       totalDaysCompleted: json['totalDaysCompleted'] ?? 0,
       consecutiveDays: json['consecutiveDays'] ?? 0,
       maxConsecutiveDays: json['maxConsecutiveDays'] ?? 0,
@@ -162,7 +169,7 @@ class UserProfile {
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
       unlockedBadges:
           (json['unlockedBadges'] as List<dynamic>?)
-              ?.map((badge) => Badge.fromJson(badge))
+              ?.map((badge) => AuraBadge.fromJson(badge))
               .toList() ??
           [],
     );
@@ -171,18 +178,20 @@ class UserProfile {
   UserProfile copyWith({
     String? id,
     String? username,
-    int? level,
+    int? auraPoints,
+    int? auraLevel,
     int? totalDaysCompleted,
     int? consecutiveDays,
     int? maxConsecutiveDays,
     DateTime? lastActivityDate,
     DateTime? createdAt,
-    List<Badge>? unlockedBadges,
+    List<AuraBadge>? unlockedBadges,
   }) {
     return UserProfile(
       id: id ?? this.id,
       username: username ?? this.username,
-      level: level ?? this.level,
+      auraPoints: auraPoints ?? this.auraPoints,
+      auraLevel: auraLevel ?? this.auraLevel,
       totalDaysCompleted: totalDaysCompleted ?? this.totalDaysCompleted,
       consecutiveDays: consecutiveDays ?? this.consecutiveDays,
       maxConsecutiveDays: maxConsecutiveDays ?? this.maxConsecutiveDays,
@@ -193,7 +202,7 @@ class UserProfile {
   }
 }
 
-class Badge {
+class AuraBadge {
   final String id;
   final String name;
   final String description;
@@ -202,7 +211,7 @@ class Badge {
   final Color color;
   final DateTime unlockedAt;
 
-  Badge({
+  AuraBadge({
     required this.id,
     required this.name,
     required this.description,
@@ -212,10 +221,10 @@ class Badge {
     required this.unlockedAt,
   });
 
-  static Badge createForLevel(int level) {
+  static AuraBadge createForLevel(int level) {
     final badgeData = _getBadgeDataForLevel(level);
-    return Badge(
-      id: 'badge_$level',
+    return AuraBadge(
+      id: 'aura_badge_$level',
       name: badgeData['name'],
       description: badgeData['description'],
       emoji: badgeData['emoji'],
@@ -227,81 +236,53 @@ class Badge {
 
   static Map<String, dynamic> _getBadgeDataForLevel(int level) {
     switch (level) {
-      case 2:
-        return {
-          'name': 'Premier Pas',
-          'description': 'Votre première session complétée !',
-          'emoji': '🎯',
-          'color': Colors.green,
-        };
       case 5:
         return {
-          'name': 'Débutant Assidu',
-          'description': '4 jours de persévérance !',
-          'emoji': '🔥',
-          'color': Colors.orange,
+          'name': 'Apprenti Brillant',
+          'description': 'Premier pas dans le monde de l\'aura',
+          'emoji': '🔮',
+          'color': Colors.green,
         };
       case 10:
         return {
-          'name': 'Habitué Motivé',
-          'description': '9 jours de régularité !',
+          'name': 'Initié Radieux',
+          'description': 'L\'aura commence à briller',
           'emoji': '⚡',
+          'color': Colors.teal,
+        };
+      case 15:
+        return {
+          'name': 'Adepte Lumineux',
+          'description': 'La lumière de l\'aura grandit',
+          'emoji': '⭐',
           'color': Colors.blue,
         };
       case 20:
         return {
-          'name': 'Expert Consistant',
-          'description': '19 jours d\'excellence !',
-          'emoji': '⭐',
-          'color': Colors.purple,
-        };
-      case 40:
-        return {
-          'name': 'Maître Persévérant',
-          'description': '39 jours de maîtrise !',
-          'emoji': '💎',
+          'name': 'Gardien Céleste',
+          'description': 'Protecteur de l\'énergie astrale',
+          'emoji': '💫',
           'color': Colors.indigo,
         };
-      case 80:
+      case 25:
         return {
-          'name': 'Légende Vivante',
-          'description': '79 jours de légende !',
-          'emoji': '🌟',
+          'name': 'Maître Éthéré',
+          'description': 'Maîtrise des forces éthérées',
+          'emoji': '✨',
           'color': Colors.deepPurple,
         };
-      case 160:
+      case 30:
         return {
-          'name': 'Champion Éternel',
-          'description': '159 jours de championnat !',
-          'emoji': '👑',
-          'color': Colors.red,
-        };
-      case 320:
-        return {
-          'name': 'Déité de la Discipline',
-          'description': '319 jours divins !',
-          'emoji': '✨',
-          'color': Colors.pink,
-        };
-      case 640:
-        return {
-          'name': 'Immortel de l\'Habitude',
-          'description': '639 jours d\'immortalité !',
-          'emoji': '💫',
-          'color': Colors.amber,
-        };
-      case 1280:
-        return {
-          'name': 'Univers de la Volonté',
-          'description': '1279 jours universels !',
-          'emoji': '🌌',
-          'color': Colors.cyan,
+          'name': 'Légende Astrale',
+          'description': 'Légende vivante de l\'aura',
+          'emoji': '🌟',
+          'color': Colors.purple,
         };
       default:
         return {
           'name': 'Niveau $level',
           'description': 'Badge de niveau $level',
-          'emoji': '🏆',
+          'emoji': '💎',
           'color': Colors.grey,
         };
     }
@@ -319,8 +300,8 @@ class Badge {
     };
   }
 
-  factory Badge.fromJson(Map<String, dynamic> json) {
-    return Badge(
+  factory AuraBadge.fromJson(Map<String, dynamic> json) {
+    return AuraBadge(
       id: json['id'],
       name: json['name'],
       description: json['description'],
