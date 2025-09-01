@@ -90,7 +90,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                     child: Consumer<UserProfileService>(
                       builder: (context, profileService, child) {
                         final level =
-                            profileService.userProfile?.auraLevel ?? 1;
+                            profileService.userProfile?.currentLevel ?? 1;
                         final assetPath = _getBadgeAssetForLevel(level);
                         final imageSize = isTablet ? 160.0 : 120.0;
                         return Column(

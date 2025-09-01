@@ -59,6 +59,40 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
+  // Méthode appelée quand un objectif est terminé (ancien système)
+  Future<void> onGoalCompleted() async {
+    if (_userProfile != null) {
+      _userProfile!.onGoalCompleted();
+      await _saveProfile();
+      notifyListeners();
+    }
+  }
+
+  // Nouvelle méthode pour ajouter de l'XP
+  Future<LevelUpResult?> addExperience(int xp, {bool isConsistencyBonus = false}) async {
+    if (_userProfile != null) {
+      final result = _userProfile!.addExperience(xp, isConsistencyBonus: isConsistencyBonus);
+      await _saveProfile();
+      notifyListeners();
+      return result;
+    }
+    return null;
+  }
+
+  // Méthode pour completion d'objectif avec nouveau système XP
+  Future<LevelUpResult?> onGoalCompletedXP(int targetDays, {bool completedEarly = false}) async {
+    if (_userProfile != null) {
+      final xp = UserProfile.calculateGoalXp(targetDays, completedEarly: completedEarly);
+      _userProfile!.totalCompletedGoals++;
+      
+      final result = _userProfile!.addExperience(xp, isConsistencyBonus: completedEarly);
+      await _saveProfile();
+      notifyListeners();
+      return result;
+    }
+    return null;
+  }
+
   Future<void> resetProfile() async {
     _userProfile = UserProfile(
       id: _generateId(),
@@ -83,7 +117,7 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
-  // Obtenir les statistiques d'aura
+  // Obtenir les statistiques d'aura (ancien système, maintenu)
   Map<String, dynamic> getAuraStats() {
     if (_userProfile == null) return {};
 
@@ -98,6 +132,25 @@ class UserProfileService extends ChangeNotifier {
       'maxConsecutiveDays': _userProfile!.maxConsecutiveDays,
       'totalDaysCompleted': _userProfile!.totalDaysCompleted,
       'badgesCount': _userProfile!.unlockedBadges.length,
+    };
+  }
+
+  // Nouvelles statistiques XP
+  Map<String, dynamic> getXpStats() {
+    if (_userProfile == null) return {};
+
+    return {
+      'currentLevel': _userProfile!.currentLevel,
+      'experiencePoints': _userProfile!.experiencePoints,
+      'xpProgressToNext': _userProfile!.xpProgressToNextLevel,
+      'xpNeededForNext': _userProfile!.xpNeededForNextLevel,
+      'xpInCurrentLevel': _userProfile!.xpInCurrentLevel,
+      'xpRequiredForCurrentLevel': _userProfile!.xpRequiredForCurrentLevel,
+      'levelName': _userProfile!.levelName,
+      'levelColor': _userProfile!.levelColor,
+      'totalCompletedGoals': _userProfile!.totalCompletedGoals,
+      'badgesCount': _userProfile!.unlockedBadges.length,
+      'specialBadgesCount': _userProfile!.specialBadges.length,
     };
   }
 
