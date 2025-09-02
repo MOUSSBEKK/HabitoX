@@ -28,8 +28,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
         final currentShape = calendarService.currentShape;
         if (currentShape == null ||
-            currentShape.totalDays != activeGoal.targetDays) {
-          calendarService.ensureShapeForTargetDays(activeGoal.targetDays);
+            currentShape.totalDays != activeGoal.targetDays ||
+            currentShape.color != activeGoal.color) {
+          calendarService.ensureShapeForTargetDays(
+            activeGoal.targetDays, 
+            goalColor: activeGoal.color
+          );
         }
 
         return Container(
