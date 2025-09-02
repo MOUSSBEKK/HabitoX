@@ -35,21 +35,10 @@ class SkillProgressWidget extends StatelessWidget {
         final padding = isTablet ? 32.0 : 20.0;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text('HabitoX'),
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-            foregroundColor: Colors.white,
-          ),
+          appBar: AppBar(title: Text('HabitoX')),
           body: Container(
             decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                255,
-                255,
-                255,
-              ).withValues(alpha: 0.1),
+              color: const Color.fromRGBO(226, 239, 243, 1),
             ),
             child: SafeArea(
               child: SingleChildScrollView(

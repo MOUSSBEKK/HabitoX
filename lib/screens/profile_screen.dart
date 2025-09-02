@@ -12,36 +12,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen>
     with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
-  late Animation<Offset> _slideAnimation;
-
   @override
   void initState() {
     super.initState();
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-        );
-
-    _fadeController.forward();
-    _slideController.forward();
-  }
-
-  @override
-  void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
-    super.dispose();
   }
 
   @override
@@ -52,32 +25,20 @@ class _ProfileScreenState extends State<ProfileScreen>
         final padding = isTablet ? 32.0 : 20.0;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text('Account'),
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-            foregroundColor: Colors.white,
-          ),
-          backgroundColor: const Color(0xFFF8FAFC),
+          appBar: AppBar(title: Text('Account')),
+          backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(padding),
-              child: FadeTransition(
-                opacity: _fadeController,
-                child: SlideTransition(
-                  position: _slideAnimation,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildUpgradeCard(isTablet),
-                      const SizedBox(height: 16),
-                      _buildLevelCard(isTablet),
-                      const SizedBox(height: 16),
-                      _buildSettingsGroup(isTablet),
-                    ],
-                  ),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildUpgradeCard(isTablet),
+                  const SizedBox(height: 16),
+                  _buildLevelCard(isTablet),
+                  const SizedBox(height: 16),
+                  _buildSettingsGroup(isTablet),
+                ],
               ),
             ),
           ),
@@ -98,13 +59,13 @@ extension on _ProfileScreenState {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           gradient: const LinearGradient(
-            colors: [Color(0xFF7C4DFF), Color(0xFF9B72FF)],
+            colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.deepPurple.withOpacity(0.25),
+              color: const Color(0xFF6db399).withOpacity(0.25),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -144,7 +105,6 @@ extension on _ProfileScreenState {
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
           ],
         ),
       ),
@@ -156,9 +116,8 @@ extension on _ProfileScreenState {
       builder: (context, profileService, child) {
         final stats = profileService.getXpStats();
         final level = stats['currentLevel'] as int? ?? 1;
-        final levelName = stats['levelName'] as String? ?? 'Débutant';
-        final levelColor =
-            stats['levelColor'] as Color? ?? AppColors.primaryColor;
+        final levelName = stats['levelName'] as String? ?? 'Beginner';
+        final levelColor = stats['levelColor'] as Color? ?? Color(0xFF6db399);
         final experiencePoints = stats['experiencePoints'] as int? ?? 0;
         final xpInCurrentLevel = stats['xpInCurrentLevel'] as int? ?? 0;
         final xpRequiredForCurrentLevel =
@@ -166,21 +125,13 @@ extension on _ProfileScreenState {
         final xpProgressToNext = stats['xpProgressToNext'] as double? ?? 0.0;
 
         return Container(
-          padding: EdgeInsets.all(isTablet ? 18 : 16),
+          padding: EdgeInsets.all(isTablet ? 20 : 16),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(isTablet ? 18 : 16),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.darkColor.withOpacity(0.06),
-                blurRadius: 14,
-                offset: const Offset(0, 6),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           ),
           child: Column(
             children: [
-              // Header avec niveau et badge
               Row(
                 children: [
                   Container(

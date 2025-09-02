@@ -41,13 +41,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         // final headerPadding = isTablet ? 80.0 : 60.0;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text('Objectifs'),
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-            foregroundColor: Colors.white,
-          ),
+          appBar: AppBar(title: Text('Objectifs')),
           body: Container(
             decoration: BoxDecoration(
               color: const Color.fromRGBO(226, 239, 243, 1),
@@ -65,13 +59,6 @@ class _GoalsScreenState extends State<GoalsScreen> {
                       borderRadius: BorderRadius.circular(
                         isTablet ? 20.0 : 16.0,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
                     ),
                     child: Row(
                       children: [
@@ -120,7 +107,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
                 ),
                 SizedBox(height: isTablet ? 32.0 : 24.0),
                 Text(
-                  emptyTitle,
+                  emptyTitle.toUpperCase(),
                   style: TextStyle(
                     fontSize: isTablet ? 24.0 : 20.0,
                     fontWeight: FontWeight.w600,
@@ -137,36 +124,6 @@ class _GoalsScreenState extends State<GoalsScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                if (goalsSelector ==
-                    (goalService) => goalService.goals
-                        .where((g) => g.isActive)
-                        .toList()) ...[
-                  SizedBox(height: isTablet ? 32.0 : 24.0),
-                  ElevatedButton.icon(
-                    onPressed: () => _showAddGoalBottomSheet(context),
-                    icon: Icon(Icons.add, size: isTablet ? 24.0 : 20.0),
-                    label: Text(
-                      'Créer un objectif',
-                      style: TextStyle(
-                        fontSize: isTablet ? 18.0 : 16.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isTablet ? 32.0 : 24.0,
-                        vertical: isTablet ? 20.0 : 16.0,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          isTablet ? 20.0 : 16.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ],
             ),
           );

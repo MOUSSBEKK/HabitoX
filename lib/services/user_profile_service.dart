@@ -69,9 +69,15 @@ class UserProfileService extends ChangeNotifier {
   }
 
   // Nouvelle méthode pour ajouter de l'XP
-  Future<LevelUpResult?> addExperience(int xp, {bool isConsistencyBonus = false}) async {
+  Future<LevelUpResult?> addExperience(
+    int xp, {
+    bool isConsistencyBonus = false,
+  }) async {
     if (_userProfile != null) {
-      final result = _userProfile!.addExperience(xp, isConsistencyBonus: isConsistencyBonus);
+      final result = _userProfile!.addExperience(
+        xp,
+        isConsistencyBonus: isConsistencyBonus,
+      );
       await _saveProfile();
       notifyListeners();
       return result;
@@ -80,12 +86,21 @@ class UserProfileService extends ChangeNotifier {
   }
 
   // Méthode pour completion d'objectif avec nouveau système XP
-  Future<LevelUpResult?> onGoalCompletedXP(int targetDays, {bool completedEarly = false}) async {
+  Future<LevelUpResult?> onGoalCompletedXP(
+    int targetDays, {
+    bool completedEarly = false,
+  }) async {
     if (_userProfile != null) {
-      final xp = UserProfile.calculateGoalXp(targetDays, completedEarly: completedEarly);
+      final xp = UserProfile.calculateGoalXp(
+        targetDays,
+        completedEarly: completedEarly,
+      );
       _userProfile!.totalCompletedGoals++;
-      
-      final result = _userProfile!.addExperience(xp, isConsistencyBonus: completedEarly);
+
+      final result = _userProfile!.addExperience(
+        xp,
+        isConsistencyBonus: completedEarly,
+      );
       await _saveProfile();
       notifyListeners();
       return result;

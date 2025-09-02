@@ -46,16 +46,10 @@ class _BadgesScreenState extends State<BadgesScreen>
         // final headerPadding = isTablet ? 80.0 : 60.0;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text('Achievements'),
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-            foregroundColor: Colors.white,
-          ),
+          appBar: AppBar(title: Text('Achievements')),
           body: Container(
             decoration: BoxDecoration(
-              color: BadgesScreenColors.lightColor.withValues(alpha: 0.1),
+              color: const Color.fromRGBO(226, 239, 243, 1),
             ),
             child: SafeArea(
               child: Column(

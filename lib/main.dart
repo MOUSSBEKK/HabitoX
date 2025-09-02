@@ -43,9 +43,10 @@ class HabitoXApp extends StatelessWidget {
           // cardColor: Colors.white,
           // AppBar
           appBarTheme: AppBarTheme(
-            backgroundColor: Colors.white,
             elevation: 0,
             centerTitle: true,
+            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
+            foregroundColor: Colors.white,
             titleTextStyle: TextStyle(
               color: AppColors.darkColor,
               fontSize: 26,
