@@ -165,14 +165,14 @@ class CalendarShape {
 
   // Create a heatmap CalendarShape tailored for a goal with `targetDays`.
   // Name is explicit to reflect the goal target, while type is set to a default.
-  static CalendarShape createForTargetDays(int targetDays) {
+  static CalendarShape createForTargetDays(int targetDays, {Color? goalColor}) {
     final pattern = generateHeatmapPatternForTargetDays(targetDays);
     return CalendarShape(
       id: _generateId(),
       type: CalendarShapeType.star,
       name: 'Objectif $targetDays jours',
       emoji: '⭐',
-      color: _generateRandomColor(),
+      color: goalColor ?? _generateRandomColor(),
       pattern: pattern,
       totalDays: targetDays,
     );

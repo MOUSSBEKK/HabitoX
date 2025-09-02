@@ -323,7 +323,6 @@ extension on _ProfileScreenState {
 
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
-      _SettingItem(Icons.tune, 'Preferences'),
       _SettingItem(Icons.credit_card, 'Payment Methods'),
       _SettingItem(Icons.subscriptions, 'Billing & Subscriptions'),
       _SettingItem(Icons.security, 'Account & Security'),
@@ -331,6 +330,9 @@ extension on _ProfileScreenState {
       _SettingItem(Icons.file_upload, 'Export', locked: true),
       _SettingItem(Icons.color_lens, 'App Appearance'),
       _SettingItem(Icons.insights, 'Data & Analytics'),
+      _SettingItem(Icons.star_rate, 'Noter l\'app'),
+      _SettingItem(Icons.camera_alt, 'Suivre sur Insta'),
+      _SettingItem(Icons.system_update, 'Les Mise à jour de l\'app'),
     ];
 
     return Container(
@@ -379,13 +381,46 @@ extension on _ProfileScreenState {
           ? () => ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text('Premium requis')))
-          : () {},
+          : () => _navigateToSetting(item.title),
       enabled: !item.locked,
       contentPadding: EdgeInsets.symmetric(
         horizontal: isTablet ? 18 : 14,
         vertical: isTablet ? 6 : 2,
       ),
     );
+  }
+
+  void _navigateToSetting(String settingTitle) {
+    switch (settingTitle) {
+      case 'Payment Methods':
+        Navigator.pushNamed(context, '/payment_methods');
+        break;
+      case 'Billing & Subscriptions':
+        Navigator.pushNamed(context, '/billing_subscriptions');
+        break;
+      case 'Account & Security':
+        Navigator.pushNamed(context, '/account_security');
+        break;
+      case 'App Appearance':
+        Navigator.pushNamed(context, '/app_appearance');
+        break;
+      case 'Data & Analytics':
+        Navigator.pushNamed(context, '/data_analytics');
+        break;
+      case 'Noter l\'app':
+        Navigator.pushNamed(context, '/rate_app');
+        break;
+      case 'Suivre sur Insta':
+        Navigator.pushNamed(context, '/follow_instagram');
+        break;
+      case 'Les Mise à jour de l\'app':
+        Navigator.pushNamed(context, '/app_updates');
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Page "$settingTitle" en cours de développement')),
+        );
+    }
   }
 }
 

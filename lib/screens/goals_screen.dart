@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
@@ -264,10 +265,8 @@ class _GoalsScreenState extends State<GoalsScreen> {
   }
 
   void _showAddGoalBottomSheet(BuildContext context, {Goal? goal}) {
-    showModalBottomSheet(
+    showMaterialModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
       builder: (context) => AddGoalBottomSheet(goal: goal),
     );
   }

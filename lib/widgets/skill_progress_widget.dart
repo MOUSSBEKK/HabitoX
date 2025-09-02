@@ -37,7 +37,7 @@ class SkillProgressWidget extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              'Home',
+              'HabitoX',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: SkillProgressColors.darkColor,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'goals_screen.dart';
 import 'profile_screen.dart';
 import 'badges_screen.dart';
@@ -35,10 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showAddGoalBottomSheet(BuildContext context, {Goal? goal}) {
-    showModalBottomSheet(
+    showMaterialModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
       builder: (context) => AddGoalBottomSheet(goal: goal),
     );
   }
