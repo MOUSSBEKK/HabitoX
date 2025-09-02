@@ -51,14 +51,6 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
-  Future<void> addAuraForDay() async {
-    if (_userProfile != null) {
-      _userProfile!.addAuraForDay();
-      await _saveProfile();
-      notifyListeners();
-    }
-  }
-
   // Méthode appelée quand un objectif est terminé (ancien système)
   Future<void> onGoalCompleted() async {
     if (_userProfile != null) {
@@ -119,37 +111,6 @@ class UserProfileService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Simuler une perte d'aura (pour les tests)
-  Future<void> simulateMissedDay() async {
-    if (_userProfile != null) {
-      final now = DateTime.now();
-      final yesterday = now.subtract(const Duration(days: 1));
-
-      _userProfile = _userProfile!.copyWith(lastActivityDate: yesterday);
-
-      // Ajouter de l'aura pour déclencher la perte
-      addAuraForDay();
-    }
-  }
-
-  // Obtenir les statistiques d'aura (ancien système, maintenu)
-  Map<String, dynamic> getAuraStats() {
-    if (_userProfile == null) return {};
-
-    return {
-      'currentLevel': _userProfile!.auraLevel,
-      'currentPoints': _userProfile!.auraPoints,
-      'progressToNext': _userProfile!.progressToNextLevel,
-      'levelName': _userProfile!.auraLevelName,
-      'auraColor': _userProfile!.auraColor,
-      'auraEmoji': _userProfile!.auraEmoji,
-      'consecutiveDays': _userProfile!.consecutiveDays,
-      'maxConsecutiveDays': _userProfile!.maxConsecutiveDays,
-      'totalDaysCompleted': _userProfile!.totalDaysCompleted,
-      'badgesCount': _userProfile!.unlockedBadges.length,
-    };
-  }
-
   // Nouvelles statistiques XP
   Map<String, dynamic> getXpStats() {
     if (_userProfile == null) return {};
@@ -191,24 +152,13 @@ class UserProfileService extends ChangeNotifier {
     return false;
   }
 
-  // Calculer la perte d'aura pour X jours manqués
-  int calculateAuraLossForDays(int daysMissed) {
-    if (daysMissed <= 0) return 0;
-    return (50 * pow(1.5, daysMissed)).round();
-  }
-
-  // Obtenir le prochain niveau d'aura
-  int get nextAuraLevel {
-    return (_userProfile?.auraLevel ?? 1) + 1;
-  }
-
   // Obtenir les points nécessaires pour le prochain niveau
-  int get pointsNeededForNextLevel {
-    final currentLevel = _userProfile?.auraLevel ?? 1;
-    final nextLevelPoints = pow(currentLevel * 100, 2).toInt();
-    final currentPoints = _userProfile?.auraPoints ?? 0;
-    return nextLevelPoints - currentPoints;
-  }
+  // int get pointsNeededForNextLevel {
+  //   final currentLevel = _userProfile?.auraLevel ?? 1;
+  //   final nextLevelPoints = pow(currentLevel * 100, 2).toInt();
+  //   final currentPoints = _userProfile?.auraPoints ?? 0;
+  //   return nextLevelPoints - currentPoints;
+  // }
 
   String _generateId() {
     final random = DateTime.now().millisecondsSinceEpoch;

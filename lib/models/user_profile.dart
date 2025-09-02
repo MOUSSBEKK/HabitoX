@@ -101,7 +101,7 @@ class UserProfile {
   // Vérifier les nouveaux badges
   void _checkForNewBadges() {
     final newLevel = auraLevel;
-    
+
     // Badge de niveau 1 (déjà géré dans le constructeur)
     // Badge de niveau 2 (premier objectif terminé)
     if (newLevel >= 2) {
@@ -112,7 +112,7 @@ class UserProfile {
         unlockedBadges.add(AuraBadge.createForLevel(2));
       }
     }
-    
+
     // Badges tous les 5 niveaux (comme avant)
     final badgeLevel =
         ((newLevel - 1) ~/ 5) * 5 + 5; // Badge tous les 5 niveaux
@@ -142,21 +142,21 @@ class UserProfile {
   // Calculer l'XP requis pour un niveau donné selon la nouvelle progression
   static int getXpRequiredForLevel(int level) {
     if (level <= 1) return 0;
-    
+
     // Table de progression manuelle pour plus de contrôle
     final xpTable = {
-      2: 10,   // Niveau 1 → 2
-      3: 20,   // Niveau 2 → 3
-      4: 30,   // Niveau 3 → 4
-      5: 50,   // Niveau 4 → 5
-      6: 70,   // Niveau 5 → 6
-      7: 110,  // Niveau 6 → 7
-      8: 170,  // Niveau 7 → 8
-      9: 250,  // Niveau 8 → 9
+      2: 10, // Niveau 1 → 2
+      3: 20, // Niveau 2 → 3
+      4: 30, // Niveau 3 → 4
+      5: 50, // Niveau 4 → 5
+      6: 70, // Niveau 5 → 6
+      7: 110, // Niveau 6 → 7
+      8: 170, // Niveau 7 → 8
+      9: 250, // Niveau 8 → 9
       10: 380, // Niveau 9 → 10
       11: 570, // Niveau 10 → 11
     };
-    
+
     // Pour les niveaux au-delà de 11, utiliser la formule exponentielle
     if (xpTable.containsKey(level)) {
       return xpTable[level]!;
@@ -180,15 +180,15 @@ class UserProfile {
   void calculateLevel() {
     int newLevel = 1;
     int totalXpNeeded = 0;
-    
+
     while (totalXpNeeded <= experiencePoints) {
       newLevel++;
       totalXpNeeded += getXpRequiredForLevel(newLevel);
     }
-    
+
     final previousLevel = currentLevel;
     currentLevel = newLevel - 1; // Revenir au dernier niveau valide
-    
+
     // Vérifier si on a gagné un niveau
     if (currentLevel > previousLevel) {
       _onLevelUp(previousLevel, currentLevel);
@@ -206,7 +206,7 @@ class UserProfile {
         unlockedBadges.add(AuraBadge.createForLevel(newLevel));
       }
     }
-    
+
     // Vérifier les badges spéciaux
     _checkSpecialBadges();
   }
@@ -223,14 +223,14 @@ class UserProfile {
   LevelUpResult addExperience(int xp, {bool isConsistencyBonus = false}) {
     final oldLevel = currentLevel;
     final oldXp = experiencePoints;
-    
+
     // Ajouter l'XP (avec bonus de consistance si applicable)
     final actualXp = isConsistencyBonus ? (xp * 1.2).round() : xp;
     experiencePoints += actualXp;
-    
+
     // Recalculer le niveau
     calculateLevel();
-    
+
     return LevelUpResult(
       oldLevel: oldLevel,
       newLevel: currentLevel,
@@ -244,7 +244,7 @@ class UserProfile {
   // Calculer l'XP d'un objectif selon sa durée et difficulté
   static int calculateGoalXp(int targetDays, {bool completedEarly = false}) {
     int baseXp;
-    
+
     if (targetDays <= 7) {
       // Objectif court: 5-15 XP
       baseXp = 5 + ((targetDays - 1) * 10 / 6).round();
@@ -255,12 +255,12 @@ class UserProfile {
       // Objectif long: 60-150 XP
       baseXp = 60 + ((min(targetDays, 90) - 31) * 90 / 59).round();
     }
-    
+
     // Bonus de consistance (+20% si terminé avant deadline)
     if (completedEarly) {
       baseXp = (baseXp * 1.2).round();
     }
-    
+
     return baseXp;
   }
 
@@ -270,7 +270,7 @@ class UserProfile {
     final nextLevelTotalXp = getTotalXpForLevel(currentLevel + 1);
     final xpInCurrentLevel = experiencePoints - currentLevelTotalXp;
     final xpNeededForNextLevel = nextLevelTotalXp - currentLevelTotalXp;
-    
+
     return (xpInCurrentLevel / xpNeededForNextLevel).clamp(0.0, 1.0);
   }
 
@@ -319,7 +319,7 @@ class UserProfile {
     // Badge "Marathon" : Objectif de 30+ jours terminé
     // Badge "Perfectionniste" : 5 objectifs terminés avant la deadline
     // Badge "Régulier" : 7 jours consécutifs d'activité
-    
+
     // Ces vérifications seront implémentées selon les données disponibles
     // Pour l'instant, on laisse cette méthode vide
   }

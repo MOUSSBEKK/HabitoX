@@ -84,6 +84,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     final mediaQuery = MediaQuery.of(context);
 
     return Material(
+      color: Colors.white,
       child: SafeArea(
         top: false,
         child: Padding(
@@ -763,6 +764,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     }
 
     return Material(
+      color: Colors.white,
       child: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height * 0.8,

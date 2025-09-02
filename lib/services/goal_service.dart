@@ -189,7 +189,10 @@ class GoalService extends ChangeNotifier {
     _activeGoal = null;
   }
 
-  Future<void> completeGoal(String goalId, [UserProfileService? profileService]) async {
+  Future<void> completeGoal(
+    String goalId, [
+    UserProfileService? profileService,
+  ]) async {
     final index = _goals.indexWhere((g) => g.id == goalId);
     if (index != -1) {
       final goal = _goals[index];
@@ -215,7 +218,10 @@ class GoalService extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProgress(String goalId, [UserProfileService? profileService]) async {
+  Future<void> updateProgress(
+    String goalId, [
+    UserProfileService? profileService,
+  ]) async {
     final index = _goals.indexWhere((g) => g.id == goalId);
     if (index != -1) {
       final goal = _goals[index];
@@ -256,7 +262,12 @@ class GoalService extends ChangeNotifier {
 
         // Vérifier si l'objectif est complété
         if (newProgress >= 1.0) {
-          await completeGoalWithXP(goalId, profileService, goal.targetDays, completedEarly: true);
+          await completeGoalWithXP(
+            goalId,
+            profileService,
+            goal.targetDays,
+            completedEarly: true,
+          );
         } else {
           await _saveGoals();
           notifyListeners();
@@ -266,7 +277,12 @@ class GoalService extends ChangeNotifier {
   }
 
   // Nouvelle méthode pour terminer un objectif avec système XP
-  Future<void> completeGoalWithXP(String goalId, UserProfileService? profileService, int targetDays, {bool completedEarly = false}) async {
+  Future<void> completeGoalWithXP(
+    String goalId,
+    UserProfileService? profileService,
+    int targetDays, {
+    bool completedEarly = false,
+  }) async {
     final index = _goals.indexWhere((g) => g.id == goalId);
     if (index != -1) {
       final goal = _goals[index];
@@ -284,8 +300,11 @@ class GoalService extends ChangeNotifier {
 
       // Ajouter XP avec nouveau système
       if (profileService != null) {
-        final levelUpResult = await profileService.onGoalCompletedXP(targetDays, completedEarly: completedEarly);
-        
+        final levelUpResult = await profileService.onGoalCompletedXP(
+          targetDays,
+          completedEarly: completedEarly,
+        );
+
         // Si level up, afficher la popup
         if (levelUpResult != null && levelUpResult.hasLeveledUp) {
           // Nous implémenterons l'affichage de la popup plus tard
@@ -296,11 +315,6 @@ class GoalService extends ChangeNotifier {
       await _saveGoals();
       notifyListeners();
     }
-  }
-
-  // Méthode pour mettre à jour l'aura (appelée depuis l'extérieur - ancien système)
-  void updateAura(UserProfileService profileService) {
-    profileService.addAuraForDay();
   }
 
   Future<void> resetStreak(String goalId) async {
