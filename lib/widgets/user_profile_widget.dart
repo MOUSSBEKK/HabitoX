@@ -81,10 +81,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
       'BADGE4.png',
       'BADGE5.png',
       'BADGE6.png',
-      'BADGE7.png',
       'BADGE8.png',
-      'BADGE9.png',
-      'BADGE10.png',
     ];
     final index = (level - 1).clamp(0, assetFiles.length - 1);
     return 'assets/badges/${assetFiles[index]}';
@@ -331,7 +328,8 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
     final levelColor = stats['levelColor'] as Color? ?? Colors.grey;
     final xpProgressToNext = stats['xpProgressToNext'] as double? ?? 0.0;
     final xpInCurrentLevel = stats['xpInCurrentLevel'] as int? ?? 0;
-    final xpRequiredForCurrentLevel = stats['xpRequiredForCurrentLevel'] as int? ?? 10;
+    final xpRequiredForCurrentLevel =
+        stats['xpRequiredForCurrentLevel'] as int? ?? 10;
     final currentLevel = stats['currentLevel'] as int? ?? 1;
 
     return Column(
@@ -416,56 +414,61 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
                             ),
                           ],
                         ),
-                        child: xpProgressToNext > 0.1 ? Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Text(
-                            '${(xpProgressToNext * 100).round()}%',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ) : null,
+                        child: xpProgressToNext > 0.1
+                            ? Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Text(
+                                  '${(xpProgressToNext * 100).round()}%',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            : null,
                       );
                     },
                   ),
 
                   // Effet de particules flottantes XP
-                  if (xpProgressToNext > 0) ...List.generate(3, (index) {
-                    return Positioned(
-                      left:
-                          (MediaQuery.of(context).size.width *
-                              0.7 *
-                              xpProgressToNext *
-                              (0.3 + index * 0.2)) %
-                          (MediaQuery.of(context).size.width * 0.7),
-                      top: 4 + (index % 2) * 6,
-                      child: AnimatedBuilder(
-                        animation: _auraAnimation,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(0, _auraAnimation.value * 3),
-                            child: Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.9),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.white.withValues(alpha: 0.5),
-                                    blurRadius: 4,
-                                  ),
-                                ],
+                  if (xpProgressToNext > 0)
+                    ...List.generate(3, (index) {
+                      return Positioned(
+                        left:
+                            (MediaQuery.of(context).size.width *
+                                0.7 *
+                                xpProgressToNext *
+                                (0.3 + index * 0.2)) %
+                            (MediaQuery.of(context).size.width * 0.7),
+                        top: 4 + (index % 2) * 6,
+                        child: AnimatedBuilder(
+                          animation: _auraAnimation,
+                          builder: (context, child) {
+                            return Transform.translate(
+                              offset: Offset(0, _auraAnimation.value * 3),
+                              child: Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }),
+                            );
+                          },
+                        ),
+                      );
+                    }),
                 ],
               ),
             );
@@ -476,10 +479,7 @@ class _UserProfileWidgetState extends State<UserProfileWidget>
 
         Text(
           'Progression vers le niveau ${currentLevel + 1}',
-          style: TextStyle(
-            fontSize: 12, 
-            color: Colors.grey[600],
-          ),
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
       ],
     );

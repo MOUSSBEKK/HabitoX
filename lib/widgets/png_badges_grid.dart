@@ -15,7 +15,6 @@ class PngBadgesGrid extends StatelessWidget {
       "BADGE4.png",
       "BADGE5.png",
       "BADGE6.png",
-      "BADGE7.png",
       "BADGE8.png",
     ];
     return Consumer<UserProfileService>(
@@ -23,7 +22,14 @@ class PngBadgesGrid extends StatelessWidget {
         final level = profileService.userProfile?.currentLevel ?? 1;
 
         // Badges avec niveaux clés seulement
-        final badgeLevels = [1, 4, 9, 19, 29, 39, 49, 59]; // Niveaux où on débloque des badges
+        final badgeLevels = [
+          1,
+          4,
+          9,
+          19,
+          29,
+          39,
+        ]; // Niveaux où on débloque des badges
         final totalBadges = badgeLevels.length;
         final badges = List.generate(totalBadges, (index) {
           final badgeLevel = badgeLevels[index];
