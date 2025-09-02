@@ -32,167 +32,152 @@ class GoalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      shadowColor: GoalCardColors.darkColor.withValues(alpha: 0.1),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: GoalCardColors.lightColor.withValues(alpha: 0.4),
-          width: 1,
-        ),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // En-tête avec icône, titre et actions
-              Row(
-                children: [
-                  // Icône de l'objectif
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: GoalCardColors.primaryColor.withValues(
-                        alpha: 0.15,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      goal.icon,
-                      color: GoalCardColors.primaryColor,
-                      size: 28,
-                    ),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // En-tête avec icône, titre et actions
+            Row(
+              children: [
+                // Icône de l'objectif
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: GoalCardColors.primaryColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(16),
                   ),
+                  child: Icon(
+                    goal.icon,
+                    color: GoalCardColors.primaryColor,
+                    size: 28,
+                  ),
+                ),
 
-                  const SizedBox(width: 20),
+                const SizedBox(width: 20),
 
-                  // Titre et description
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                goal.title,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: GoalCardColors.darkColor,
-                                ),
+                // Titre et description
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              goal.title,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: GoalCardColors.darkColor,
                               ),
                             ),
-                            // Badge de statut
-                            _buildStatusBadge(),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          goal.description,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: GoalCardColors.darkColor.withValues(
-                              alpha: 0.7,
-                            ),
-                            height: 1.3,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Menu d'actions (seulement si des callbacks sont fournis)
-                  if (onEdit != null ||
-                      onDelete != null ||
-                      onToggleStatus != null)
-                    PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: GoalCardColors.darkColor.withValues(alpha: 0.6),
+                          // Badge de statut
+                          _buildStatusBadge(),
+                        ],
                       ),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 'edit':
-                            onEdit?.call();
-                            break;
-                          case 'delete':
-                            onDelete?.call();
-                            break;
-                          case 'toggle':
-                            onToggleStatus?.call();
-                            break;
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        if (onEdit != null)
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 20),
-                                SizedBox(width: 8),
-                                Text('Modifier'),
-                              ],
-                            ),
+                      const SizedBox(height: 6),
+                      Text(
+                        goal.description,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: GoalCardColors.darkColor.withValues(
+                            alpha: 0.7,
                           ),
-                        if (onToggleStatus != null)
-                          PopupMenuItem(
-                            value: 'toggle',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  goal.isActive
-                                      ? Icons.pause
-                                      : Icons.play_arrow,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(goal.isActive ? 'Pauser' : 'Activer'),
-                              ],
-                            ),
-                          ),
-                        if (onDelete != null)
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, size: 20, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Supprimer',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
+                          height: 1.3,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Menu d'actions (seulement si des callbacks sont fournis)
+                if (onEdit != null ||
+                    onDelete != null ||
+                    onToggleStatus != null)
+                  PopupMenuButton<String>(
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: GoalCardColors.darkColor.withValues(alpha: 0.6),
                     ),
-                ],
-              ),
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'edit':
+                          onEdit?.call();
+                          break;
+                        case 'delete':
+                          onDelete?.call();
+                          break;
+                        case 'toggle':
+                          onToggleStatus?.call();
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      if (onEdit != null)
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, size: 20),
+                              SizedBox(width: 8),
+                              Text('Modifier'),
+                            ],
+                          ),
+                        ),
+                      if (onToggleStatus != null)
+                        PopupMenuItem(
+                          value: 'toggle',
+                          child: Row(
+                            children: [
+                              Icon(
+                                goal.isActive ? Icons.pause : Icons.play_arrow,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(goal.isActive ? 'Pauser' : 'Activer'),
+                            ],
+                          ),
+                        ),
+                      if (onDelete != null)
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, size: 20, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text(
+                                'Supprimer',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+              ],
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              // Barre de progression
-              _buildProgressSection(),
+            // Barre de progression
+            _buildProgressSection(),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              // Statistiques
-              _buildStatsSection(),
+            // Statistiques
+            _buildStatsSection(),
 
-              // Actions rapides (seulement pour les objectifs actifs)
-              // if (goal.isActive && onTap != null) ...[
-              //   const SizedBox(height: 20),
-              //   _buildQuickActions(context),
-              // ],
-            ],
-          ),
+            // Actions rapides (seulement pour les objectifs actifs)
+            // if (goal.isActive && onTap != null) ...[
+            //   const SizedBox(height: 20),
+            //   _buildQuickActions(context),
+            // ],
+          ],
         ),
       ),
     );

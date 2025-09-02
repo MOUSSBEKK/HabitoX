@@ -53,14 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              'Account',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.greenAccent,
-                fontSize: isTablet ? 28.0 : 24.0,
-              ),
-            ),
+            title: Text('Account'),
             elevation: 0,
             centerTitle: true,
             backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
@@ -164,10 +157,12 @@ extension on _ProfileScreenState {
         final stats = profileService.getXpStats();
         final level = stats['currentLevel'] as int? ?? 1;
         final levelName = stats['levelName'] as String? ?? 'Débutant';
-        final levelColor = stats['levelColor'] as Color? ?? AppColors.primaryColor;
+        final levelColor =
+            stats['levelColor'] as Color? ?? AppColors.primaryColor;
         final experiencePoints = stats['experiencePoints'] as int? ?? 0;
         final xpInCurrentLevel = stats['xpInCurrentLevel'] as int? ?? 0;
-        final xpRequiredForCurrentLevel = stats['xpRequiredForCurrentLevel'] as int? ?? 10;
+        final xpRequiredForCurrentLevel =
+            stats['xpRequiredForCurrentLevel'] as int? ?? 10;
         final xpProgressToNext = stats['xpProgressToNext'] as double? ?? 0.0;
 
         return Container(
@@ -217,7 +212,10 @@ extension on _ProfileScreenState {
                             ),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: levelColor.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
@@ -248,9 +246,9 @@ extension on _ProfileScreenState {
                   const Icon(Icons.arrow_forward_ios, size: 16),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Barre de progression XP
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,13 +289,13 @@ extension on _ProfileScreenState {
                       // Progression
                       Container(
                         height: 8,
-                        width: MediaQuery.of(context).size.width * xpProgressToNext * 0.8,
+                        width:
+                            MediaQuery.of(context).size.width *
+                            xpProgressToNext *
+                            0.8,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              levelColor,
-                              levelColor.withOpacity(0.7),
-                            ],
+                            colors: [levelColor, levelColor.withOpacity(0.7)],
                           ),
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -418,7 +416,9 @@ extension on _ProfileScreenState {
         break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Page "$settingTitle" en cours de développement')),
+          SnackBar(
+            content: Text('Page "$settingTitle" en cours de développement'),
+          ),
         );
     }
   }

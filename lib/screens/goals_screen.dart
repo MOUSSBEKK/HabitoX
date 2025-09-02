@@ -42,14 +42,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              'Objectifs',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.greenAccent,
-                fontSize: isTablet ? 28.0 : 24.0,
-              ),
-            ),
+            title: Text('Objectifs'),
             elevation: 0,
             centerTitle: true,
             backgroundColor: const Color.fromRGBO(226, 239, 243, 1),

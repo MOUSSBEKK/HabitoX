@@ -60,7 +60,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       _calculatedDays = widget.goal!.targetDays;
       // TODO: Ajouter les champs startDate et endDate au modèle Goal
       _startDate = widget.goal!.createdAt; // Temporaire
-      _endDate = widget.goal!.createdAt.add(Duration(days: widget.goal!.targetDays)); // Temporaire
+      _endDate = widget.goal!.createdAt.add(
+        Duration(days: widget.goal!.targetDays),
+      ); // Temporaire
     } else {
       _selectedIcon = Icons.flag; // Icône par défaut
       _selectedColor = AddGoalBottomSheetColors.goalColors.first;
@@ -98,121 +100,107 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                    Row(
-                      children: [
-                        // Container(
-                        //   padding: const EdgeInsets.all(12),
-                        //   decoration: BoxDecoration(
-                        //     color: AddGoalBottomSheetColors.primaryColor
-                        //         .withValues(alpha: 0.15),
-                        //     borderRadius: BorderRadius.circular(12),
-                        //   ),
-                        //   child: Icon(
-                        //     widget.goal != null ? Icons.edit : Icons.add,
-                        //     color: AddGoalBottomSheetColors.primaryColor,
-                        //     size: 24,
-                        //   ),
-                        // ),
-                        // const SizedBox(width: 16),
-                        Text(
-                          widget.goal != null
-                              ? 'Modifier l\'objectif'
-                              : 'Nouvel objectif',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: AddGoalBottomSheetColors.darkColor,
-                          ),
+                  Row(
+                    children: [
+                      Text(
+                        widget.goal != null
+                            ? 'Modifier l\'objectif'
+                            : 'Nouvel objectif',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: AddGoalBottomSheetColors.darkColor,
                         ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    _buildIconSelector(),
-
-                    const SizedBox(height: 24),
-
-                    _buildColorSelector(),
-
-                    const SizedBox(height: 24),
-
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Titre de l\'objectif',
-                        hintText: 'Ex: Apprendre la guitare',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                        prefixIcon: Icon(Icons.flag),
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Veuillez saisir un titre';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Description',
-                        hintText: 'Décrivez votre objectif...',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                        prefixIcon: Icon(Icons.description),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
                       ),
-                      maxLines: 3,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Veuillez saisir une description';
-                        }
-                        return null;
-                      },
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  _buildIconSelector(),
+
+                  const SizedBox(height: 24),
+
+                  _buildColorSelector(),
+
+                  const SizedBox(height: 24),
+
+                  TextFormField(
+                    controller: _titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Titre de l\'objectif',
+                      hintText: 'Ex: Apprendre la guitare',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      prefixIcon: Icon(Icons.flag),
                     ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Veuillez saisir un titre';
+                      }
+                      return null;
+                    },
+                  ),
 
-                    const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                    _buildDateFields(),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      hintText: 'Décrivez votre objectif...',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      prefixIcon: Icon(Icons.description),
+                    ),
+                    maxLines: 3,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Veuillez saisir une description';
+                      }
+                      return null;
+                    },
+                  ),
 
-                    const SizedBox(height: 32),
+                  const SizedBox(height: 16),
 
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _saveGoal,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  AddGoalBottomSheetColors.primaryColor,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: Text(
-                              widget.goal != null ? 'Modifier' : 'Créer',
+                  _buildDateFields(),
+
+                  const SizedBox(height: 32),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _saveGoal,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                AddGoalBottomSheetColors.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
+                          child: Text(
+                            widget.goal != null ? 'Modifier' : 'Créer',
+                          ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
@@ -286,40 +274,43 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           height: 60,
           child: Row(
             children: [
-              ...mainIcons.map((icon) => Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIcon = icon;
-                      });
-                    },
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: icon == _selectedIcon
-                            ? AddGoalBottomSheetColors.primaryColor.withValues(alpha: 0.2)
-                            : Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: icon == _selectedIcon 
-                              ? AddGoalBottomSheetColors.primaryColor 
-                              : Colors.grey[300]!,
-                          width: icon == _selectedIcon ? 2 : 1,
+              ...mainIcons.map(
+                (icon) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIcon = icon;
+                        });
+                      },
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: icon == _selectedIcon
+                              ? AddGoalBottomSheetColors.primaryColor
+                                    .withValues(alpha: 0.2)
+                              : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: icon == _selectedIcon
+                                ? AddGoalBottomSheetColors.primaryColor
+                                : Colors.grey[300]!,
+                            width: icon == _selectedIcon ? 2 : 1,
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        icon, 
-                        color: icon == _selectedIcon 
-                            ? AddGoalBottomSheetColors.primaryColor 
-                            : Colors.grey[600], 
-                        size: 24
+                        child: Icon(
+                          icon,
+                          color: icon == _selectedIcon
+                              ? AddGoalBottomSheetColors.primaryColor
+                              : Colors.grey[600],
+                          size: 24,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              )).toList(),
+              ),
             ],
           ),
         ),
@@ -329,17 +320,21 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   Widget _buildColorSelector() {
     // Couleurs principales à afficher dans la ligne
-    final mainColors = AddGoalBottomSheetColors.goalColors.take(5).toList();
-    
+    final mainColors = AddGoalBottomSheetColors.goalColors.take(8).toList();
+
     // Organiser les couleurs pour mettre la sélectionnée en premier
     final orderedMainColors = <Color>[];
     if (mainColors.contains(_selectedColor)) {
       orderedMainColors.add(_selectedColor);
-      orderedMainColors.addAll(mainColors.where((color) => color != _selectedColor));
+      orderedMainColors.addAll(
+        mainColors.where((color) => color != _selectedColor),
+      );
     } else {
       // Si la couleur sélectionnée n'est pas dans la liste principale, l'ajouter en premier
       orderedMainColors.add(_selectedColor);
-      orderedMainColors.addAll(mainColors.take(4)); // Prendre seulement 4 couleurs principales
+      orderedMainColors.addAll(
+        mainColors.take(4),
+      ); // Prendre seulement 4 couleurs principales
     }
 
     return Column(
@@ -384,9 +379,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           height: 50,
           child: Row(
             children: [
-              ...orderedMainColors.map((color) => Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12),
+              ...orderedMainColors.map(
+                (color) => Expanded(
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -400,23 +394,23 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         color: color,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: color == _selectedColor 
-                              ? AddGoalBottomSheetColors.darkColor 
+                          color: color == _selectedColor
+                              ? AddGoalBottomSheetColors.darkColor
                               : Colors.grey[300]!,
-                          width: color == _selectedColor ? 3 : 1,
+                          width: 1,
                         ),
                       ),
                       child: color == _selectedColor
                           ? const Icon(
                               Icons.check,
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 29, 29, 29),
                               size: 16,
                             )
                           : null,
                     ),
                   ),
                 ),
-              )).toList(),
+              ),
             ],
           ),
         ),
@@ -556,7 +550,10 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   Future<void> _selectEndDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _endDate ?? (_startDate?.add(const Duration(days: 30)) ?? DateTime.now().add(const Duration(days: 30))),
+      initialDate:
+          _endDate ??
+          (_startDate?.add(const Duration(days: 30)) ??
+              DateTime.now().add(const Duration(days: 30))),
       firstDate: _startDate ?? DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
@@ -595,7 +592,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.snowboarding,
     Icons.surfing,
     Icons.skateboarding,
-    
+
     // Arts & Creativity
     Icons.brush,
     Icons.palette,
@@ -611,7 +608,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.photo,
     Icons.draw,
     Icons.colorize,
-    
+
     // Learning & Education
     Icons.book,
     Icons.school,
@@ -628,7 +625,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.assignment,
     Icons.edit,
     Icons.article,
-    
+
     // Technology & Work
     Icons.code,
     Icons.computer,
@@ -645,7 +642,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.analytics,
     Icons.trending_up,
     Icons.monetization_on,
-    
+
     // Health & Wellness
     Icons.health_and_safety,
     Icons.medical_services,
@@ -662,7 +659,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.eco,
     Icons.nature,
     Icons.park,
-    
+
     // Food & Cooking
     Icons.restaurant,
     Icons.local_restaurant,
@@ -679,7 +676,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.breakfast_dining,
     Icons.fastfood,
     Icons.local_pizza,
-    
+
     // Travel & Adventure
     Icons.flight,
     Icons.train,
@@ -696,7 +693,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.beach_access,
     Icons.forest,
     Icons.landscape,
-    
+
     // Goals & Achievement
     Icons.flag,
     Icons.star,
@@ -713,7 +710,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.bolt,
     Icons.rocket_launch,
     Icons.celebration,
-    
+
     // Social & Relationships
     Icons.people,
     Icons.group,
@@ -730,7 +727,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     Icons.call,
     Icons.video_call,
     Icons.share,
-    
+
     // Hobbies & Interests
     Icons.games,
     Icons.casino,
@@ -814,22 +811,23 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AddGoalBottomSheetColors.primaryColor.withValues(alpha: 0.2)
+                              ? AddGoalBottomSheetColors.primaryColor
+                                    .withValues(alpha: 0.2)
                               : Colors.grey[100],
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected 
-                                ? AddGoalBottomSheetColors.primaryColor 
+                            color: isSelected
+                                ? AddGoalBottomSheetColors.primaryColor
                                 : Colors.grey[300]!,
                             width: isSelected ? 2 : 1,
                           ),
                         ),
                         child: Icon(
-                          icon, 
-                          color: isSelected 
-                              ? AddGoalBottomSheetColors.primaryColor 
-                              : Colors.grey[600], 
-                          size: 24
+                          icon,
+                          color: isSelected
+                              ? AddGoalBottomSheetColors.primaryColor
+                              : Colors.grey[600],
+                          size: 24,
                         ),
                       ),
                     );
@@ -855,7 +853,11 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     final orderedColors = <Color>[];
     if (AddGoalBottomSheetColors.goalColors.contains(_selectedColor)) {
       orderedColors.add(_selectedColor);
-      orderedColors.addAll(AddGoalBottomSheetColors.goalColors.where((color) => color != _selectedColor));
+      orderedColors.addAll(
+        AddGoalBottomSheetColors.goalColors.where(
+          (color) => color != _selectedColor,
+        ),
+      );
     } else {
       orderedColors.addAll(AddGoalBottomSheetColors.goalColors);
     }
@@ -913,16 +915,16 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         color: color,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: isSelected 
-                              ? AddGoalBottomSheetColors.darkColor 
+                          color: isSelected
+                              ? AddGoalBottomSheetColors.darkColor
                               : Colors.grey[300]!,
-                          width: isSelected ? 3 : 1,
+                          width: 1,
                         ),
                       ),
                       child: isSelected
                           ? const Icon(
                               Icons.check,
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 51, 51, 51),
                               size: 20,
                             )
                           : null,

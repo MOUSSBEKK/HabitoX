@@ -47,14 +47,7 @@ class _BadgesScreenState extends State<BadgesScreen>
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              'Achievements',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.greenAccent,
-                fontSize: isTablet ? 28.0 : 24.0,
-              ),
-            ),
+            title: Text('Achievements'),
             elevation: 0,
             centerTitle: true,
             backgroundColor: const Color.fromRGBO(226, 239, 243, 1),

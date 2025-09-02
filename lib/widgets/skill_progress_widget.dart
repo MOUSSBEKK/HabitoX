@@ -36,14 +36,7 @@ class SkillProgressWidget extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              'HabitoX',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: SkillProgressColors.darkColor,
-                fontSize: isTablet ? 28.0 : 24.0,
-              ),
-            ),
+            title: Text('HabitoX'),
             elevation: 0,
             centerTitle: true,
             backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
