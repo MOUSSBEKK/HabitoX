@@ -162,58 +162,99 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
+  // Calcule la taille adaptative des carrés en fonction du nombre de jours
+  double _calculateSquareSize(int totalDays) {
+    // Pour les petites durées (≤ 7 jours), carrés plus grands
+    if (totalDays <= 7) return 24.0;
+    
+    // Pour les durées moyennes (8-21 jours), taille normale
+    if (totalDays <= 21) return 18.0;
+    
+    // Pour les durées moyennes-élevées (22-42 jours), un peu plus petit
+    if (totalDays <= 42) return 14.0;
+    
+    // Pour les durées élevées (43-70 jours), carrés plus petits
+    if (totalDays <= 70) return 12.0;
+    
+    // Pour les très longues durées (> 70 jours), carrés très petits
+    return 10.0;
+  }
+
+  // Calcule l'espacement adaptatif en fonction de la taille des carrés
+  double _calculateSquareMargin(double squareSize) {
+    if (squareSize >= 20) return 3.0;
+    if (squareSize >= 16) return 2.5;
+    if (squareSize >= 12) return 2.0;
+    return 1.5;
+  }
+
   Widget _buildCalendarMatrix(CalendarShape shape, int progress, int maxDays) {
     final daysCompleted = progress;
-    final daysToShow = shape.pattern;
+    final squareSize = _calculateSquareSize(maxDays);
+    final squareMargin = _calculateSquareMargin(squareSize);
+
+    // Déterminer le nombre optimal de colonnes basé sur le nombre total de jours
+    final columnsPerRow = _calculateOptimalColumns(maxDays);
+    
+    // Créer une liste de tous les jours visibles
+    final allDays = List.generate(maxDays, (index) => index + 1);
+    
+    // Organiser les jours en lignes
+    final rows = <List<int>>[];
+    for (int i = 0; i < allDays.length; i += columnsPerRow) {
+      final endIndex = (i + columnsPerRow).clamp(0, allDays.length);
+      rows.add(allDays.sublist(i, endIndex));
+    }
 
     return Column(
       children: [
         const SizedBox(height: 4),
-        ...daysToShow.asMap().entries.map((entry) {
-          final weekIndex = entry.key;
-          final week = entry.value;
-
-          return Row(
-            children: [
-              ...week.asMap().entries.map((dayEntry) {
-                final dayIndex = dayEntry.key;
-                final shouldShow = dayEntry.value;
-
-                if (!shouldShow) {
-                  return Expanded(
-                    child: Container(
-                      height: 20,
-                      margin: const EdgeInsets.all(1),
-                    ),
-                  );
-                }
-
-                final dayNumber = weekIndex * 7 + dayIndex + 1;
-                final isVisibleCell = shouldShow && dayNumber <= maxDays;
-                final isCompleted = isVisibleCell && dayNumber <= daysCompleted;
-
+        ...rows.map((row) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: squareMargin / 2),
+            child: Row(
+              children: row.map((dayNumber) {
+                final isCompleted = dayNumber <= daysCompleted;
+                
                 return Expanded(
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeInOut,
-                    height: 14,
-                    margin: const EdgeInsets.all(2),
+                    height: squareSize,
+                    margin: EdgeInsets.symmetric(horizontal: squareMargin),
                     decoration: BoxDecoration(
                       color: isCompleted
                           ? shape.color
-                          : isVisibleCell
-                          ? shape.color.withValues(alpha: 0.25)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(3),
+                          : shape.color.withValues(alpha: 0.25),
+                      borderRadius: BorderRadius.circular(squareSize * 0.15),
                     ),
                   ),
                 );
-              }),
-            ],
+              }).toList(),
+            ),
           );
-        }),
+        }).toList(),
       ],
     );
+  }
+
+  // Calcule le nombre optimal de colonnes par ligne selon le nombre total de jours
+  int _calculateOptimalColumns(int totalDays) {
+    // Pour les très petits nombres, une seule ligne
+    if (totalDays <= 7) return totalDays;
+    
+    // Pour les durées moyennes, essayer de faire des lignes équilibrées
+    if (totalDays <= 14) return 7;
+    if (totalDays <= 21) return 7;
+    if (totalDays <= 28) return 7;
+    if (totalDays <= 42) return 7;
+    
+    // Pour les longues durées, plus de colonnes pour optimiser l'espace
+    if (totalDays <= 70) return 10;
+    if (totalDays <= 100) return 12;
+    
+    // Pour les très longues durées
+    return 14;
   }
 
   Widget _buildProgressInfo(CalendarShape shape, dynamic activeGoal) {
