@@ -1,113 +1,267 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import '../../services/theme_service.dart';
+import '../../widgets/theme_toggle_widget.dart';
+import '../../constants/app_colors.dart';
 
-
-class AppAppearanceScreen extends StatefulWidget {
+class AppAppearanceScreen extends StatelessWidget {
   const AppAppearanceScreen({super.key});
-
-  @override
-  State<AppAppearanceScreen> createState() => _AppAppearanceScreenState();
-}
-
-class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
-  String _selectedTheme = 'system';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Thème',
-        ),
+        title: const Text('Appearance'),
+        actions: [const QuickThemeToggle(), const SizedBox(width: 8)],
       ),
-      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 16),
-              _buildThemeSection(),
-            ],
-          ),
-      ),
-    );
-  }
-
-  Widget _buildThemeSection() {
-    return _buildSection(
-      children: [
-        _buildThemeOption('Automatique', 'system', Icons.brightness_auto),
-        _buildThemeOption('Clair', 'light', Icons.light_mode),
-        _buildThemeOption('Sombre', 'dark', Icons.dark_mode),
-      ],
-    );
-  }
-
- 
-  Widget _buildSection({required List<Widget> children}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (int i = 0; i < children.length; i++) ...[
-                children[i],
-                if (i != children.length - 1 && children[i] is! Divider)
-                  Divider(height: 1, color: Colors.grey.shade200),
-              ],
+              _buildThemeSection(context),
+              const SizedBox(height: 24),
+              _buildPreviewSection(context),
+              const SizedBox(height: 24),
+              _buildQuickActionsSection(context),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildThemeOption(String title, String value, IconData icon) {
-    final isSelected = _selectedTheme == value;
-    
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isSelected 
-              ? Color.fromRGBO(167, 198, 165, 0.2)
-              : Colors.grey.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: FaIcon(
-          icon, 
-          color: isSelected ? Color(0xFFA7C6A5) : Colors.grey.shade600,
-        ),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          color: isSelected ? Color(0xFFA7C6A5) : null,
-        ),
-      ),
-      trailing: isSelected 
-          ? Icon(Icons.check_circle, color: Color(0xFFA7C6A5))
-          : null,
-      onTap: () {
-        setState(() {
-          _selectedTheme = value;
-        });
+  Widget _buildThemeSection(BuildContext context) {
+    return Consumer<ThemeService>(
+      builder: (context, themeService, child) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Theme Mode',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 16),
+                ...themeService.availableThemeModes.map((option) {
+                  final isSelected = themeService.themeMode == option.mode;
+                  return ListTile(
+                    leading: Icon(
+                      option.icon,
+                      color: isSelected
+                          ? AppColors.accentPrimary
+                          : Theme.of(context).iconTheme.color,
+                    ),
+                    title: Text(
+                      option.name,
+                      style: TextStyle(
+                        color: isSelected
+                            ? AppColors.accentPrimary
+                            : Theme.of(context).textTheme.bodyLarge?.color,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    subtitle: Text(
+                      option.description,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    trailing: isSelected
+                        ? Icon(
+                            Icons.check_circle,
+                            color: AppColors.accentPrimary,
+                          )
+                        : null,
+                    onTap: () => themeService.setThemeMode(option.mode),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    tileColor: isSelected
+                        ? AppColors.accentPrimary.withOpacity(0.1)
+                        : null,
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
 
+  Widget _buildPreviewSection(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Theme Preview',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildPreviewCard(
+                    context,
+                    'Light Theme',
+                    Icons.light_mode,
+                    AppColors.lightBackgroundPrimary,
+                    AppColors.lightTextPrimary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildPreviewCard(
+                    context,
+                    'Dark Theme',
+                    Icons.dark_mode,
+                    AppColors.darkBackgroundPrimary,
+                    AppColors.darkTextPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreviewCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color backgroundColor,
+    Color textColor,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).dividerColor, width: 1),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: textColor, size: 24),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionsSection(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Quick Actions',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildQuickActionButton(
+                    context,
+                    'Cycle Theme',
+                    Icons.refresh,
+                    () => _showThemeSelectionDialog(context),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildQuickActionButton(
+                    context,
+                    'Animated Toggle',
+                    Icons.animation,
+                    () => _showAnimatedToggle(context),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionButton(
+    BuildContext context,
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Theme.of(context).dividerColor, width: 1),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: AppColors.accentPrimary, size: 24),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showThemeSelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const ThemeSelectionDialog(),
+    );
+  }
+
+  void _showAnimatedToggle(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Animated Theme Toggle'),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedThemeToggle(showLabel: true),
+            SizedBox(height: 16),
+            Text('Tap the toggle to see the animation!'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
 }

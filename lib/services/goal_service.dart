@@ -302,7 +302,7 @@ class GoalService extends ChangeNotifier {
       if (profileService != null) {
         final levelUpResult = await profileService.onGoalCompletedXP(
           targetDays,
-          completedEarly: completedEarly,
+          isConsistencyBonus: completedEarly,
         );
 
         // Si level up, afficher la popup

@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user_profile.dart';
-import 'dart:math';
+import '../models/user_profile.dart' as models;
 
 class UserProfileService extends ChangeNotifier {
   static const String _profileKey = 'userProfile';
-  UserProfile? _userProfile;
+  models.UserProfile? _userProfile;
 
-  UserProfile? get userProfile => _userProfile;
+  models.UserProfile? get userProfile => _userProfile;
   bool get hasProfile => _userProfile != null;
 
   UserProfileService() {
@@ -20,14 +19,17 @@ class UserProfileService extends ChangeNotifier {
     final profileJson = prefs.getString(_profileKey);
 
     if (profileJson != null) {
-      _userProfile = UserProfile.fromJson(jsonDecode(profileJson));
+      _userProfile = models.UserProfile.fromJson(jsonDecode(profileJson));
+      // S'assurer que l'utilisateur a au moins le premier badge
+      _ensureFirstBadgeUnlocked();
     } else {
-      // Créer un profil par défaut
-      _userProfile = UserProfile(
+      // Créer un profil par défaut sans badges débloqués
+      _userProfile = models.UserProfile(
         id: _generateId(),
         username: 'HabitoX_User',
         lastActivityDate: DateTime.now(),
         createdAt: DateTime.now(),
+        unlockedBadges: [], // Aucun badge débloqué par défaut
       );
       await _saveProfile();
     }
@@ -43,6 +45,18 @@ class UserProfileService extends ChangeNotifier {
     await prefs.setString(_profileKey, profileJson);
   }
 
+  // Méthode publique pour sauvegarder le profil (utilisée par DebugScreen)
+  Future<void> saveProfile() async {
+    await _saveProfile();
+  }
+
+  // Méthode pour mettre à jour directement le profil (utilisée par DebugScreen)
+  Future<void> updateProfile(models.UserProfile newProfile) async {
+    _userProfile = newProfile;
+    await _saveProfile();
+    notifyListeners();
+  }
+
   Future<void> updateUsername(String newUsername) async {
     if (_userProfile != null) {
       _userProfile = _userProfile!.copyWith(username: newUsername);
@@ -51,87 +65,67 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
-  // Méthode appelée quand un objectif est terminé (ancien système)
-  Future<void> onGoalCompleted() async {
+  Future<bool> addDayCompleted() async {
     if (_userProfile != null) {
-      _userProfile!.onGoalCompleted();
+      final oldLevel = _userProfile!.currentLevel;
+      _userProfile!.addAuraForDay();
       await _saveProfile();
       notifyListeners();
+      return _userProfile!.currentLevel > oldLevel;
     }
-  }
-
-  // Nouvelle méthode pour ajouter de l'XP
-  Future<LevelUpResult?> addExperience(
-    int xp, {
-    bool isConsistencyBonus = false,
-  }) async {
-    if (_userProfile != null) {
-      final result = _userProfile!.addExperience(
-        xp,
-        isConsistencyBonus: isConsistencyBonus,
-      );
-      await _saveProfile();
-      notifyListeners();
-      return result;
-    }
-    return null;
-  }
-
-  // Méthode pour completion d'objectif avec nouveau système XP
-  Future<LevelUpResult?> onGoalCompletedXP(
-    int targetDays, {
-    bool completedEarly = false,
-  }) async {
-    if (_userProfile != null) {
-      final xp = UserProfile.calculateGoalXp(
-        targetDays,
-        completedEarly: completedEarly,
-      );
-      _userProfile!.totalCompletedGoals++;
-
-      final result = _userProfile!.addExperience(
-        xp,
-        isConsistencyBonus: completedEarly,
-      );
-      await _saveProfile();
-      notifyListeners();
-      return result;
-    }
-    return null;
+    return false;
   }
 
   Future<void> resetProfile() async {
-    _userProfile = UserProfile(
+    _userProfile = models.UserProfile(
       id: _generateId(),
       username: 'HabitoX_User',
       lastActivityDate: DateTime.now(),
       createdAt: DateTime.now(),
+      unlockedBadges: [], // Aucun badge débloqué par défaut
     );
     await _saveProfile();
     notifyListeners();
   }
 
-  // Nouvelles statistiques XP
+  // Obtenir les statistiques du profil (ancien système)
+  Map<String, dynamic> getProfileStats() {
+    if (_userProfile == null) return {};
+
+    return {
+      'currentLevel': _userProfile!.auraLevel,
+      'progressToNext': _userProfile!.progressToNextLevel,
+      'levelName': _userProfile!.auraLevelName,
+      'levelColor': _userProfile!.auraColor,
+      'levelEmoji': _userProfile!.auraEmoji,
+      'consecutiveDays': _userProfile!.consecutiveDays,
+      'maxConsecutiveDays': _userProfile!.maxConsecutiveDays,
+      'totalDaysCompleted': _userProfile!.totalDaysCompleted,
+      'badgesCount': _userProfile!.unlockedBadges.length,
+    };
+  }
+
+  // Obtenir les statistiques XP (nouveau système)
   Map<String, dynamic> getXpStats() {
     if (_userProfile == null) return {};
 
     return {
       'currentLevel': _userProfile!.currentLevel,
-      'experiencePoints': _userProfile!.experiencePoints,
-      'xpProgressToNext': _userProfile!.xpProgressToNextLevel,
-      'xpNeededForNext': _userProfile!.xpNeededForNextLevel,
-      'xpInCurrentLevel': _userProfile!.xpInCurrentLevel,
-      'xpRequiredForCurrentLevel': _userProfile!.xpRequiredForCurrentLevel,
       'levelName': _userProfile!.levelName,
       'levelColor': _userProfile!.levelColor,
-      'totalCompletedGoals': _userProfile!.totalCompletedGoals,
+      'experiencePoints': _userProfile!.experiencePoints,
+      'xpInCurrentLevel': _userProfile!.xpInCurrentLevel,
+      'xpRequiredForCurrentLevel': _userProfile!.xpRequiredForCurrentLevel,
+      'xpProgressToNext': _userProfile!.xpProgressToNextLevel,
+      'consecutiveDays': _userProfile!.consecutiveDays,
+      'maxConsecutiveDays': _userProfile!.maxConsecutiveDays,
+      'totalDaysCompleted': _userProfile!.totalDaysCompleted,
       'badgesCount': _userProfile!.unlockedBadges.length,
-      'specialBadgesCount': _userProfile!.specialBadges.length,
     };
   }
 
   // Obtenir les badges débloqués
-  List<AuraBadge> get unlockedBadges {
+  List<models.AuraBadge> get unlockedBadges {
     return _userProfile?.unlockedBadges ?? [];
   }
 
@@ -152,13 +146,114 @@ class UserProfileService extends ChangeNotifier {
     return false;
   }
 
-  // Obtenir les points nécessaires pour le prochain niveau
-  // int get pointsNeededForNextLevel {
-  //   final currentLevel = _userProfile?.auraLevel ?? 1;
-  //   final nextLevelPoints = pow(currentLevel * 100, 2).toInt();
-  //   final currentPoints = _userProfile?.auraPoints ?? 0;
-  //   return nextLevelPoints - currentPoints;
-  // }
+  // Obtenir le prochain niveau
+  int get nextLevel {
+    return (_userProfile?.currentLevel ?? 1) + 1;
+  }
+
+  // Obtenir les jours nécessaires pour le prochain niveau
+  int get daysNeededForNextLevel {
+    // Avec le nouveau système, il faut 1 jour complété pour monter de niveau
+    return 1;
+  }
+
+  // S'assurer que l'utilisateur a au moins le premier badge
+  void _ensureFirstBadgeUnlocked() {
+    // Ne plus donner de badge par défaut - ils se débloquent selon la progression
+  }
+
+  // ============ GESTION DES ACCESSOIRES D'AVATAR ============
+
+  // Obtenir les accessoires débloqués basés sur les jours consécutifs
+  List<String> getUnlockedAvatarAccessories() {
+    if (_userProfile == null) return [];
+
+    final consecutiveDays = _userProfile!.consecutiveDays;
+    final accessories = <String>[];
+
+    // Débloquer un accessoire tous les 5 jours consécutifs
+    for (int i = 5; i <= consecutiveDays; i += 5) {
+      accessories.add(_getAccessoryForDays(i));
+    }
+
+    return accessories;
+  }
+
+  // Obtenir l'accessoire correspondant à un nombre de jours
+  String _getAccessoryForDays(int days) {
+    final accessories = [
+      'hat', // 5 jours
+      'glasses', // 10 jours
+      'star', // 15 jours
+      'crown', // 20 jours
+      'wings', // 25 jours
+      'halo', // 30 jours
+      'rainbow', // 35 jours
+      'fire', // 40 jours
+      'ice', // 45 jours
+      'lightning', // 50 jours
+    ];
+
+    final index = (days ~/ 5) - 1;
+    if (index >= 0 && index < accessories.length) {
+      return accessories[index];
+    }
+
+    // Pour les jours très élevés, répéter les accessoires
+    return accessories[index % accessories.length];
+  }
+
+  // Ajouter de l'XP et gérer les accessoires
+  Future<models.LevelUpResult> addExperience(
+    int xp, {
+    bool isConsistencyBonus = false,
+  }) async {
+    if (_userProfile == null) {
+      throw Exception('Profil utilisateur non initialisé');
+    }
+
+    final result = _userProfile!.addExperience(
+      xp,
+      isConsistencyBonus: isConsistencyBonus,
+    );
+    await _saveProfile();
+    notifyListeners();
+    return result;
+  }
+
+  // Méthode pour gérer la completion d'un objectif (ancien système)
+  Future<void> onGoalCompleted() async {
+    if (_userProfile != null) {
+      _userProfile!.onGoalCompleted();
+      await _saveProfile();
+      notifyListeners();
+    }
+  }
+
+  // Méthode pour gérer la completion d'un objectif avec XP (nouveau système)
+  Future<models.LevelUpResult> onGoalCompletedXP(
+    int xp, {
+    bool isConsistencyBonus = false,
+  }) async {
+    if (_userProfile == null) {
+      throw Exception('Profil utilisateur non initialisé');
+    }
+
+    // Ajouter l'XP pour la completion de l'objectif
+    final result = _userProfile!.addExperience(
+      xp,
+      isConsistencyBonus: isConsistencyBonus,
+    );
+
+    // Incrémenter le compteur d'objectifs complétés
+    _userProfile = _userProfile!.copyWith(
+      totalCompletedGoals: _userProfile!.totalCompletedGoals + 1,
+    );
+
+    await _saveProfile();
+    notifyListeners();
+    return result;
+  }
 
   String _generateId() {
     final random = DateTime.now().millisecondsSinceEpoch;

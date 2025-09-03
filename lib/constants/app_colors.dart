@@ -1,62 +1,99 @@
 import 'package:flutter/material.dart';
 
-/// Couleurs du design épuré global de l'application HabitoX
+/// Comprehensive color system for HabitoX app with light and dark themes
 class AppColors {
-  // Couleurs principales
-  static const Color primaryColor = Color.fromARGB(
-    255,
-    209,
-    113,
-    50,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color.fromARGB(
-    255,
-    38,
-    132,
-    167,
-  ); // Bleu clair pour fonds
-  static const Color darkColor = Color(
+  // ===== LIGHT THEME COLORS =====
+
+  // Light theme backgrounds
+  static const Color lightBackgroundPrimary = Color(0xFFF8F9FA);
+  static const Color lightBackgroundSecondary = Color(0xFFFFFFFF);
+  static const Color lightSurfacePrimary = Color(0xFFFFFFFF);
+  static const Color lightSurfaceSecondary = Color(0xFFF1F3F4);
+
+  // Light theme text colors
+  static const Color lightTextPrimary = Color(
     0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
+  ); // Dark green for primary text
+  static const Color lightTextSecondary = Color(
+    0xFF2A5A55,
+  ); // Lighter green for secondary text
+  static const Color lightTextMuted = Color(
+    0xFF3A6A65,
+  ); // Even lighter for muted text
+  static const Color lightTextHeading = Color(
+    0xFF1F4843,
+  ); // Dark green for headings
 
-  // Couleurs dérivées pour la cohérence
-  static const Color primaryLight = Color(0xFFB8D1B6); // Vert plus clair
-  static const Color primaryDark = Color(0xFF8FB28D); // Vert plus foncé
+  // Light theme borders and shadows
+  static const Color lightBorderPrimary = Color(
+    0xFF85B8CB,
+  ); // Light blue border
+  static const Color lightBorderSecondary = Color(0xFFE9ECEF);
+  static const Color lightShadowColor = Color(0xFFE9ECEF);
 
-  // Couleurs avec opacités pour les arrière-plans et bordures
-  static const Color lightColorTransparent = Color(0x1A85B8CB);
-  static const Color darkColorTransparent = Color(0x1A1F4843);
+  // ===== DARK THEME COLORS =====
 
-  // Couleurs d'état
+  // Dark theme backgrounds (as specified)
+  static const Color darkBackgroundPrimary = Color(
+    0xFF0D0D0D,
+  ); // Deep dark gray
+  static const Color darkBackgroundSecondary = Color(
+    0xFF121212,
+  ); // Slightly lighter dark gray
+  static const Color darkSurfacePrimary = Color(0xFF1E1E1E); // Surface color
+  static const Color darkSurfaceSecondary = Color(
+    0xFF2A2A2A,
+  ); // Secondary surface
+
+  // Dark theme text colors (as specified)
+  static const Color darkTextPrimary = Color(
+    0xFFE0E0E0,
+  ); // Off-white for primary text
+  static const Color darkTextSecondary = Color(
+    0xFFA0A0A0,
+  ); // Medium gray for secondary text
+  static const Color darkTextMuted = Color(0xFF808080); // Muted gray
+  static const Color darkTextHeading = Color(
+    0xFFFFFFFF,
+  ); // Pure white for headings
+
+  // Dark theme borders and shadows
+  static const Color darkBorderPrimary = Color(0xFF2A2A2A); // Subtle border
+  static const Color darkBorderSecondary = Color(0xFF404040);
+  static const Color darkShadowColor = Color(0xFF000000);
+
+  // ===== ACCENT COLORS =====
+
+  // Professional accent colors (as specified)
+  static const Color accentPrimary = Color(0xFF2DD4BF); // Professional teal
+  static const Color accentSecondary = Color(0xFF3A86FF); // Electric blue
+  static const Color accentTertiary = Color(0xFF06B6D4); // Cyan variant
+
+  // ===== LEGACY COLORS (for backward compatibility) =====
+  static const Color primaryColor = Color(0xFF2DD4BF); // Updated to use teal
+  static const Color lightColor = Color(0xFF85B8CB); // Light blue
+  static const Color darkColor = Color(0xFF1F4843); // Dark green
+
+  // ===== STATE COLORS =====
   static const Color successColor = Color(0xFF4CAF50);
   static const Color warningColor = Color(0xFFFF9800);
   static const Color errorColor = Color(0xFFF44336);
   static const Color infoColor = Color(0xFF2196F3);
 
-  // Couleurs neutres
+  // ===== NEUTRAL COLORS =====
   static const Color white = Colors.white;
   static const Color black = Colors.black;
 
-  // Couleurs de surface
-  static const Color surfaceColor = white;
-  static const Color scaffoldBackgroundColor = Color(0xFFF8F9FA);
-
-  // Couleurs de texte - TOUT en vert foncé (#1f4843)
-  static const Color textPrimary = darkColor; // #1f4843
-  static const Color textSecondary = Color(
-    0xFF2A5A55,
-  ); // Version plus claire du vert foncé
-  static const Color textMuted = Color(
-    0xFF3A6A65,
-  ); // Version encore plus claire
-
-  // Couleurs de bordure
-  static const Color borderColor = lightColor; // #85b8cb
-  static const Color borderColorLight = Color(0xFFE9ECEF);
-
-  // Couleurs d'ombre
-  static const Color shadowColor = darkColor; // #1f4843
-  static const Color shadowColorLight = Color(0xFFE9ECEF);
+  // ===== BACKWARD COMPATIBILITY =====
+  static const Color surfaceColor = lightSurfacePrimary;
+  static const Color scaffoldBackgroundColor = lightBackgroundPrimary;
+  static const Color textPrimary = lightTextPrimary;
+  static const Color textSecondary = lightTextSecondary;
+  static const Color textMuted = lightTextMuted;
+  static const Color borderColor = lightBorderPrimary;
+  static const Color borderColorLight = lightBorderSecondary;
+  static const Color shadowColor = lightShadowColor;
+  static const Color shadowColorLight = lightShadowColor;
 }
 
 /// Thème de couleurs pour les composants spécifiques

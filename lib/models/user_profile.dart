@@ -67,10 +67,11 @@ class UserProfile {
 
       // Bonus d'aura pour les séries
       int bonus = 0;
-      if (consecutiveDays >= 7)
+      if (consecutiveDays >= 7) {
         bonus = 50; // 7 jours = +50
-      else if (consecutiveDays >= 3)
+      } else if (consecutiveDays >= 3) {
         bonus = 20; // 3 jours = +20
+      }
 
       auraPoints += 100 + bonus; // Base 100 + bonus série
     } else if (today.difference(lastDay).inDays > 1) {

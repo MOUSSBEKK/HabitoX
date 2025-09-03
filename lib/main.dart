@@ -5,6 +5,8 @@ import 'package:toastification/toastification.dart';
 import 'services/goal_service.dart';
 import 'services/calendar_service.dart';
 import 'services/user_profile_service.dart';
+import 'services/theme_service.dart';
+import 'widgets/theme_toggle_widget.dart';
 import 'screens/home_screen.dart';
 import 'screens/settings/payment_methods_screen.dart';
 import 'screens/settings/billing_subscriptions_screen.dart';
@@ -14,23 +16,32 @@ import 'screens/settings/data_analytics_screen.dart';
 import 'screens/settings/rate_app_screen.dart';
 // import 'screens/settings/follow_instagram_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
+import 'screens/debug_screen.dart';
+import 'constants/app_theme.dart';
 import 'constants/app_colors.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
-  runApp(const HabitoXApp());
+
+  // Initialize theme service
+  final themeService = ThemeService();
+  await themeService.initialize();
+
+  runApp(HabitoXApp(themeService: themeService));
 }
 
 class HabitoXApp extends StatelessWidget {
-  const HabitoXApp({super.key});
+  final ThemeService themeService;
+
+  const HabitoXApp({super.key, required this.themeService});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      // regarder plus en détail les providers
       providers: [
+        ChangeNotifierProvider<ThemeService>.value(value: themeService),
         ChangeNotifierProvider(create: (context) => GoalService()),
         ChangeNotifierProvider(create: (context) => CalendarService()),
         ChangeNotifierProvider(create: (context) => UserProfileService()),
