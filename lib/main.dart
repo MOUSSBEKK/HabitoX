@@ -15,7 +15,8 @@ import 'screens/settings/rate_app_screen.dart';
 // import 'screens/settings/follow_instagram_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
 import 'constants/app_colors.dart';
-import 'package:adaptive_dialog/adaptive_dialog.dart';
+// import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'screens/premium_unlock_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,6 +76,7 @@ class HabitoXApp extends StatelessWidget {
           ),
           home: const HomeScreen(),
           routes: {
+            '/premium_unlock': (context) => const PremiumUnlockScreen(),
             '/payment_methods': (context) => const PaymentMethodsScreen(),
             '/billing_subscriptions': (context) =>
                 const BillingSubscriptionsScreen(),

@@ -152,6 +152,8 @@ class _BadgesScreenState extends State<BadgesScreen>
       'BADGE5.png',
       'BADGE6.png',
       'BADGE8.png',
+      'BADGE9.png',
+      'BADGE10.png',
     ];
     final index = (level - 1).clamp(0, assetFiles.length - 1);
     return 'assets/badges/${assetFiles[index]}';

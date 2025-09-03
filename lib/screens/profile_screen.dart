@@ -4,6 +4,7 @@ import 'package:toastification/toastification.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -53,14 +54,8 @@ class _ProfileScreenState extends State<ProfileScreen>
 extension on _ProfileScreenState {
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
-      // KIWI changer pour afficher la page d'abonnement
-      onTap: () => toastification.show(
-        context: context,
-        title: const Text('Premium requis pour upgrader'),
-        type: ToastificationType.warning,
-        style: ToastificationStyle.flatColored,
-        autoCloseDuration: const Duration(seconds: 3),
-      ),
+      // Ouvre la page de souscription premium
+      onTap: () => Navigator.pushNamed(context, '/premium_unlock'),
       child: Container(
         padding: EdgeInsets.all(isTablet ? 20 : 16),
         decoration: BoxDecoration(
@@ -371,6 +366,12 @@ extension on _ProfileScreenState {
       case 'Data & Analytics':
         Navigator.pushNamed(context, '/data_analytics');
         break;
+      case 'Politique de confidentialité':
+        _openPrivacyPolicy();
+        break;
+      case 'Suivre sur Insta':
+        _openInstagram();
+        break;
       case 'Noter l\'app':
         Navigator.pushNamed(context, '/rate_app');
         break;
@@ -388,6 +389,65 @@ extension on _ProfileScreenState {
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
+    }
+  }
+
+  Future<void> _openPrivacyPolicy() async {
+    final Uri termsUri = Uri.parse('https://habitox.app/terms');
+    try {
+      final bool didLaunch = await launchUrl(
+        termsUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!didLaunch) {
+        await launchUrl(termsUri, mode: LaunchMode.platformDefault);
+      }
+    } catch (_) {
+      // Dernier recours: affichage d'un toast
+      toastification.show(
+        context: context,
+        title: const Text(
+          'Impossible d\'ouvrir la politique de confidentialité',
+        ),
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+    }
+  }
+
+  Future<void> _openInstagram() async {
+    // Hypothèse: identifiant Instagram de HabitoX. Modifiez si besoin.
+    const String instagramHandle = 'habitoxts';
+    final Uri appUri = Uri.parse('instagram://user?username=$instagramHandle');
+    final Uri webUri = Uri.parse('https://instagram.com/$instagramHandle');
+
+    try {
+      // Essaye l'app Instagram si installée
+      bool opened = await launchUrl(
+        appUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened) {
+        // Fallback vers le site web (ouvre l'app si Android le gère, sinon navigateur)
+        opened = await launchUrl(webUri, mode: LaunchMode.externalApplication);
+        if (!opened) {
+          await launchUrl(webUri, mode: LaunchMode.platformDefault);
+        }
+      }
+    } catch (_) {
+      // Dernier recours: navigateur par défaut
+      try {
+        await launchUrl(webUri, mode: LaunchMode.platformDefault);
+      } catch (e) {
+        toastification.show(
+          context: context,
+          title: const Text('Impossible d\'ouvrir Instagram'),
+          type: ToastificationType.error,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+      }
     }
   }
 }
