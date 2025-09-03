@@ -8,7 +8,6 @@ import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 // Couleurs du design épuré
 class GoalsColors {
   static const Color primaryColor = Color(
@@ -141,7 +140,6 @@ class _GoalsScreenState extends State<GoalsScreen> {
               padding: EdgeInsets.only(bottom: isTablet ? 20.0 : 16.0),
               child: GoalCard(
                 goal: goal,
-                onTap: () => _showGoalDetails(context, goal),
                 onEdit: () => _showEditGoalDialog(context, goal),
                 onDelete: () => _showDeleteConfirmation(context, goal),
                 onToggleStatus: () => _toggleGoalStatus(goal),
@@ -224,18 +222,6 @@ class _GoalsScreenState extends State<GoalsScreen> {
     );
   }
 
-  // a supprimer _showGoalDetails
-  void _showGoalDetails(BuildContext context, Goal goal) {
-    showOkAlertDialog(
-      context: context,
-      title: goal.title,
-      message: 'Description: ${goal.description}\n\n'
-               'Objectif: ${goal.targetDays} jours\n'
-               'Progression: ${goal.totalDays}/${goal.targetDays} jours\n'
-               'Grade actuel: ${goal.currentGrade.name}',
-    );
-  }
-
   void _showEditGoalDialog(BuildContext context, Goal goal) {
     _showAddGoalBottomSheet(context, goal: goal);
   }
@@ -244,12 +230,13 @@ class _GoalsScreenState extends State<GoalsScreen> {
     final result = await showOkCancelAlertDialog(
       context: context,
       title: 'Confirmer la suppression',
-      message: 'Êtes-vous sûr de vouloir supprimer l\'objectif "${goal.title}" ?',
+      message:
+          'Êtes-vous sûr de vouloir supprimer l\'objectif "${goal.title}" ?',
       okLabel: 'Supprimer',
       cancelLabel: 'Annuler',
       isDestructiveAction: true,
     );
-    
+
     if (result == OkCancelResult.ok) {
       context.read<GoalService>().deleteGoal(goal.id);
     }

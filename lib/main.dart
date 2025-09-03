@@ -15,6 +15,7 @@ import 'screens/settings/rate_app_screen.dart';
 // import 'screens/settings/follow_instagram_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
 import 'constants/app_colors.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,46 +37,54 @@ class HabitoXApp extends StatelessWidget {
       ],
       child: ToastificationWrapper(
         child: MaterialApp(
+          // regarder la dépendance adaptive_dialog
+          // localizationsDelegates: const [
+          //   GlobalMaterialLocalizations.delegate,
+          //   GlobalWidgetsLocalizations.delegate,
+          //   GlobalCupertinoLocalizations.delegate, // This is required
+          // ],
           debugShowCheckedModeBanner: false,
           title: 'HabitoX',
           theme: ThemeData(
-          useMaterial3: true,
-          primaryColor: AppColors.primaryColor,
-          scaffoldBackgroundColor: AppColors.lightColor.withValues(alpha: 0.15),
-
-          appBarTheme: AppBarTheme(
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-            foregroundColor: Colors.white,
-            titleTextStyle: TextStyle(
-              color: AppColors.darkColor,
-              fontSize: 26,
-              fontWeight: FontWeight.w600,
+            useMaterial3: true,
+            primaryColor: AppColors.primaryColor,
+            scaffoldBackgroundColor: AppColors.lightColor.withValues(
+              alpha: 0.15,
             ),
-          ),
 
-          // Divider
-          dividerTheme: DividerThemeData(
-            color: AppColors.lightColor.withValues(alpha: 0.5),
-            thickness: 1,
-          ),
+            appBarTheme: AppBarTheme(
+              elevation: 0,
+              centerTitle: true,
+              backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
+              foregroundColor: Colors.white,
+              titleTextStyle: TextStyle(
+                color: AppColors.darkColor,
+                fontSize: 26,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
 
-          // Icon
-          iconTheme: IconThemeData(color: AppColors.primaryColor, size: 24),
-        ),
-        home: const HomeScreen(),
-        routes: {
-          '/payment_methods': (context) => const PaymentMethodsScreen(),
-          '/billing_subscriptions': (context) =>
-              const BillingSubscriptionsScreen(),
-          '/account_security': (context) => const AccountSecurityScreen(),
-          '/app_appearance': (context) => const AppAppearanceScreen(),
-          '/data_analytics': (context) => const DataAnalyticsScreen(),
-          '/rate_app': (context) => const RateAppScreen(),
-          // '/follow_instagram': (context) => const FollowInstagramScreen(),
-          '/app_updates': (context) => const AppUpdatesScreen(),
-        },
+            // Divider
+            dividerTheme: DividerThemeData(
+              color: AppColors.lightColor.withValues(alpha: 0.5),
+              thickness: 1,
+            ),
+
+            // Icon
+            iconTheme: IconThemeData(color: AppColors.primaryColor, size: 24),
+          ),
+          home: const HomeScreen(),
+          routes: {
+            '/payment_methods': (context) => const PaymentMethodsScreen(),
+            '/billing_subscriptions': (context) =>
+                const BillingSubscriptionsScreen(),
+            '/account_security': (context) => const AccountSecurityScreen(),
+            '/app_appearance': (context) => const AppAppearanceScreen(),
+            '/data_analytics': (context) => const DataAnalyticsScreen(),
+            '/rate_app': (context) => const RateAppScreen(),
+            // '/follow_instagram': (context) => const FollowInstagramScreen(),
+            '/app_updates': (context) => const AppUpdatesScreen(),
+          },
         ),
       ),
     );
