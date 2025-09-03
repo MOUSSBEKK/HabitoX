@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 import '../../constants/app_colors.dart';
 
 class RateAppScreen extends StatefulWidget {

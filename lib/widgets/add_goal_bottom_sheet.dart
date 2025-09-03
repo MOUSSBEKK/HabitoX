@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 
@@ -944,27 +945,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   void _saveGoal() {
     if (_formKey.currentState!.validate()) {
-      // Validation des dates
-      if (_startDate == null || _endDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Veuillez sélectionner les dates de début et de fin'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      if (_endDate!.isBefore(_startDate!) || _calculatedDays <= 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('La date de fin doit être après la date de début'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
       final goalService = context.read<GoalService>();
 
       if (widget.goal != null) {
@@ -978,11 +958,12 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         );
 
         goalService.updateGoal(updatedGoal);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Objectif modifié avec succès !'),
-            backgroundColor: Colors.green,
-          ),
+        toastification.show(
+          context: context,
+          title: const Text('Objectif modifié avec succès !'),
+          type: ToastificationType.success,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 3),
         );
       } else {
         final newGoal = Goal(
@@ -997,11 +978,12 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         );
 
         goalService.addGoal(newGoal);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Objectif créé avec succès !'),
-            backgroundColor: Colors.green,
-          ),
+        toastification.show(
+          context: context,
+          title: const Text('Objectif créé avec succès !'),
+          type: ToastificationType.success,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
 

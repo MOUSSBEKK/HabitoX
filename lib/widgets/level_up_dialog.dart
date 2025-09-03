@@ -167,7 +167,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text(
-                        '🎉 NIVEAU SUPÉRIEUR ! 🎉',
+                        'NIVEAU SUPÉRIEUR !',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -198,52 +198,30 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          gradient: RadialGradient(
-                            colors: [
-                              Colors.amber[100]!,
-                              Colors.amber[50]!,
-                              Colors.white,
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.amber.withValues(alpha: 0.4),
-                              blurRadius: 20,
-                              spreadRadius: 5,
-                            ),
-                          ],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: ClipOval(
-                            child: Image.asset(
+                          child: Image.asset(
                               widget.badgeAssetPath,
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) => 
-                                Icon(
-                                  Icons.workspace_premium,
-                                  size: 60,
-                                  color: Colors.amber[600],
-                                ),
+                              fit: BoxFit.contain
                             ),
-                          ),
                         ),
                       ),
                     ),
 
                     const SizedBox(height: 16),
 
-                    // Nom du badge
-                    Text(
-                      widget.badgeName,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue[700],
-                      ),
-                    ),
+                    // // Nom du badge
+                    // Text(
+                    //   widget.badgeName,
+                    //   style: TextStyle(
+                    //     fontSize: 22,
+                    //     fontWeight: FontWeight.bold,
+                    //     color: Colors.blue[700],
+                    //   ),
+                    // ),
 
-                    const SizedBox(height: 8),
+                    // const SizedBox(height: 8),
 
                     // Description
                     Text(
@@ -290,14 +268,12 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 
                     const SizedBox(height: 24),
 
-                    // Bouton CTA
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue[600],
-                          foregroundColor: Colors.white,
+                          backgroundColor: Color(0xFFA7C6A5),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -323,23 +299,23 @@ class _LevelUpDialogState extends State<LevelUpDialog>
     );
   }
 
-  // Méthode statique pour afficher la popup
-  static void show(
-    BuildContext context, 
-    LevelUpResult levelUpResult,
-    String badgeAssetPath,
-    String badgeName,
-    String badgeDescription,
-  ) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => LevelUpDialog(
-        levelUpResult: levelUpResult,
-        badgeAssetPath: badgeAssetPath,
-        badgeName: badgeName,
-        badgeDescription: badgeDescription,
-      ),
-    );
-  }
+  // // Méthode statique pour afficher la popup
+  // static void show(
+  //   BuildContext context, 
+  //   LevelUpResult levelUpResult,
+  //   String badgeAssetPath,
+  //   String badgeName,
+  //   String badgeDescription,
+  // ) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: true,
+  //     builder: (context) => LevelUpDialog(
+  //       levelUpResult: levelUpResult,
+  //       badgeAssetPath: badgeAssetPath,
+  //       badgeName: badgeName,
+  //       badgeDescription: badgeDescription,
+  //     ),
+  //   );
+  // }
 }

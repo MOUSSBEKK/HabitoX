@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
 import '../widgets/avatar_widget.dart';
@@ -67,7 +68,14 @@ extension on _ProfileScreenState {
   /// Construit la carte d'upgrade premium avec un design moderne
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
-      onTap: () => _showUpgradeDialog(context),
+      // KIWI changer pour afficher la page d'abonnement
+      onTap: () => toastification.show(
+        context: context,
+        title: const Text('Premium requis pour upgrader'),
+        type: ToastificationType.warning,
+        style: ToastificationStyle.flatColored,
+        autoCloseDuration: const Duration(seconds: 3),
+      ),
       child: Container(
         padding: EdgeInsets.all(isTablet ? 20 : 16),
         decoration: BoxDecoration(
@@ -373,9 +381,13 @@ extension on _ProfileScreenState {
           ? const Icon(Icons.lock, color: Colors.grey)
           : const Icon(Icons.chevron_right),
       onTap: item.locked
-          ? () => ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Premium requis')))
+          ? () => toastification.show(
+              context: context,
+              title: const Text('Premium requis'),
+              type: ToastificationType.warning,
+              style: ToastificationStyle.flatColored,
+              autoCloseDuration: const Duration(seconds: 3),
+            )
           : () => _navigateToSetting(item.title),
       enabled: !item.locked,
       contentPadding: EdgeInsets.symmetric(
@@ -445,9 +457,9 @@ extension on _ProfileScreenState {
       case 'Noter l\'app':
         Navigator.pushNamed(context, '/rate_app');
         break;
-      case 'Suivre sur Insta':
-        Navigator.pushNamed(context, '/follow_instagram');
-        break;
+      // case 'Suivre sur Insta':
+      //   Navigator.pushNamed(context, '/follow_instagram');
+      //   break;
       case 'Les Mise à jour de l\'app':
         Navigator.pushNamed(context, '/app_updates');
         break;
@@ -455,10 +467,12 @@ extension on _ProfileScreenState {
         Navigator.pushNamed(context, '/debug');
         break;
       default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Page "$settingTitle" en cours de développement'),
-          ),
+        toastification.show(
+          context: context,
+          title: Text('Page "$settingTitle" en cours de développement'),
+          type: ToastificationType.info,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 3),
         );
     }
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import '../models/badge.dart' as models;
 import '../services/calendar_service.dart';
 
@@ -258,130 +260,47 @@ class BadgesWidget extends StatelessWidget {
     BuildContext context,
     CalendarService calendarService,
   ) {
-    showDialog(
+    final badgesInfo = calendarService.shapes.map((shape) => 
+      '${shape.emoji} ${shape.name}: ${shape.totalDays} jours ${shape.isUnlocked ? "✓" : "🔒"}'
+    ).join('\n');
+    
+    showOkAlertDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Détails des Badges'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Comment débloquer les badges :',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  '• Chaque forme de calendrier a un nombre spécifique de jours à compléter\n'
-                  '• Complétez votre objectif actif pour progresser dans le calendrier\n'
-                  '• Atteignez 100% de progression pour débloquer le badge\n'
-                  '• Les badges sont basés sur les formes de calendrier générées aléatoirement',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Badges disponibles :',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ...calendarService.shapes.map(
-                  (shape) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        Text(shape.emoji, style: const TextStyle(fontSize: 20)),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                shape.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '${shape.totalDays} jours à compléter',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (shape.isUnlocked)
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 20,
-                          )
-                        else
-                          Icon(Icons.lock, color: Colors.grey, size: 20),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Fermer'),
-          ),
-        ],
-      ),
+      title: 'Détails des Badges',
+      message: 'Comment débloquer les badges :\n\n'
+               '• Chaque forme de calendrier a un nombre spécifique de jours à compléter\n'
+               '• Complétez votre objectif actif pour progresser dans le calendrier\n'
+               '• Atteignez 100% de progression pour débloquer le badge\n'
+               '• Les badges sont basés sur les formes de calendrier générées aléatoirement\n\n'
+               'Badges disponibles :\n$badgesInfo',
     );
   }
 
   void _showResetConfirmation(
     BuildContext context,
     CalendarService calendarService,
-  ) {
-    showDialog(
+  ) async {
+    final result = await showOkCancelAlertDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reset de la progression'),
-        content: const Text(
-          'Êtes-vous sûr de vouloir réinitialiser toute la progression ?\n\n'
-          'Cela supprimera tous les badges débloqués et remettra toutes les formes '
-          'de calendrier en mode verrouillé.\n\n'
-          'Cette action est irréversible.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              calendarService.resetProgress();
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Progression réinitialisée'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.orange),
-            child: const Text('Reset'),
-          ),
-        ],
-      ),
+      title: 'Reset de la progression',
+      message: 'Êtes-vous sûr de vouloir réinitialiser toute la progression ?\n\n'
+               'Cela supprimera tous les badges débloqués et remettra toutes les formes '
+               'de calendrier en mode verrouillé.\n\n'
+               'Cette action est irréversible.',
+      okLabel: 'Reset',
+      cancelLabel: 'Annuler',
+      isDestructiveAction: true,
     );
+    
+    if (result == OkCancelResult.ok) {
+      calendarService.resetProgress();
+      toastification.show(
+        context: context,
+        title: const Text('Progression réinitialisée'),
+        type: ToastificationType.warning,
+        style: ToastificationStyle.flatColored,
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+    }
   }
 }
