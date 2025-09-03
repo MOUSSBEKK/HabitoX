@@ -15,6 +15,7 @@ import 'screens/settings/data_analytics_screen.dart';
 import 'screens/settings/rate_app_screen.dart';
 // import 'screens/settings/follow_instagram_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
+import 'screens/debug_screen.dart';
 import 'constants/app_theme.dart';
 
 Future<void> main() async {
@@ -66,6 +67,7 @@ class HabitoXApp extends StatelessWidget {
                   '/rate_app': (context) => const RateAppScreen(),
                   // '/follow_instagram': (context) => const FollowInstagramScreen(),
                   '/app_updates': (context) => const AppUpdatesScreen(),
+                  '/debug': (context) => const DebugScreen(),
                 },
               ),
             ),

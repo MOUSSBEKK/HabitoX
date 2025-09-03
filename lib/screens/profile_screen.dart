@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
+import '../widgets/avatar_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -26,19 +27,32 @@ class _ProfileScreenState extends State<ProfileScreen>
         final padding = isTablet ? 32.0 : 20.0;
 
         return Scaffold(
-          appBar: AppBar(title: Text('Account')),
-          backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
+          appBar: AppBar(
+            title: const Text('Profil'),
+            backgroundColor: AppColors.lightBackgroundPrimary,
+            foregroundColor: AppColors.darkColor,
+            elevation: 0,
+          ),
+          backgroundColor: AppColors.lightBackgroundPrimary,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(padding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Carte d'upgrade premium
                   _buildUpgradeCard(isTablet),
                   const SizedBox(height: 16),
+
+                  // Carte de niveau avec avatar et progression
                   _buildLevelCard(isTablet),
                   const SizedBox(height: 16),
+
+                  // Groupe de paramètres
                   _buildSettingsGroup(isTablet),
+
+                  // Espacement en bas pour éviter que le contenu soit coupé
+                  SizedBox(height: isTablet ? 32 : 20),
                 ],
               ),
             ),
@@ -50,24 +64,22 @@ class _ProfileScreenState extends State<ProfileScreen>
 }
 
 extension on _ProfileScreenState {
+  /// Construit la carte d'upgrade premium avec un design moderne
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
-      // KIWI changer pour afficher la page d'abonnement
-      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Premium requis pour upgrader')),
-      ),
+      onTap: () => _showUpgradeDialog(context),
       child: Container(
         padding: EdgeInsets.all(isTablet ? 20 : 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
+          gradient: LinearGradient(
+            colors: [AppColors.accentPrimary, AppColors.accentSecondary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF6db399).withOpacity(0.25),
+              color: AppColors.accentPrimary.withOpacity(0.25),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -81,31 +93,41 @@ extension on _ProfileScreenState {
                 color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.auto_awesome, color: Colors.white),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Colors.white,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Upgrade Plan Now!',
+                  Text(
+                    'Passez à Premium !',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontSize: isTablet ? 18 : 16,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
-                    'Enjoy all the benefits and explore more possibilities',
+                    'Débloquez toutes les fonctionnalités et personnalisez votre expérience',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.95),
-                      fontSize: 12,
+                      fontSize: isTablet ? 14 : 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.white.withOpacity(0.8),
+              size: 16,
             ),
           ],
         ),
@@ -113,42 +135,49 @@ extension on _ProfileScreenState {
     );
   }
 
+  /// Construit la carte de niveau avec avatar, progression XP et informations utilisateur
   Widget _buildLevelCard(bool isTablet) {
     return Consumer<UserProfileService>(
       builder: (context, profileService, child) {
         final stats = profileService.getXpStats();
         final level = stats['currentLevel'] as int? ?? 1;
-        final levelName = stats['levelName'] as String? ?? 'Beginner';
-        final levelColor = stats['levelColor'] as Color? ?? Color(0xFF6db399);
+        final levelName = stats['levelName'] as String? ?? 'Débutant';
+        final levelColor =
+            stats['levelColor'] as Color? ?? AppColors.primaryColor;
         final experiencePoints = stats['experiencePoints'] as int? ?? 0;
         final xpInCurrentLevel = stats['xpInCurrentLevel'] as int? ?? 0;
         final xpRequiredForCurrentLevel =
             stats['xpRequiredForCurrentLevel'] as int? ?? 10;
         final xpProgressToNext = stats['xpProgressToNext'] as double? ?? 0.0;
+        final consecutiveDays = stats['consecutiveDays'] as int? ?? 0;
 
         return Container(
           padding: EdgeInsets.all(isTablet ? 20 : 16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Column(
             children: [
+              // En-tête avec avatar et informations de niveau
               Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: levelColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.workspace_premium,
-                      color: levelColor,
-                      size: 24,
-                    ),
+                  // Avatar avec accessoires
+                  AnimatedAvatarWidget(
+                    consecutiveDays: consecutiveDays,
+                    size: isTablet ? 80 : 60,
+                    backgroundColor: levelColor.withOpacity(0.1),
+                    iconColor: levelColor,
+                    seed: profileService.userProfile?.id ?? 'default',
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +187,7 @@ extension on _ProfileScreenState {
                             Text(
                               'Niveau $level',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: isTablet ? 20 : 16,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.darkColor,
                               ),
@@ -176,7 +205,7 @@ extension on _ProfileScreenState {
                               child: Text(
                                 levelName,
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: isTablet ? 12 : 10,
                                   fontWeight: FontWeight.w600,
                                   color: levelColor,
                                 ),
@@ -188,8 +217,17 @@ extension on _ProfileScreenState {
                         Text(
                           '$experiencePoints XP Total',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: isTablet ? 14 : 12,
                             color: AppColors.darkColor.withOpacity(0.7),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '$consecutiveDays jours consécutifs',
+                          style: TextStyle(
+                            fontSize: isTablet ? 12 : 10,
+                            color: AppColors.darkColor.withOpacity(0.6),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -211,7 +249,7 @@ extension on _ProfileScreenState {
                       Text(
                         'Progression XP',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: isTablet ? 14 : 12,
                           fontWeight: FontWeight.w600,
                           color: AppColors.darkColor.withOpacity(0.8),
                         ),
@@ -219,7 +257,7 @@ extension on _ProfileScreenState {
                       Text(
                         '$xpInCurrentLevel / $xpRequiredForCurrentLevel XP',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: isTablet ? 14 : 12,
                           fontWeight: FontWeight.w600,
                           color: levelColor,
                         ),
@@ -231,16 +269,16 @@ extension on _ProfileScreenState {
                     children: [
                       // Fond de la barre
                       Container(
-                        height: 8,
+                        height: isTablet ? 10 : 8,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(isTablet ? 5 : 4),
                         ),
                       ),
                       // Progression
                       Container(
-                        height: 8,
+                        height: isTablet ? 10 : 8,
                         width:
                             MediaQuery.of(context).size.width *
                             xpProgressToNext *
@@ -249,7 +287,7 @@ extension on _ProfileScreenState {
                           gradient: LinearGradient(
                             colors: [levelColor, levelColor.withOpacity(0.7)],
                           ),
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(isTablet ? 5 : 4),
                         ),
                       ),
                     ],
@@ -258,7 +296,7 @@ extension on _ProfileScreenState {
                   Text(
                     'Prochain niveau: ${level + 1}',
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: isTablet ? 12 : 10,
                       color: AppColors.darkColor.withOpacity(0.6),
                     ),
                   ),
@@ -271,6 +309,7 @@ extension on _ProfileScreenState {
     );
   }
 
+  /// Construit le groupe de paramètres avec une liste d'options
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
       // _SettingItem(Icons.credit_card, 'Payment Methods'),
@@ -289,6 +328,7 @@ extension on _ProfileScreenState {
         'Les Mise à jour de l\'app',
       ),
       _SettingItem(FaIcon(FontAwesomeIcons.star), 'Noter l\'app'),
+      _SettingItem(FaIcon(FontAwesomeIcons.bug), 'Debug (Test)', locked: false),
     ];
 
     return Container(
@@ -315,6 +355,7 @@ extension on _ProfileScreenState {
     );
   }
 
+  /// Construit un élément de paramètre individuel
   Widget _buildSettingTile(_SettingItem item, bool isTablet) {
     final titleStyle = TextStyle(
       fontSize: isTablet ? 16 : 14,
@@ -344,7 +385,46 @@ extension on _ProfileScreenState {
     );
   }
 
-  // KIWI changer pour remplacer un id par un nom de page
+  /// Affiche le dialogue d'upgrade premium
+  void _showUpgradeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Passer à Premium'),
+          content: const Text(
+            'Débloquez toutes les fonctionnalités premium :\n\n'
+            '• Accès à tous les thèmes\n'
+            '• Statistiques avancées\n'
+            '• Export/Import de données\n'
+            '• Support prioritaire\n\n'
+            'Cette fonctionnalité sera bientôt disponible !',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Fermer'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Fonctionnalité premium en cours de développement',
+                    ),
+                  ),
+                );
+              },
+              child: const Text('En savoir plus'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Navigue vers les différentes pages de paramètres
   void _navigateToSetting(String settingTitle) {
     switch (settingTitle) {
       case 'Payment Methods':
@@ -371,6 +451,9 @@ extension on _ProfileScreenState {
       case 'Les Mise à jour de l\'app':
         Navigator.pushNamed(context, '/app_updates');
         break;
+      case 'Debug (Test)':
+        Navigator.pushNamed(context, '/debug');
+        break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -381,9 +464,11 @@ extension on _ProfileScreenState {
   }
 }
 
+/// Classe représentant un élément de paramètre dans la liste des paramètres
 class _SettingItem {
   final FaIcon icon;
   final String title;
   final bool locked;
-  _SettingItem(this.icon, this.title, {this.locked = false});
+
+  const _SettingItem(this.icon, this.title, {this.locked = false});
 }
