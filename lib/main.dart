@@ -11,7 +11,7 @@ import 'screens/settings/account_security_screen.dart';
 import 'screens/settings/app_appearance_screen.dart';
 import 'screens/settings/data_analytics_screen.dart';
 import 'screens/settings/rate_app_screen.dart';
-import 'screens/settings/follow_instagram_screen.dart';
+// import 'screens/settings/follow_instagram_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
 import 'constants/app_colors.dart';
 
@@ -40,8 +40,7 @@ class HabitoXApp extends StatelessWidget {
           useMaterial3: true,
           primaryColor: AppColors.primaryColor,
           scaffoldBackgroundColor: AppColors.lightColor.withValues(alpha: 0.15),
-          // cardColor: Colors.white,
-          // AppBar
+
           appBarTheme: AppBarTheme(
             elevation: 0,
             centerTitle: true,
@@ -72,7 +71,7 @@ class HabitoXApp extends StatelessWidget {
           '/app_appearance': (context) => const AppAppearanceScreen(),
           '/data_analytics': (context) => const DataAnalyticsScreen(),
           '/rate_app': (context) => const RateAppScreen(),
-          '/follow_instagram': (context) => const FollowInstagramScreen(),
+          // '/follow_instagram': (context) => const FollowInstagramScreen(),
           '/app_updates': (context) => const AppUpdatesScreen(),
         },
       ),

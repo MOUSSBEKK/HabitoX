@@ -11,10 +11,6 @@ class AppUpdatesScreen extends StatefulWidget {
 class _AppUpdatesScreenState extends State<AppUpdatesScreen>
     with TickerProviderStateMixin {
   late AnimationController _refreshController;
-  bool _isChecking = false;
-  bool _autoUpdateEnabled = true;
-  bool _betaUpdatesEnabled = false;
-  bool _notificationsEnabled = true;
 
   final List<UpdateItem> _updateHistory = [
     UpdateItem(
@@ -75,29 +71,7 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
       appBar: AppBar(
         title: const Text(
           'Mises à jour',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Colors.greenAccent,
-          ),
         ),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-        foregroundColor: Colors.greenAccent,
-        actions: [
-          IconButton(
-            onPressed: _checkForUpdates,
-            icon: AnimatedBuilder(
-              animation: _refreshController,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _refreshController.value * 2 * 3.14159,
-                  child: const Icon(Icons.refresh),
-                );
-              },
-            ),
-          ),
-        ],
       ),
       backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
@@ -106,9 +80,6 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildCurrentVersionCard(),
-              const SizedBox(height: 24),
-              _buildUpdateSettingsSection(),
               const SizedBox(height: 24),
               _buildUpcomingFeaturesSection(),
               const SizedBox(height: 24),
@@ -117,155 +88,6 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildCurrentVersionCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.green.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.system_update,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Version Actuelle',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Text(
-                      'HabitoX v2.1.0',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'À JOUR',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Votre application est à jour ! Dernière vérification le ${_formatDate(DateTime.now())}',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (_isChecking)
-            LinearProgressIndicator(
-              backgroundColor: Colors.white.withOpacity(0.3),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-            )
-          else
-            ElevatedButton.icon(
-              onPressed: _checkForUpdates,
-              icon: const Icon(Icons.refresh, size: 18),
-              label: const Text('Vérifier les mises à jour'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF4CAF50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUpdateSettingsSection() {
-    return _buildSection(
-      title: 'Paramètres de Mise à jour',
-      children: [
-        _buildSwitchTile(
-          icon: Icons.download,
-          title: 'Mises à jour automatiques',
-          subtitle: 'Télécharger et installer automatiquement',
-          value: _autoUpdateEnabled,
-          onChanged: (value) {
-            setState(() {
-              _autoUpdateEnabled = value;
-            });
-          },
-        ),
-        _buildSwitchTile(
-          icon: Icons.science,
-          title: 'Versions bêta',
-          subtitle: 'Accéder aux nouvelles fonctionnalités en avant-première',
-          value: _betaUpdatesEnabled,
-          onChanged: (value) {
-            setState(() {
-              _betaUpdatesEnabled = value;
-            });
-          },
-        ),
-        _buildSwitchTile(
-          icon: Icons.notifications,
-          title: 'Notifications de mise à jour',
-          subtitle: 'Être notifié quand une mise à jour est disponible',
-          value: _notificationsEnabled,
-          onChanged: (value) {
-            setState(() {
-              _notificationsEnabled = value;
-            });
-          },
-        ),
-      ],
     );
   }
 
@@ -298,21 +120,6 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
                   color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.blue.shade200),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.schedule, color: Colors.blue.shade600, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Sortie prévue : Février 2024',
-                        style: TextStyle(
-                          color: Colors.blue.shade700,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],
@@ -368,43 +175,6 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
     );
   }
 
-  Widget _buildSwitchTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: AppColors.primaryColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: AppColors.primaryColor),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 14,
-        ),
-      ),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: AppColors.primaryColor,
-      ),
-    );
-  }
 
   Widget _buildFeatureItem(String emoji, String feature) {
     return Padding(
@@ -506,39 +276,7 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
     );
   }
 
-  String _formatDate(DateTime date) {
-    final months = [
-      'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
 
-  void _checkForUpdates() {
-    setState(() {
-      _isChecking = true;
-    });
-    
-    _refreshController.forward().then((_) {
-      _refreshController.reset();
-    });
-
-    // Simuler la vérification
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isChecking = false;
-        });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Aucune mise à jour disponible'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    });
-  }
 }
 
 class UpdateItem {

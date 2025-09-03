@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -51,6 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 extension on _ProfileScreenState {
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
+      // KIWI changer pour afficher la page d'abonnement
       onTap: () => ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Premium requis pour upgrader')),
       ),
@@ -194,7 +197,6 @@ extension on _ProfileScreenState {
                       ],
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios, size: 16),
                 ],
               ),
 
@@ -272,16 +274,16 @@ extension on _ProfileScreenState {
 
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
-      _SettingItem(Icons.credit_card, 'Payment Methods'),
-      _SettingItem(Icons.subscriptions, 'Billing & Subscriptions'),
-      _SettingItem(Icons.security, 'Account & Security'),
-      _SettingItem(Icons.file_download, 'Import', locked: true),
-      _SettingItem(Icons.file_upload, 'Export', locked: true),
-      _SettingItem(Icons.color_lens, 'App Appearance'),
-      _SettingItem(Icons.insights, 'Data & Analytics'),
-      _SettingItem(Icons.star_rate, 'Noter l\'app'),
-      _SettingItem(Icons.camera_alt, 'Suivre sur Insta'),
-      _SettingItem(Icons.system_update, 'Les Mise à jour de l\'app'),
+      // _SettingItem(Icons.credit_card, 'Payment Methods'), 
+      // _SettingItem(FaIcon(FontAwesomeIcons.chessQueen), 'Billing & Subscriptions'),
+      _SettingItem(FaIcon(FontAwesomeIcons.eye), 'App Appearance'),
+      _SettingItem(FaIcon(FontAwesomeIcons.chartLine), 'Data & Analytics'),
+      _SettingItem(FaIcon(FontAwesomeIcons.fileImport), 'Import', locked: true),
+      _SettingItem(FaIcon(FontAwesomeIcons.fileExport), 'Export', locked: true),
+      _SettingItem(FaIcon(FontAwesomeIcons.lock), 'Politique de confidentialité'),
+      _SettingItem(FaIcon(FontAwesomeIcons.instagram), 'Suivre sur Insta'),
+      _SettingItem(FaIcon(FontAwesomeIcons.circleArrowUp), 'Les Mise à jour de l\'app'),
+      _SettingItem(FaIcon(FontAwesomeIcons.star), 'Noter l\'app'),
     ];
 
     return Container(
@@ -318,10 +320,8 @@ extension on _ProfileScreenState {
     );
 
     return ListTile(
-      leading: Icon(
-        item.icon,
-        color: item.locked ? Colors.grey : AppColors.darkColor,
-      ),
+      leading: item.icon,
+        // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
       trailing: item.locked
           ? const Icon(Icons.lock, color: Colors.grey)
@@ -339,6 +339,7 @@ extension on _ProfileScreenState {
     );
   }
 
+  // KIWI changer pour remplacer un id par un nom de page
   void _navigateToSetting(String settingTitle) {
     switch (settingTitle) {
       case 'Payment Methods':
@@ -376,7 +377,7 @@ extension on _ProfileScreenState {
 }
 
 class _SettingItem {
-  final IconData icon;
+  final FaIcon icon;
   final String title;
   final bool locked;
   _SettingItem(this.icon, this.title, {this.locked = false});
