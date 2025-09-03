@@ -4,7 +4,6 @@ import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -274,15 +273,21 @@ extension on _ProfileScreenState {
 
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
-      // _SettingItem(Icons.credit_card, 'Payment Methods'), 
+      // _SettingItem(Icons.credit_card, 'Payment Methods'),
       // _SettingItem(FaIcon(FontAwesomeIcons.chessQueen), 'Billing & Subscriptions'),
       _SettingItem(FaIcon(FontAwesomeIcons.eye), 'App Appearance'),
       _SettingItem(FaIcon(FontAwesomeIcons.chartLine), 'Data & Analytics'),
       _SettingItem(FaIcon(FontAwesomeIcons.fileImport), 'Import', locked: true),
       _SettingItem(FaIcon(FontAwesomeIcons.fileExport), 'Export', locked: true),
-      _SettingItem(FaIcon(FontAwesomeIcons.lock), 'Politique de confidentialité'),
+      _SettingItem(
+        FaIcon(FontAwesomeIcons.lock),
+        'Politique de confidentialité',
+      ),
       _SettingItem(FaIcon(FontAwesomeIcons.instagram), 'Suivre sur Insta'),
-      _SettingItem(FaIcon(FontAwesomeIcons.circleArrowUp), 'Les Mise à jour de l\'app'),
+      _SettingItem(
+        FaIcon(FontAwesomeIcons.circleArrowUp),
+        'Les Mise à jour de l\'app',
+      ),
       _SettingItem(FaIcon(FontAwesomeIcons.star), 'Noter l\'app'),
     ];
 
@@ -321,7 +326,7 @@ extension on _ProfileScreenState {
 
     return ListTile(
       leading: item.icon,
-        // color: item.locked ? Colors.grey : AppColors.darkColor,
+      // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
       trailing: item.locked
           ? const Icon(Icons.lock, color: Colors.grey)
