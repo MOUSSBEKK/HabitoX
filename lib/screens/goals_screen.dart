@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 // Couleurs du design épuré
 class GoalsColors {
@@ -209,7 +212,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
           .toList(),
       'Aucun objectif archivé',
       'Archivez vos objectifs pour les organiser !',
-      Icons.archive_outlined,
+      Icons.folder_copy_outlined,
       isTablet,
     );
   }
@@ -221,31 +224,15 @@ class _GoalsScreenState extends State<GoalsScreen> {
     );
   }
 
+  // a supprimer _showGoalDetails
   void _showGoalDetails(BuildContext context, Goal goal) {
-    showDialog(
+    showOkAlertDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(goal.title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Description: ${goal.description}'),
-            const SizedBox(height: 8),
-            Text('Objectif: ${goal.targetDays} jours'),
-            const SizedBox(height: 8),
-            Text('Progression: ${goal.totalDays}/${goal.targetDays} jours'),
-            const SizedBox(height: 8),
-            Text('Grade actuel: ${goal.currentGrade.name}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Fermer'),
-          ),
-        ],
-      ),
+      title: goal.title,
+      message: 'Description: ${goal.description}\n\n'
+               'Objectif: ${goal.targetDays} jours\n'
+               'Progression: ${goal.totalDays}/${goal.targetDays} jours\n'
+               'Grade actuel: ${goal.currentGrade.name}',
     );
   }
 
@@ -253,30 +240,19 @@ class _GoalsScreenState extends State<GoalsScreen> {
     _showAddGoalBottomSheet(context, goal: goal);
   }
 
-  void _showDeleteConfirmation(BuildContext context, Goal goal) {
-    showDialog(
+  void _showDeleteConfirmation(BuildContext context, Goal goal) async {
+    final result = await showOkCancelAlertDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmer la suppression'),
-        content: Text(
-          'Êtes-vous sûr de vouloir supprimer l\'objectif "${goal.title}" ?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () {
-              context.read<GoalService>().deleteGoal(goal.id);
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
+      title: 'Confirmer la suppression',
+      message: 'Êtes-vous sûr de vouloir supprimer l\'objectif "${goal.title}" ?',
+      okLabel: 'Supprimer',
+      cancelLabel: 'Annuler',
+      isDestructiveAction: true,
     );
+    
+    if (result == OkCancelResult.ok) {
+      context.read<GoalService>().deleteGoal(goal.id);
+    }
   }
 
   void _toggleGoalStatus(Goal goal) {

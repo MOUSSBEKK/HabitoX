@@ -945,29 +945,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   void _saveGoal() {
     if (_formKey.currentState!.validate()) {
-      // Validation des dates
-      if (_startDate == null || _endDate == null) {
-        toastification.show(
-          context: context,
-          title: const Text('Veuillez sélectionner les dates de début et de fin'),
-          type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
-          autoCloseDuration: const Duration(seconds: 3),
-        );
-        return;
-      }
-
-      if (_endDate!.isBefore(_startDate!) || _calculatedDays <= 0) {
-        toastification.show(
-          context: context,
-          title: const Text('La date de fin doit être après la date de début'),
-          type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
-          autoCloseDuration: const Duration(seconds: 3),
-        );
-        return;
-      }
-
       final goalService = context.read<GoalService>();
 
       if (widget.goal != null) {

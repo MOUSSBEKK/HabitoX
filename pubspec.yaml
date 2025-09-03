@@ -41,6 +41,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0
   font_awesome_flutter: ^10.10.0
   toastification: ^3.0.3
+  adaptive_dialog: ^2.4.2
 
 dev_dependencies:
   flutter_test:
