@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 import '../../constants/app_colors.dart';
 
 class DataAnalyticsScreen extends StatefulWidget {
@@ -439,8 +440,12 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Cache vidé avec succès')),
+              toastification.show(
+                context: context,
+                title: const Text('Cache vidé avec succès'),
+                type: ToastificationType.success,
+                style: ToastificationStyle.flatColored,
+                autoCloseDuration: const Duration(seconds: 3),
               );
             },
             child: const Text('Vider'),
@@ -451,8 +456,12 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
   }
 
   void _exportData() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Export des données en cours...')),
+    toastification.show(
+      context: context,
+      title: const Text('Export des données en cours...'),
+      type: ToastificationType.info,
+      style: ToastificationStyle.flatColored,
+      autoCloseDuration: const Duration(seconds: 3),
     );
   }
 }

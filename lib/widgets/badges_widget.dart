@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import '../models/badge.dart' as models;
 import '../services/calendar_service.dart';
 
@@ -370,11 +371,12 @@ class BadgesWidget extends StatelessWidget {
             onPressed: () {
               calendarService.resetProgress();
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Progression réinitialisée'),
-                  backgroundColor: Colors.orange,
-                ),
+              toastification.show(
+                context: context,
+                title: const Text('Progression réinitialisée'),
+                type: ToastificationType.warning,
+                style: ToastificationStyle.flatColored,
+                autoCloseDuration: const Duration(seconds: 3),
               );
             },
             style: TextButton.styleFrom(foregroundColor: Colors.orange),

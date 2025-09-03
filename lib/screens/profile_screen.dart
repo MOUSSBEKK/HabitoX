@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -54,8 +55,12 @@ extension on _ProfileScreenState {
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
       // KIWI changer pour afficher la page d'abonnement
-      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Premium requis pour upgrader')),
+      onTap: () => toastification.show(
+        context: context,
+        title: const Text('Premium requis pour upgrader'),
+        type: ToastificationType.warning,
+        style: ToastificationStyle.flatColored,
+        autoCloseDuration: const Duration(seconds: 3),
       ),
       child: Container(
         padding: EdgeInsets.all(isTablet ? 20 : 16),
@@ -327,9 +332,13 @@ extension on _ProfileScreenState {
           ? const Icon(Icons.lock, color: Colors.grey)
           : const Icon(Icons.chevron_right),
       onTap: item.locked
-          ? () => ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Premium requis')))
+          ? () => toastification.show(
+              context: context,
+              title: const Text('Premium requis'),
+              type: ToastificationType.warning,
+              style: ToastificationStyle.flatColored,
+              autoCloseDuration: const Duration(seconds: 3),
+            )
           : () => _navigateToSetting(item.title),
       enabled: !item.locked,
       contentPadding: EdgeInsets.symmetric(
@@ -367,10 +376,12 @@ extension on _ProfileScreenState {
         Navigator.pushNamed(context, '/app_updates');
         break;
       default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Page "$settingTitle" en cours de développement'),
-          ),
+        toastification.show(
+          context: context,
+          title: Text('Page "$settingTitle" en cours de développement'),
+          type: ToastificationType.info,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 3),
         );
     }
   }

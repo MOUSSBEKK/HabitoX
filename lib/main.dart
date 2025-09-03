@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import 'services/goal_service.dart';
 import 'services/calendar_service.dart';
 import 'services/user_profile_service.dart';
@@ -33,10 +34,11 @@ class HabitoXApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CalendarService()),
         ChangeNotifierProvider(create: (context) => UserProfileService()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'HabitoX',
-        theme: ThemeData(
+      child: ToastificationWrapper(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'HabitoX',
+          theme: ThemeData(
           useMaterial3: true,
           primaryColor: AppColors.primaryColor,
           scaffoldBackgroundColor: AppColors.lightColor.withValues(alpha: 0.15),
@@ -74,6 +76,7 @@ class HabitoXApp extends StatelessWidget {
           // '/follow_instagram': (context) => const FollowInstagramScreen(),
           '/app_updates': (context) => const AppUpdatesScreen(),
         },
+        ),
       ),
     );
   }

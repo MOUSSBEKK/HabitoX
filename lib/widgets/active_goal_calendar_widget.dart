@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import '../models/calendar_shape.dart';
 import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
@@ -397,17 +398,13 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 goalService.updateProgress(goal.id, profileService);
                 BadgeSyncService.checkAndUnlockBadges(context);
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Session marquée comme complétée ! +10 XP',
-                    ),
-                    backgroundColor: primaryColor,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                toastification.show(
+                  context: context,
+                  title: const Text('Session marquée comme complétée !'),
+                  description: const Text('+10 XP'),
+                  type: ToastificationType.success,
+                  style: ToastificationStyle.flatColored,
+                  autoCloseDuration: const Duration(seconds: 3),
                 );
               },
         icon: const Icon(Icons.check, size: 20),
