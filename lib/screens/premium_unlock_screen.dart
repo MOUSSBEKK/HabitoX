@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_colors.dart';
 
 class PremiumUnlockScreen extends StatefulWidget {
   const PremiumUnlockScreen({super.key});
@@ -20,16 +21,16 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
   @override
   Widget build(BuildContext context) {
     final Color bg = const Color.fromRGBO(226, 239, 243, 1);
-    final Color card = const Color(0xFF17181D);
-    final Color border = const Color(0xFF2A2B31);
+    final Color card = Colors.white;
+    final Color border = AppColors.borderColorLight;
     final Color accent = const Color(0xFF6db399);
 
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: bg,
-        foregroundColor: Colors.white,
-        title: const Text('Débloquer HabitoX Premium'),
+        foregroundColor: AppColors.darkColor,
+        title: const Text('HabitoX Premium'),
       ),
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(20, 8, 20, 16),
@@ -129,7 +130,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           child: Text(
             'Facturation récurrente. Annulez à tout moment.',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: AppColors.darkColor.withOpacity(0.8),
               fontSize: 13,
             ),
           ),
@@ -139,7 +140,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           child: Text(
             'ou',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: AppColors.darkColor.withOpacity(0.9),
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),
@@ -160,7 +161,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           child: Text(
             'Payez une fois. Accès illimité pour toujours.',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: AppColors.darkColor.withOpacity(0.8),
               fontSize: 13,
             ),
           ),
@@ -208,7 +209,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           children: [
             Icon(
               selected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: selected ? accent : Colors.white70,
+              color: selected ? accent : Colors.grey,
               size: 24,
             ),
             const SizedBox(width: 12),
@@ -221,7 +222,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                       Text(
                         title,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.darkColor,
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
                         ),
@@ -256,23 +257,23 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                         Text(
                           oldPrice,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
+                            color: AppColors.darkColor.withOpacity(0.6),
                             decoration: TextDecoration.lineThrough,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(width: 6),
-                        const Icon(
+                        Icon(
                           Icons.arrow_right_alt,
-                          color: Colors.white54,
+                          color: Colors.black.withOpacity(0.45),
                           size: 20,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           price,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.darkColor,
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
@@ -287,14 +288,14 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF101114),
+                color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: border),
               ),
               child: Text(
                 price,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.darkColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
                 ),
@@ -352,7 +353,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           const Text(
             'En vous abonnant, vous débloquerez également :',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.darkColor,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
@@ -395,8 +396,8 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                 const SizedBox(height: 4),
                 Text(
                   feature.subtitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
+                  style: TextStyle(
+                    color: AppColors.darkColor.withOpacity(0.7),
                     fontSize: 13,
                     height: 1.25,
                   ),
