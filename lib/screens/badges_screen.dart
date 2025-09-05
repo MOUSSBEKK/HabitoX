@@ -78,8 +78,21 @@ class _BadgesScreenState extends State<BadgesScreen>
                       builder: (context, profileService, child) {
                         final level =
                             profileService.userProfile?.currentLevel ?? 1;
-                        final assetPath = _getBadgeAssetForLevel(level);
+                        
+                        // Trouver le dernier badge acquis (niveau de badge le plus élevé ≤ niveau actuel)
+                        final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
+                        int lastUnlockedBadgeLevel = 1;
+                        for (int badgeLevel in badgeLevels) {
+                          if (level >= badgeLevel) {
+                            lastUnlockedBadgeLevel = badgeLevel;
+                          } else {
+                            break;
+                          }
+                        }
+                        
+                        final assetPath = _getBadgeAssetForLevel(lastUnlockedBadgeLevel);
                         final imageSize = isTablet ? 160.0 : 120.0;
+                        
                         return Column(
                           children: [
                             SizedBox(
@@ -97,7 +110,16 @@ class _BadgesScreenState extends State<BadgesScreen>
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Level $level',
+                              'Dernier Badge Acquis',
+                              style: TextStyle(
+                                fontSize: isTablet ? 16.0 : 14.0,
+                                fontWeight: FontWeight.w500,
+                                color: BadgesScreenColors.darkColor.withOpacity(0.7),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Niveau $lastUnlockedBadgeLevel',
                               style: TextStyle(
                                 fontSize: isTablet ? 20.0 : 16.0,
                                 fontWeight: FontWeight.w700,
@@ -123,14 +145,14 @@ class _BadgesScreenState extends State<BadgesScreen>
 
                           final List<int> badgeLevels = [
                             1,
-                            4,
-                            9,
-                            19,
-                            29,
-                            39,
-                            49,
-                            59,
-                            69,
+                            5,
+                            10,
+                            20,
+                            30,
+                            40,
+                            50,
+                            60,
+                            70,
                           ];
 
                           return ListView.separated(
@@ -206,8 +228,21 @@ class _BadgesScreenState extends State<BadgesScreen>
       'BADGE9.png',
       'BADGE10.png',
     ];
-    final index = (level - 1).clamp(0, assetFiles.length - 1);
-    return 'assets/badges/${assetFiles[index]}';
+    
+    // Mapping des niveaux de badges vers les indices des assets
+    final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
+    int badgeIndex = 0;
+    
+    for (int i = 0; i < badgeLevels.length; i++) {
+      if (level >= badgeLevels[i]) {
+        badgeIndex = i;
+      } else {
+        break;
+      }
+    }
+    
+    badgeIndex = badgeIndex.clamp(0, assetFiles.length - 1);
+    return 'assets/badges/${assetFiles[badgeIndex]}';
   }
 
   String _getBadgeAssetByIndex(int position) {
@@ -219,8 +254,8 @@ class _BadgesScreenState extends State<BadgesScreen>
     // Réplique minimale des métadonnées d'icône/couleur des niveaux clés
     if (level == 1) {
       return _BadgeDisplayData(
-        name: 'Débutant',
-        description: 'Bienvenue dans votre parcours HabitoX !',
+        name: 'Beginner',
+        description: 'Welcome to your HabitoX journey!',
         emoji: '💎',
         color: Colors.grey[600]!,
       );

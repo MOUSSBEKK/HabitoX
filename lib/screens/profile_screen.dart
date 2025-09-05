@@ -52,6 +52,36 @@ class _ProfileScreenState extends State<ProfileScreen>
 }
 
 extension on _ProfileScreenState {
+  
+  // Fonction helper pour obtenir le bon badge selon le niveau
+  String _getBadgeAssetForLevel(int level) {
+    final List<String> assetFiles = [
+      'BADGE1.png',
+      'BADGE2.png',
+      'BADGE3.png',
+      'BADGE4.png',
+      'BADGE5.png',
+      'BADGE6.png',
+      'BADGE8.png',
+      'BADGE9.png',
+      'BADGE10.png',
+    ];
+    
+    // Mapping des niveaux de badges vers les indices des assets
+    final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
+    int badgeIndex = 0;
+    
+    for (int i = 0; i < badgeLevels.length; i++) {
+      if (level >= badgeLevels[i]) {
+        badgeIndex = i;
+      } else {
+        break;
+      }
+    }
+    
+    badgeIndex = badgeIndex.clamp(0, assetFiles.length - 1);
+    return 'assets/badges/${assetFiles[badgeIndex]}';
+  }
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
       // Ouvre la page de souscription premium
@@ -137,15 +167,21 @@ extension on _ProfileScreenState {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: levelColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
-                      Icons.workspace_premium,
-                      color: levelColor,
-                      size: 24,
+                    child: Image.asset(
+                      _getBadgeAssetForLevel(level),
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.workspace_premium,
+                        color: levelColor,
+                        size: 24,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),

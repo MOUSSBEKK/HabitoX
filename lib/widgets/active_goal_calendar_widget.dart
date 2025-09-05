@@ -4,7 +4,6 @@ import 'package:toastification/toastification.dart';
 import '../models/calendar_shape.dart';
 import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
-import '../services/badge_sync_service.dart';
 import '../services/user_profile_service.dart';
 import 'level_up_dialog.dart';
 
@@ -369,12 +368,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 final profileService = context.read<UserProfileService>();
                 
                 // Utiliser le nouveau système XP
-                final levelUpResult = await profileService.addExperience(10); // XP pour session quotidienne
+                final levelUpResult = await profileService.addExperience(2); // XP pour session quotidienne
                 
                 // Afficher animation XP
                 if (context.mounted) {
                   // Pour l'instant, on ne fait qu'un print, on ajoutera l'animation plus tard
-                  print('Gained 10 XP!');
+                  print('Gained 2 XP!');
                 }
                 
                 // Si level up, afficher popup
@@ -395,17 +394,53 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                   );
                 }
                 
-                goalService.updateProgress(goal.id, profileService);
-                BadgeSyncService.checkAndUnlockBadges(context);
+                final updateResult = await goalService.updateProgress(goal.id, profileService);
+                // BadgeSyncService.checkAndUnlockBadges(context);
 
-                toastification.show(
-                  context: context,
-                  title: const Text('Session marquée comme complétée !'),
-                  description: const Text('+10 XP'),
-                  type: ToastificationType.success,
-                  style: ToastificationStyle.flatColored,
-                  autoCloseDuration: const Duration(seconds: 3),
-                );
+                // Afficher le toast approprié selon le résultat
+                if (updateResult != null) {
+                  if (updateResult['goalCompleted'] == true) {
+                    // Objectif terminé complètement
+                    final xpGained = updateResult['xpGained'] as int? ?? 0;
+                    final levelUpResult = updateResult['levelUpResult'];
+                    
+                    toastification.show(
+                      context: context,
+                      title: const Text('🎉 Objectif Terminé !'),
+                      description: Text('Félicitations ! +$xpGained XP'),
+                      type: ToastificationType.success,
+                      style: ToastificationStyle.flatColored,
+                      autoCloseDuration: const Duration(seconds: 4),
+                    );
+                    
+                    // Si level up, afficher popup
+                    if (levelUpResult != null && levelUpResult.hasLeveledUp && context.mounted) {
+                      final badgeAsset = 'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                      final badgeName = profileService.userProfile?.levelName ?? 'Niveau ${levelUpResult.newLevel}';
+                      
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (context) => LevelUpDialog(
+                          levelUpResult: levelUpResult,
+                          badgeAssetPath: badgeAsset,
+                          badgeName: badgeName,
+                          badgeDescription: 'Vous avez atteint un nouveau niveau !',
+                        ),
+                      );
+                    }
+                  } else {
+                    // Session normale
+                    toastification.show(
+                      context: context,
+                      title: const Text('Session marquée comme complétée !'),
+                      description: const Text('+2 XP'),
+                      type: ToastificationType.success,
+                      style: ToastificationStyle.flatColored,
+                      autoCloseDuration: const Duration(seconds: 3),
+                    );
+                  }
+                }
               },
         icon: const Icon(Icons.check, size: 20),
         label: const Text(

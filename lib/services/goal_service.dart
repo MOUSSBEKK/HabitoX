@@ -4,6 +4,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/goal.dart';
 import '../models/calendar_shape.dart';
+import '../models/user_profile.dart';
 import 'user_profile_service.dart';
 
 class GoalService extends ChangeNotifier {
@@ -218,7 +219,7 @@ class GoalService extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProgress(
+  Future<Map<String, dynamic>?> updateProgress(
     String goalId, [
     UserProfileService? profileService,
   ]) async {
@@ -262,22 +263,42 @@ class GoalService extends ChangeNotifier {
 
         // Vérifier si l'objectif est complété
         if (newProgress >= 1.0) {
-          await completeGoalWithXP(
+          final result = await completeGoalWithXPAndReturn(
             goalId,
             profileService,
             goal.targetDays,
             completedEarly: true,
           );
+          return {
+            'goalCompleted': true,
+            'xpGained': result['xpGained'],
+            'levelUpResult': result['levelUpResult'],
+          };
         } else {
           await _saveGoals();
           notifyListeners();
+          return {
+            'goalCompleted': false,
+            'sessionCompleted': true,
+          };
         }
       }
     }
+    return null;
   }
 
   // Nouvelle méthode pour terminer un objectif avec système XP
   Future<void> completeGoalWithXP(
+    String goalId,
+    UserProfileService? profileService,
+    int targetDays, {
+    bool completedEarly = false,
+  }) async {
+    await completeGoalWithXPAndReturn(goalId, profileService, targetDays, completedEarly: completedEarly);
+  }
+
+  // Méthode qui retourne les informations de completion
+  Future<Map<String, dynamic>> completeGoalWithXPAndReturn(
     String goalId,
     UserProfileService? profileService,
     int targetDays, {
@@ -298,23 +319,30 @@ class GoalService extends ChangeNotifier {
         _activeGoal = null;
       }
 
+      LevelUpResult? levelUpResult;
+      int xpGained = 0;
+      
       // Ajouter XP avec nouveau système
       if (profileService != null) {
-        final levelUpResult = await profileService.onGoalCompletedXP(
+        xpGained = UserProfile.calculateGoalXp(targetDays, completedEarly: completedEarly);
+        levelUpResult = await profileService.onGoalCompletedXP(
           targetDays,
           completedEarly: completedEarly,
         );
-
-        // Si level up, afficher la popup
-        if (levelUpResult != null && levelUpResult.hasLeveledUp) {
-          // Nous implémenterons l'affichage de la popup plus tard
-          print('Level Up! Nouveau niveau: ${levelUpResult.newLevel}');
-        }
       }
 
       await _saveGoals();
       notifyListeners();
+      
+      return {
+        'xpGained': xpGained,
+        'levelUpResult': levelUpResult,
+      };
     }
+    return {
+      'xpGained': 0,
+      'levelUpResult': null,
+    };
   }
 
   Future<void> resetStreak(String goalId) async {
