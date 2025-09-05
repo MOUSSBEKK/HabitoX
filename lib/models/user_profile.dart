@@ -4,78 +4,26 @@ import 'dart:math';
 class UserProfile {
   final String id;
   final String username;
-  // Nouveau système XP (garde l'ancien pour migration)
   int experiencePoints;
   int currentLevel;
   int totalCompletedGoals;
-  // Ancien système (maintenu pour rétrocompatibilité)
-  int auraPoints;
-  int auraLevel;
   int totalDaysCompleted;
   int consecutiveDays;
   int maxConsecutiveDays;
   DateTime lastActivityDate;
   DateTime createdAt;
-  // List<SpecialBadge> specialBadges;
-
   UserProfile({
     required this.id,
     required this.username,
-    // Nouveau système XP
     this.experiencePoints = 0,
     this.currentLevel = 1,
     this.totalCompletedGoals = 0,
-    // Ancien système (maintenu pour migration)
-    this.auraPoints = 0,
-    this.auraLevel = 1,
     this.totalDaysCompleted = 0,
     this.consecutiveDays = 0,
     this.maxConsecutiveDays = 0,
     required this.lastActivityDate,
     required this.createdAt,
-    // List<SpecialBadge>? specialBadges,
-  }) {
-  }
- 
-
-  // Vérifier les nouveaux badges
-  // void _checkForNewBadges() {
-  //   final newLevel = auraLevel;
-
-  //   // Badge de niveau 1 (déjà géré dans le constructeur)
-  //   // Badge de niveau 2 (premier objectif terminé)
-  //   if (newLevel >= 2) {
-  //     final existingLevel2Badge = unlockedBadges
-  //         .where((badge) => badge.level == 2)
-  //         .firstOrNull;
-  //     if (existingLevel2Badge == null) {
-  //       unlockedBadges.add(AuraBadge.createForLevel(2));
-  //     }
-  //   }
-
-  //   // Badges tous les 5 niveaux (comme avant)
-  //   final badgeLevel =
-  //       ((newLevel - 1) ~/ 5) * 5 + 5; // Badge tous les 5 niveaux
-
-  //   if (badgeLevel > 0 && badgeLevel <= newLevel) {
-  //     final existingBadge = unlockedBadges
-  //         .where((badge) => badge.level == badgeLevel)
-  //         .firstOrNull;
-  //     if (existingBadge == null) {
-  //       unlockedBadges.add(AuraBadge.createForLevel(badgeLevel));
-  //     }
-  //   }
-  // }
-
-  // // Méthode pour augmenter le niveau après completion d'un objectif (ancien système)
-  // void onGoalCompleted() {
-  //   // Pour le premier objectif terminé, passer automatiquement au niveau 2
-  //   if (auraLevel == 1) {
-  //     auraLevel = 2;
-  //     auraPoints = 100; // Points minimum pour le niveau 2
-  //     _checkForNewBadges();
-  //   }
-  // }
+  }) {}
 
   // ============ NOUVEAU SYSTÈME XP ============
 
@@ -130,32 +78,15 @@ class UserProfile {
     currentLevel = newLevel - 1; // Revenir au dernier niveau valide
 
     // Vérifier si on a gagné un niveau
-    if (currentLevel > previousLevel) {
-      _onLevelUp(previousLevel, currentLevel);
-    }
+    // if (currentLevel > previousLevel) {
+    //   _onLevelUp(previousLevel, currentLevel);
+    // }
   }
 
   // Gérer le passage de niveau
-  void _onLevelUp(int oldLevel, int newLevel) {
-    // Débloquer un badge seulement aux niveaux clés
-    // if (_shouldUnlockBadgeAtLevel(newLevel)) {
-    //   final existingBadge = unlockedBadges
-    //       .where((badge) => badge.level == newLevel)
-    //       .firstOrNull;
-    //   if (existingBadge == null) {
-    //     unlockedBadges.add(AuraBadge.createForLevel(newLevel));
-    //   }
-    // }
-
-    // Vérifier les badges spéciaux
-    _checkSpecialBadges();
-  }
-
-  // Vérifier si un badge doit être débloqué à ce niveau
-  bool _shouldUnlockBadgeAtLevel(int level) {
-    // Badges tous les 5 niveaux: 1, 5, 10, 15, 20, etc.
-    return level == 1 || (level % 5 == 0);
-  }
+  // void _onLevelUp(int oldLevel, int newLevel) {
+  //   // _checkSpecialBadges();
+  // }
 
   // Ajouter de l'XP et calculer les gains de niveau
   LevelUpResult addExperience(int xp, {bool isConsistencyBonus = false}) {
@@ -182,7 +113,7 @@ class UserProfile {
   // Calculer l'XP d'un objectif selon sa durée et difficulté
   static int calculateGoalXp(int targetDays, {bool completedEarly = false}) {
     int baseXp;
-    
+
     if (targetDays <= 7) {
       baseXp = 10 + ((targetDays - 1) * 5 / 6).round();
     } else if (targetDays <= 30) {
@@ -190,7 +121,7 @@ class UserProfile {
     } else {
       baseXp = 80 + ((min(targetDays, 90) - 31) * 70 / 59).round();
     }
-    
+
     return baseXp;
   }
 
@@ -248,27 +179,7 @@ class UserProfile {
     return Colors.grey[600]!;
   }
 
-  // Vérifier les badges spéciaux
-  void _checkSpecialBadges() {
-    // Badge "Éclair" : 3 objectifs complétés en une semaine
-    // Badge "Marathon" : Objectif de 30+ jours terminé
-    // Badge "Perfectionniste" : 5 objectifs terminés avant la deadline
-    // Badge "Régulier" : 7 jours consécutifs d'activité
-
-    // Ces vérifications seront implémentées selon les données disponibles
-    // Pour l'instant, on laisse cette méthode vide
-  }
-
   // Obtenir la progression vers le prochain niveau (ancien système, maintenu)
-  double get progressToNextLevel {
-    final currentLevelPoints = pow((auraLevel - 1) * 100, 2).toInt();
-    final nextLevelPoints = pow(auraLevel * 100, 2).toInt();
-    final pointsInCurrentLevel = auraPoints - currentLevelPoints;
-    final pointsNeededForLevel = nextLevelPoints - currentLevelPoints;
-
-    return (pointsInCurrentLevel / pointsNeededForLevel).clamp(0.0, 1.0);
-  }
-
 
   Map<String, dynamic> toJson() {
     return {
@@ -279,15 +190,11 @@ class UserProfile {
       'currentLevel': currentLevel,
       'totalCompletedGoals': totalCompletedGoals,
       // Ancien système (maintenu)
-      'auraPoints': auraPoints,
-      'auraLevel': auraLevel,
       'totalDaysCompleted': totalDaysCompleted,
       'consecutiveDays': consecutiveDays,
       'maxConsecutiveDays': maxConsecutiveDays,
       'lastActivityDate': lastActivityDate.millisecondsSinceEpoch,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      // 'unlockedBadges': unlockedBadges.map((badge) => badge.toJson()).toList(),
-      // 'specialBadges': specialBadges.map((badge) => badge.toJson()).toList(),
     };
   }
 
@@ -300,8 +207,6 @@ class UserProfile {
       currentLevel: json['currentLevel'] ?? (json['auraLevel'] ?? 1),
       totalCompletedGoals: json['totalCompletedGoals'] ?? 0,
       // Ancien système (maintenu)
-      auraPoints: json['auraPoints'] ?? 0,
-      auraLevel: json['auraLevel'] ?? 1,
       totalDaysCompleted: json['totalDaysCompleted'] ?? 0,
       consecutiveDays: json['consecutiveDays'] ?? 0,
       maxConsecutiveDays: json['maxConsecutiveDays'] ?? 0,
@@ -309,16 +214,6 @@ class UserProfile {
         json['lastActivityDate'],
       ),
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
-      // unlockedBadges:
-      //     (json['unlockedBadges'] as List<dynamic>?)
-      //         ?.map((badge) => AuraBadge.fromJson(badge))
-      //         .toList() ??
-      //     [],
-      // specialBadges:
-      //     (json['specialBadges'] as List<dynamic>?)
-      //         ?.map((badge) => SpecialBadge.fromJson(badge))
-      //         .toList() ??
-      //     [],
     );
   }
 
@@ -337,8 +232,6 @@ class UserProfile {
     int? maxConsecutiveDays,
     DateTime? lastActivityDate,
     DateTime? createdAt,
-    // List<AuraBadge>? unlockedBadges,
-    // List<SpecialBadge>? specialBadges,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -348,8 +241,6 @@ class UserProfile {
       currentLevel: currentLevel ?? this.currentLevel,
       totalCompletedGoals: totalCompletedGoals ?? this.totalCompletedGoals,
       // Ancien système
-      auraPoints: auraPoints ?? this.auraPoints,
-      auraLevel: auraLevel ?? this.auraLevel,
       totalDaysCompleted: totalDaysCompleted ?? this.totalDaysCompleted,
       consecutiveDays: consecutiveDays ?? this.consecutiveDays,
       maxConsecutiveDays: maxConsecutiveDays ?? this.maxConsecutiveDays,
@@ -360,8 +251,6 @@ class UserProfile {
     );
   }
 }
-
-
 
 // Classe pour les résultats de gain de niveau
 class LevelUpResult {
@@ -381,88 +270,3 @@ class LevelUpResult {
     required this.hasLeveledUp,
   });
 }
-
-// Classe pour les badges spéciaux
-// class SpecialBadge {
-//   final String id;
-//   final String name;
-//   final String description;
-//   final String emoji;
-//   final String type;
-//   final DateTime unlockedAt;
-
-//   SpecialBadge({
-//     required this.id,
-//     required this.name,
-//     required this.description,
-//     required this.emoji,
-//     required this.type,
-//     required this.unlockedAt,
-//   });
-
-//   static SpecialBadge createLightningBadge() {
-//     return SpecialBadge(
-//       id: 'special_lightning',
-//       name: 'Éclair',
-//       description: '3 objectifs complétés en une semaine !',
-//       emoji: '⚡',
-//       type: 'lightning',
-//       unlockedAt: DateTime.now(),
-//     );
-//   }
-
-//   static SpecialBadge createMarathonBadge() {
-//     return SpecialBadge(
-//       id: 'special_marathon',
-//       name: 'Marathon',
-//       description: 'Objectif de 30+ jours terminé !',
-//       emoji: '🏃‍♂️',
-//       type: 'marathon',
-//       unlockedAt: DateTime.now(),
-//     );
-//   }
-
-//   static SpecialBadge createPerfectionistBadge() {
-//     return SpecialBadge(
-//       id: 'special_perfectionist',
-//       name: 'Perfectionniste',
-//       description: '5 objectifs terminés avant la deadline !',
-//       emoji: '🎯',
-//       type: 'perfectionist',
-//       unlockedAt: DateTime.now(),
-//     );
-//   }
-
-//   static SpecialBadge createConsistentBadge() {
-//     return SpecialBadge(
-//       id: 'special_consistent',
-//       name: 'Régulier',
-//       description: '7 jours consécutifs d\'activité !',
-//       emoji: '📅',
-//       type: 'consistent',
-//       unlockedAt: DateTime.now(),
-//     );
-//   }
-
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'id': id,
-//       'name': name,
-//       'description': description,
-//       'emoji': emoji,
-//       'type': type,
-//       'unlockedAt': unlockedAt.millisecondsSinceEpoch,
-//     };
-//   }
-
-//   factory SpecialBadge.fromJson(Map<String, dynamic> json) {
-//     return SpecialBadge(
-//       id: json['id'],
-//       name: json['name'],
-//       description: json['description'],
-//       emoji: json['emoji'],
-//       type: json['type'],
-//       unlockedAt: DateTime.fromMillisecondsSinceEpoch(json['unlockedAt']),
-//     );
-//   }
-// }

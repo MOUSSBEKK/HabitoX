@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// a delete stp
 enum GoalGrade {
   novice('Novice', '🥉', 0, Colors.brown),
   apprentice('Apprenti', '🥈', 10, Colors.grey),
@@ -84,21 +85,10 @@ class Goal {
     return progress.clamp(0.0, 1.0);
   }
 
-  bool get isOnTrack =>
-      currentStreak >= 3; // Considéré "sur la bonne voie" après 3 jours
+  bool get isOnTrack => currentStreak >= 3;
   bool get isStruggling =>
       currentStreak == 0 && totalDays > 0; // En difficulté si pas de streak
   bool get isConsistent => currentStreak >= 7; // Consistant après 7 jours
-
-  // String get motivationMessage {
-  //   if (isCompleted) return "🎉 Objectif accompli ! Vous êtes incroyable !";
-  //   if (isConsistent)
-  //     return "🔥 Incroyable ! Vous maintenez une série parfaite !";
-  //   if (isOnTrack)
-  //     return "💪 Continuez comme ça ! Vous êtes sur la bonne voie !";
-  //   if (isStruggling) return "💪 Ne lâchez rien ! Chaque jour compte !";
-  //   return "🚀 Commencez votre voyage vers le succès !";
-  // }
 
   Map<String, dynamic> toJson() {
     return {

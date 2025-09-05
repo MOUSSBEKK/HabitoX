@@ -181,13 +181,13 @@ class BadgesWidget extends StatelessWidget {
                   : Colors.grey[300],
               shape: BoxShape.circle,
             ),
-            child: Text(
-              badge.emoji,
-              style: TextStyle(
-                fontSize: 24,
-                color: isUnlocked ? badge.color : Colors.grey[600],
-              ),
-            ),
+            // child: Text(
+            //   badge.emoji,
+            //   style: TextStyle(
+            //     fontSize: 24,
+            //     color: isUnlocked ? badge.color : Colors.grey[600],
+            //   ),
+            // ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -260,20 +260,24 @@ class BadgesWidget extends StatelessWidget {
     BuildContext context,
     CalendarService calendarService,
   ) {
-    final badgesInfo = calendarService.shapes.map((shape) => 
-      '${shape.emoji} ${shape.name}: ${shape.totalDays} jours ${shape.isUnlocked ? "✓" : "🔒"}'
-    ).join('\n');
-    
-    showOkAlertDialog(
-      context: context,
-      title: 'Détails des Badges',
-      message: 'Comment débloquer les badges :\n\n'
-               '• Chaque forme de calendrier a un nombre spécifique de jours à compléter\n'
-               '• Complétez votre objectif actif pour progresser dans le calendrier\n'
-               '• Atteignez 100% de progression pour débloquer le badge\n'
-               '• Les badges sont basés sur les formes de calendrier générées aléatoirement\n\n'
-               'Badges disponibles :\n$badgesInfo',
-    );
+    // final badgesInfo = calendarService.shapes
+    //     .map(
+    //       (shape) =>
+    //           '${shape.emoji} ${shape.name}: ${shape.totalDays} jours ${shape.isUnlocked ? "✓" : "🔒"}',
+    //     )
+    //     .join('\n');
+
+    // showOkAlertDialog(
+    //   context: context,
+    //   title: 'Détails des Badges',
+    //   message:
+    //       'Comment débloquer les badges :\n\n'
+    //       '• Chaque forme de calendrier a un nombre spécifique de jours à compléter\n'
+    //       '• Complétez votre objectif actif pour progresser dans le calendrier\n'
+    //       '• Atteignez 100% de progression pour débloquer le badge\n'
+    //       '• Les badges sont basés sur les formes de calendrier générées aléatoirement\n\n'
+    //       'Badges disponibles :\n$badgesInfo',
+    // );
   }
 
   void _showResetConfirmation(
@@ -283,15 +287,16 @@ class BadgesWidget extends StatelessWidget {
     final result = await showOkCancelAlertDialog(
       context: context,
       title: 'Reset de la progression',
-      message: 'Êtes-vous sûr de vouloir réinitialiser toute la progression ?\n\n'
-               'Cela supprimera tous les badges débloqués et remettra toutes les formes '
-               'de calendrier en mode verrouillé.\n\n'
-               'Cette action est irréversible.',
+      message:
+          'Êtes-vous sûr de vouloir réinitialiser toute la progression ?\n\n'
+          'Cela supprimera tous les badges débloqués et remettra toutes les formes '
+          'de calendrier en mode verrouillé.\n\n'
+          'Cette action est irréversible.',
       okLabel: 'Reset',
       cancelLabel: 'Annuler',
       isDestructiveAction: true,
     );
-    
+
     if (result == OkCancelResult.ok) {
       calendarService.resetProgress();
       toastification.show(

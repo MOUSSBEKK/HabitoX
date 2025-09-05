@@ -111,7 +111,10 @@ class CalendarService extends ChangeNotifier {
 
   // Ensure there is a current shape that matches the active goal target days.
   // If a matching shape exists (same totalDays), select it. Otherwise create one.
-  Future<void> ensureShapeForTargetDays(int targetDays, {Color? goalColor}) async {
+  Future<void> ensureShapeForTargetDays(
+    int targetDays, {
+    Color? goalColor,
+  }) async {
     if (targetDays <= 0) return;
 
     // Try to find an existing shape with same totalDays
@@ -137,7 +140,10 @@ class CalendarService extends ChangeNotifier {
     }
 
     // Create a new tailored heatmap shape
-    final newShape = CalendarShape.createForTargetDays(targetDays, goalColor: goalColor);
+    final newShape = CalendarShape.createForTargetDays(
+      targetDays,
+      goalColor: goalColor,
+    );
     _shapes.add(newShape);
     _currentShape = newShape;
     await _saveData();
@@ -184,7 +190,7 @@ class CalendarService extends ChangeNotifier {
   }
 
   int get totalShapes => _shapes.length;
-  int get unlockedShapes => _shapes.where((shape) => shape.isUnlocked).length;
+  // int get unlockedShapes => _shapes.where((shape) => shape.isUnlocked).length;
   int get totalBadges => _badges.length;
   int get unlockedBadgesCount => unlockedBadges.length;
 }
