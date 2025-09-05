@@ -251,67 +251,58 @@ class _BadgesScreenState extends State<BadgesScreen>
   }
 
   _BadgeDisplayData _badgeDisplayData(int level) {
-    // Réplique minimale des métadonnées d'icône/couleur des niveaux clés
     if (level == 1) {
       return _BadgeDisplayData(
         name: 'Beginner',
         description: 'Welcome to your HabitoX journey!',
-        emoji: '💎',
         color: Colors.grey[600]!,
       );
     }
-    if (level == 4) {
+    if (level == 5) {
       return _BadgeDisplayData(
-        name: 'Déterminé',
-        description: 'Votre détermination commence à porter ses fruits !',
-        emoji: '⚡',
+        name: 'Determined',
+        description: 'Your determination is beginning to pay off!',
         color: Colors.orange[600]!,
       );
     }
-    if (level == 9) {
+    if (level == 10) {
       return _BadgeDisplayData(
         name: 'Elite',
-        description: 'Vous faites partie de l\'élite des utilisateurs !',
-        emoji: '🏆',
+        description: 'You are one of our elite users!',
         color: Colors.purple[600]!,
       );
     }
-    if (level == 19) {
+    if (level == 20) {
       return _BadgeDisplayData(
-        name: 'Maître',
-        description: 'Votre maîtrise est exceptionnelle !',
-        emoji: '👑',
+        name: 'Master',
+        description: 'Your command of the subject is exceptional!',
         color: Colors.red[600]!,
       );
     }
-    if (level == 29) {
+    if (level == 30) {
       return _BadgeDisplayData(
         name: 'Champion',
-        description: 'Vous êtes un véritable champion !',
-        emoji: '🌟',
+        description: 'You are a true champion!',
         color: Colors.amber[600]!,
       );
     }
-    if (level == 39) {
+    if (level == 40) {
       return _BadgeDisplayData(
-        name: 'Légende',
-        description: 'Votre légende inspire les autres !',
-        emoji: '⚡',
+        name: 'Legend',
+        description: 'Your legend inspires others!',
         color: Colors.deepPurple[600]!,
       );
     }
-    if (level >= 49) {
+    if (level >= 50) {
       return _BadgeDisplayData(
-        name: level >= 69 ? 'Transcendant' : 'Haut rang',
-        description: 'Atteignez le niveau $level pour ce badge.',
-        emoji: level >= 69 ? '🌌' : '🏅',
+        name: level >= 69 ? 'Transcendent' : 'High rank',
+        description: 'Reach level $level for this badge..',
         color: level >= 69 ? Colors.deepPurple[800]! : Colors.amber[600]!,
       );
     }
     return _BadgeDisplayData(
-      name: 'Badge niveau $level',
-      description: 'Débloquez ce badge au niveau $level.',
-      emoji: '🏅',
+      name: 'Level badge $level',
+      description: 'Unlock this badge at level $level.',
       color: Colors.amber[600]!,
     );
   }
@@ -320,13 +311,11 @@ class _BadgesScreenState extends State<BadgesScreen>
 class _BadgeDisplayData {
   final String name;
   final String description;
-  final String emoji;
   final Color color;
 
   _BadgeDisplayData({
     required this.name,
     required this.description,
-    required this.emoji,
     required this.color,
   });
 }

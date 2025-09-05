@@ -411,9 +411,6 @@ extension on _ProfileScreenState {
       case 'Noter l\'app':
         Navigator.pushNamed(context, '/rate_app');
         break;
-      // case 'Suivre sur Insta':
-      //   Navigator.pushNamed(context, '/follow_instagram');
-      //   break;
       case 'Les Mise à jour de l\'app':
         Navigator.pushNamed(context, '/app_updates');
         break;
@@ -439,7 +436,6 @@ extension on _ProfileScreenState {
         await launchUrl(termsUri, mode: LaunchMode.platformDefault);
       }
     } catch (_) {
-      // Dernier recours: affichage d'un toast
       toastification.show(
         context: context,
         title: const Text(
@@ -453,26 +449,22 @@ extension on _ProfileScreenState {
   }
 
   Future<void> _openInstagram() async {
-    // Hypothèse: identifiant Instagram de HabitoX. Modifiez si besoin.
     const String instagramHandle = 'habitoxts';
     final Uri appUri = Uri.parse('instagram://user?username=$instagramHandle');
     final Uri webUri = Uri.parse('https://instagram.com/$instagramHandle');
 
     try {
-      // Essaye l'app Instagram si installée
       bool opened = await launchUrl(
         appUri,
         mode: LaunchMode.externalApplication,
       );
       if (!opened) {
-        // Fallback vers le site web (ouvre l'app si Android le gère, sinon navigateur)
         opened = await launchUrl(webUri, mode: LaunchMode.externalApplication);
         if (!opened) {
           await launchUrl(webUri, mode: LaunchMode.platformDefault);
         }
       }
     } catch (_) {
-      // Dernier recours: navigateur par défaut
       try {
         await launchUrl(webUri, mode: LaunchMode.platformDefault);
       } catch (e) {

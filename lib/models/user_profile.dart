@@ -548,7 +548,7 @@ class AuraBadge {
       case 35:
         return {
           'name': 'Elite',
-          'description': 'Vous faites partie de l\'élite !',
+          'description': 'You are one of our elite users!',
           'emoji': '💫',
           'color': Colors.indigo[600],
         };
