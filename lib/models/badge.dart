@@ -7,7 +7,7 @@ class Badge {
   final String description;
   final String emoji;
   final Color color;
-  final CalendarShape calendarShape;
+  // final CalendarShape calendarShape;
   final DateTime unlockedAt;
   final bool isUnlocked;
 
@@ -17,7 +17,7 @@ class Badge {
     required this.description,
     required this.emoji,
     required this.color,
-    required this.calendarShape,
+    // required this.calendarShape,
     required this.unlockedAt,
     this.isUnlocked = false,
   });
@@ -28,7 +28,7 @@ class Badge {
     String? description,
     String? emoji,
     Color? color,
-    CalendarShape? calendarShape,
+    // CalendarShape? calendarShape,
     DateTime? unlockedAt,
     bool? isUnlocked,
   }) {
@@ -38,7 +38,7 @@ class Badge {
       description: description ?? this.description,
       emoji: emoji ?? this.emoji,
       color: color ?? this.color,
-      calendarShape: calendarShape ?? this.calendarShape,
+      // calendarShape: calendarShape ?? this.calendarShape,
       unlockedAt: unlockedAt ?? this.unlockedAt,
       isUnlocked: isUnlocked ?? this.isUnlocked,
     );
@@ -51,37 +51,37 @@ class Badge {
       'description': description,
       'emoji': emoji,
       'color': color.value,
-      'calendarShape': calendarShape.toJson(),
+      // 'calendarShape': calendarShape.toJson(),
       'unlockedAt': unlockedAt.millisecondsSinceEpoch,
       'isUnlocked': isUnlocked,
     };
   }
 
-  factory Badge.fromJson(Map<String, dynamic> json) {
-    return Badge(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      emoji: json['emoji'],
-      color: Color(json['color']),
-      calendarShape: CalendarShape.fromJson(json['calendarShape']),
-      unlockedAt: DateTime.fromMillisecondsSinceEpoch(json['unlockedAt']),
-      isUnlocked: json['isUnlocked'] ?? false,
-    );
-  }
+  // factory Badge.fromJson(Map<String, dynamic> json) {
+  //   return Badge(
+  //     id: json['id'],
+  //     name: json['name'],
+  //     description: json['description'],
+  //     emoji: json['emoji'],
+  //     color: Color(json['color']),
+  //     calendarShape: CalendarShape.fromJson(json['calendarShape']),
+  //     unlockedAt: DateTime.fromMillisecondsSinceEpoch(json['unlockedAt']),
+  //     isUnlocked: json['isUnlocked'] ?? false,
+  //   );
+  // }
 
-  static Badge createFromCalendarShape(CalendarShape shape) {
-    return Badge(
-      id: _generateId(),
-      name: '${shape.name} Maître',
-      description: 'A complété le calendrier ${shape.name} à 100%',
-      emoji: shape.emoji,
-      color: shape.color,
-      calendarShape: shape,
-      unlockedAt: DateTime.now(),
-      isUnlocked: true,
-    );
-  }
+  // static Badge createFromCalendarShape(CalendarShape shape) {
+  //   return Badge(
+  //     id: _generateId(),
+  //     name: '${shape.name} Maître',
+  //     description: 'A complété le calendrier ${shape.name} à 100%',
+  //     emoji: shape.emoji,
+  //     color: shape.color,
+  //     calendarShape: shape,
+  //     unlockedAt: DateTime.now(),
+  //     isUnlocked: true,
+  //   );
+  // }
 
   static String _generateId() {
     final random = DateTime.now().millisecondsSinceEpoch;

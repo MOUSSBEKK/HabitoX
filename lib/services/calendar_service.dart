@@ -21,55 +21,55 @@ class CalendarService extends ChangeNotifier {
   List<models.Badge> get lockedBadges =>
       _badges.where((badge) => !badge.isUnlocked).toList();
 
-  CalendarService() {
-    _initializeShapes();
-    _loadData();
-  }
+  // CalendarService() {
+  //   _initializeShapes();
+  //   _loadData();
+  // }
 
-  void _initializeShapes() {
-    if (_shapes.isEmpty) {
-      // Generate 10 initial random shapes
-      for (int i = 0; i < 10; i++) {
-        _shapes.add(CalendarShape.generateRandomShape());
-      }
-    }
-  }
+  // void _initializeShapes() {
+  //   if (_shapes.isEmpty) {
+  //     // Generate 10 initial random shapes
+  //     for (int i = 0; i < 10; i++) {
+  //       _shapes.add(CalendarShape.generateRandomShape());
+  //     }
+  //   }
+  // }
 
-  Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
+  // Future<void> _loadData() async {
+  //   final prefs = await SharedPreferences.getInstance();
 
-    // Load shapes
-    final shapesJson = prefs.getStringList(_shapesKey);
-    if (shapesJson != null) {
-      _shapes = shapesJson
-          .map((json) => CalendarShape.fromJson(jsonDecode(json)))
-          .toList();
-    }
+  //   // Load shapes
+  //   final shapesJson = prefs.getStringList(_shapesKey);
+  //   if (shapesJson != null) {
+  //     _shapes = shapesJson
+  //         .map((json) => CalendarShape.fromJson(jsonDecode(json)))
+  //         .toList();
+  //   }
 
-    // Load badges
-    final badgesJson = prefs.getStringList(_badgesKey);
-    if (badgesJson != null) {
-      _badges = badgesJson
-          .map((json) => models.Badge.fromJson(jsonDecode(json)))
-          .toList();
-    }
+  //   // Load badges
+  //   final badgesJson = prefs.getStringList(_badgesKey);
+  //   if (badgesJson != null) {
+  //     _badges = badgesJson
+  //         .map((json) => models.Badge.fromJson(jsonDecode(json)))
+  //         .toList();
+  //   }
 
-    // Load current shape
-    final currentShapeId = prefs.getString(_currentShapeKey);
-    if (currentShapeId != null) {
-      try {
-        _currentShape = _shapes.firstWhere(
-          (shape) => shape.id == currentShapeId,
-        );
-      } catch (e) {
-        _currentShape = _shapes.isNotEmpty ? _shapes.first : null;
-      }
-    } else if (_shapes.isNotEmpty) {
-      _currentShape = _shapes.first;
-    }
+  //   // Load current shape
+  //   final currentShapeId = prefs.getString(_currentShapeKey);
+  //   if (currentShapeId != null) {
+  //     try {
+  //       _currentShape = _shapes.firstWhere(
+  //         (shape) => shape.id == currentShapeId,
+  //       );
+  //     } catch (e) {
+  //       _currentShape = _shapes.isNotEmpty ? _shapes.first : null;
+  //     }
+  //   } else if (_shapes.isNotEmpty) {
+  //     _currentShape = _shapes.first;
+  //   }
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   Future<void> _saveData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -92,15 +92,15 @@ class CalendarService extends ChangeNotifier {
     }
   }
 
-  Future<void> generateNewShape() async {
-    final newShape = CalendarShape.generateRandomShape();
-    _shapes.add(newShape);
+  // Future<void> generateNewShape() async {
+  //   final newShape = CalendarShape.generateRandomShape();
+  //   _shapes.add(newShape);
 
-    _currentShape ??= newShape;
+  //   _currentShape ??= newShape;
 
-    await _saveData();
-    notifyListeners();
-  }
+  //   await _saveData();
+  //   notifyListeners();
+  // }
 
   Future<void> setCurrentShape(String shapeId) async {
     final shape = _shapes.firstWhere((s) => s.id == shapeId);
@@ -144,26 +144,26 @@ class CalendarService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> unlockBadge(CalendarShape shape) async {
-    // Check if badge already exists
-    final existingBadge = _badges
-        .where((badge) => badge.calendarShape.id == shape.id)
-        .firstOrNull;
+  // Future<void> unlockBadge(CalendarShape shape) async {
+  //   // Check if badge already exists
+  //   final existingBadge = _badges
+  //       .where((badge) => badge.calendarShape.id == shape.id)
+  //       .firstOrNull;
 
-    if (existingBadge == null) {
-      final newBadge = models.Badge.createFromCalendarShape(shape);
-      _badges.add(newBadge);
+  //   if (existingBadge == null) {
+  //     final newBadge = models.Badge.createFromCalendarShape(shape);
+  //     _badges.add(newBadge);
 
-      // Mark shape as unlocked
-      final shapeIndex = _shapes.indexWhere((s) => s.id == shape.id);
-      if (shapeIndex != -1) {
-        _shapes[shapeIndex] = _shapes[shapeIndex].copyWith(isUnlocked: true);
-      }
+  //     // Mark shape as unlocked
+  //     final shapeIndex = _shapes.indexWhere((s) => s.id == shape.id);
+  //     if (shapeIndex != -1) {
+  //       _shapes[shapeIndex] = _shapes[shapeIndex].copyWith(isUnlocked: true);
+  //     }
 
-      await _saveData();
-      notifyListeners();
-    }
-  }
+  //     await _saveData();
+  //     notifyListeners();
+  //   }
+  // }
 
   Future<void> resetProgress() async {
     // Reset all shapes to locked

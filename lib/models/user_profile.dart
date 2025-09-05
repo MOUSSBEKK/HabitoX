@@ -16,8 +16,7 @@ class UserProfile {
   int maxConsecutiveDays;
   DateTime lastActivityDate;
   DateTime createdAt;
-  List<AuraBadge> unlockedBadges;
-  List<SpecialBadge> specialBadges;
+  // List<SpecialBadge> specialBadges;
 
   UserProfile({
     required this.id,
@@ -34,108 +33,49 @@ class UserProfile {
     this.maxConsecutiveDays = 0,
     required this.lastActivityDate,
     required this.createdAt,
-    List<AuraBadge>? unlockedBadges,
-    List<SpecialBadge>? specialBadges,
-  }) : unlockedBadges = unlockedBadges ?? [],
-       specialBadges = specialBadges ?? [] {
-    // S'assurer que les nouveaux utilisateurs (niveau 1) ont le badge par défaut
-    if (currentLevel == 1 && this.unlockedBadges.isEmpty) {
-      this.unlockedBadges.add(AuraBadge.createForLevel(1));
-    }
+    // List<SpecialBadge>? specialBadges,
+  }) {
   }
-
-  // Calculer le niveau d'aura basé sur les points
-  void calculateAuraLevel() {
-    // Formule: niveau = 1 + sqrt(points / 100)
-    auraLevel = 1 + sqrt(auraPoints / 100).floor();
-  }
-
-  // Ajouter de l'aura pour un jour complété
-  void addAuraForDay() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final lastDay = DateTime(
-      lastActivityDate.year,
-      lastActivityDate.month,
-      lastActivityDate.day,
-    );
-
-    if (today.difference(lastDay).inDays == 1) {
-      // Jour consécutif
-      consecutiveDays++;
-      maxConsecutiveDays = max(maxConsecutiveDays, consecutiveDays);
-
-      // Bonus d'aura pour les séries
-      int bonus = 0;
-      if (consecutiveDays >= 7)
-        bonus = 50; // 7 jours = +50
-      else if (consecutiveDays >= 3)
-        bonus = 20; // 3 jours = +20
-
-      auraPoints += 100 + bonus; // Base 100 + bonus série
-    } else if (today.difference(lastDay).inDays > 1) {
-      // Jour manqué - perte exponentielle d'aura
-      int daysMissed = today.difference(lastDay).inDays - 1;
-      int auraLost = _calculateExponentialAuraLoss(daysMissed);
-      auraPoints = max(0, auraPoints - auraLost);
-
-      // Reset de la série
-      consecutiveDays = 1;
-    } else {
-      // Même jour - pas de changement
-      return;
-    }
-
-    totalDaysCompleted++;
-    lastActivityDate = now;
-    calculateAuraLevel();
-    _checkForNewBadges();
-  }
-
-  // Calculer la perte d'aura exponentielle
-  int _calculateExponentialAuraLoss(int daysMissed) {
-    // Formule: perte = 50 * (1.5 ^ jours_manqués)
-    return (50 * pow(1.5, daysMissed)).round();
-  }
+ 
 
   // Vérifier les nouveaux badges
-  void _checkForNewBadges() {
-    final newLevel = auraLevel;
+  // void _checkForNewBadges() {
+  //   final newLevel = auraLevel;
 
-    // Badge de niveau 1 (déjà géré dans le constructeur)
-    // Badge de niveau 2 (premier objectif terminé)
-    if (newLevel >= 2) {
-      final existingLevel2Badge = unlockedBadges
-          .where((badge) => badge.level == 2)
-          .firstOrNull;
-      if (existingLevel2Badge == null) {
-        unlockedBadges.add(AuraBadge.createForLevel(2));
-      }
-    }
+  //   // Badge de niveau 1 (déjà géré dans le constructeur)
+  //   // Badge de niveau 2 (premier objectif terminé)
+  //   if (newLevel >= 2) {
+  //     final existingLevel2Badge = unlockedBadges
+  //         .where((badge) => badge.level == 2)
+  //         .firstOrNull;
+  //     if (existingLevel2Badge == null) {
+  //       unlockedBadges.add(AuraBadge.createForLevel(2));
+  //     }
+  //   }
 
-    // Badges tous les 5 niveaux (comme avant)
-    final badgeLevel =
-        ((newLevel - 1) ~/ 5) * 5 + 5; // Badge tous les 5 niveaux
+  //   // Badges tous les 5 niveaux (comme avant)
+  //   final badgeLevel =
+  //       ((newLevel - 1) ~/ 5) * 5 + 5; // Badge tous les 5 niveaux
 
-    if (badgeLevel > 0 && badgeLevel <= newLevel) {
-      final existingBadge = unlockedBadges
-          .where((badge) => badge.level == badgeLevel)
-          .firstOrNull;
-      if (existingBadge == null) {
-        unlockedBadges.add(AuraBadge.createForLevel(badgeLevel));
-      }
-    }
-  }
+  //   if (badgeLevel > 0 && badgeLevel <= newLevel) {
+  //     final existingBadge = unlockedBadges
+  //         .where((badge) => badge.level == badgeLevel)
+  //         .firstOrNull;
+  //     if (existingBadge == null) {
+  //       unlockedBadges.add(AuraBadge.createForLevel(badgeLevel));
+  //     }
+  //   }
+  // }
 
-  // Méthode pour augmenter le niveau après completion d'un objectif (ancien système)
-  void onGoalCompleted() {
-    // Pour le premier objectif terminé, passer automatiquement au niveau 2
-    if (auraLevel == 1) {
-      auraLevel = 2;
-      auraPoints = 100; // Points minimum pour le niveau 2
-      _checkForNewBadges();
-    }
-  }
+  // // Méthode pour augmenter le niveau après completion d'un objectif (ancien système)
+  // void onGoalCompleted() {
+  //   // Pour le premier objectif terminé, passer automatiquement au niveau 2
+  //   if (auraLevel == 1) {
+  //     auraLevel = 2;
+  //     auraPoints = 100; // Points minimum pour le niveau 2
+  //     _checkForNewBadges();
+  //   }
+  // }
 
   // ============ NOUVEAU SYSTÈME XP ============
 
@@ -198,14 +138,14 @@ class UserProfile {
   // Gérer le passage de niveau
   void _onLevelUp(int oldLevel, int newLevel) {
     // Débloquer un badge seulement aux niveaux clés
-    if (_shouldUnlockBadgeAtLevel(newLevel)) {
-      final existingBadge = unlockedBadges
-          .where((badge) => badge.level == newLevel)
-          .firstOrNull;
-      if (existingBadge == null) {
-        unlockedBadges.add(AuraBadge.createForLevel(newLevel));
-      }
-    }
+    // if (_shouldUnlockBadgeAtLevel(newLevel)) {
+    //   final existingBadge = unlockedBadges
+    //       .where((badge) => badge.level == newLevel)
+    //       .firstOrNull;
+    //   if (existingBadge == null) {
+    //     unlockedBadges.add(AuraBadge.createForLevel(newLevel));
+    //   }
+    // }
 
     // Vérifier les badges spéciaux
     _checkSpecialBadges();
@@ -244,25 +184,16 @@ class UserProfile {
     int baseXp;
     
     if (targetDays <= 7) {
-      // Objectif court: 10-15 XP
       baseXp = 10 + ((targetDays - 1) * 5 / 6).round();
     } else if (targetDays <= 30) {
-      // Objectif moyen: 30-50 XP
       baseXp = 30 + ((targetDays - 8) * 20 / 22).round();
     } else {
-      // Objectif long: 80-150 XP
       baseXp = 80 + ((min(targetDays, 90) - 31) * 70 / 59).round();
-    }
-    
-    // Bonus de consistance (+20% si terminé avant deadline)
-    if (completedEarly) {
-      baseXp = (baseXp * 1.2).round();
     }
     
     return baseXp;
   }
 
-  // Nouveau getter: progression vers le prochain niveau (système XP)
   double get xpProgressToNextLevel {
     final currentLevelTotalXp = getTotalXpForLevel(currentLevel);
     final nextLevelTotalXp = getTotalXpForLevel(currentLevel + 1);
@@ -338,38 +269,6 @@ class UserProfile {
     return (pointsInCurrentLevel / pointsNeededForLevel).clamp(0.0, 1.0);
   }
 
-  // Obtenir le nom du niveau d'aura
-  String get auraLevelName {
-    if (auraLevel >= 50) return 'Légende Astrale';
-    if (auraLevel >= 40) return 'Maître Éthéré';
-    if (auraLevel >= 30) return 'Gardien Céleste';
-    if (auraLevel >= 20) return 'Adepte Lumineux';
-    if (auraLevel >= 10) return 'Initié Radieux';
-    if (auraLevel >= 5) return 'Apprenti Brillant';
-    return 'Novice Aura';
-  }
-
-  // Obtenir la couleur de l'aura basée sur le niveau
-  Color get auraColor {
-    if (auraLevel >= 50) return Colors.purple;
-    if (auraLevel >= 40) return Colors.deepPurple;
-    if (auraLevel >= 30) return Colors.indigo;
-    if (auraLevel >= 20) return Colors.blue;
-    if (auraLevel >= 10) return Colors.teal;
-    if (auraLevel >= 5) return Colors.green;
-    return Colors.grey;
-  }
-
-  // Obtenir l'emoji de l'aura basé sur le niveau
-  String get auraEmoji {
-    if (auraLevel >= 50) return '🌟';
-    if (auraLevel >= 40) return '✨';
-    if (auraLevel >= 30) return '💫';
-    if (auraLevel >= 20) return '⭐';
-    if (auraLevel >= 10) return '⚡';
-    if (auraLevel >= 5) return '🔮';
-    return '💎';
-  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -387,8 +286,8 @@ class UserProfile {
       'maxConsecutiveDays': maxConsecutiveDays,
       'lastActivityDate': lastActivityDate.millisecondsSinceEpoch,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'unlockedBadges': unlockedBadges.map((badge) => badge.toJson()).toList(),
-      'specialBadges': specialBadges.map((badge) => badge.toJson()).toList(),
+      // 'unlockedBadges': unlockedBadges.map((badge) => badge.toJson()).toList(),
+      // 'specialBadges': specialBadges.map((badge) => badge.toJson()).toList(),
     };
   }
 
@@ -410,16 +309,16 @@ class UserProfile {
         json['lastActivityDate'],
       ),
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
-      unlockedBadges:
-          (json['unlockedBadges'] as List<dynamic>?)
-              ?.map((badge) => AuraBadge.fromJson(badge))
-              .toList() ??
-          [],
-      specialBadges:
-          (json['specialBadges'] as List<dynamic>?)
-              ?.map((badge) => SpecialBadge.fromJson(badge))
-              .toList() ??
-          [],
+      // unlockedBadges:
+      //     (json['unlockedBadges'] as List<dynamic>?)
+      //         ?.map((badge) => AuraBadge.fromJson(badge))
+      //         .toList() ??
+      //     [],
+      // specialBadges:
+      //     (json['specialBadges'] as List<dynamic>?)
+      //         ?.map((badge) => SpecialBadge.fromJson(badge))
+      //         .toList() ??
+      //     [],
     );
   }
 
@@ -438,8 +337,8 @@ class UserProfile {
     int? maxConsecutiveDays,
     DateTime? lastActivityDate,
     DateTime? createdAt,
-    List<AuraBadge>? unlockedBadges,
-    List<SpecialBadge>? specialBadges,
+    // List<AuraBadge>? unlockedBadges,
+    // List<SpecialBadge>? specialBadges,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -456,153 +355,13 @@ class UserProfile {
       maxConsecutiveDays: maxConsecutiveDays ?? this.maxConsecutiveDays,
       lastActivityDate: lastActivityDate ?? this.lastActivityDate,
       createdAt: createdAt ?? this.createdAt,
-      unlockedBadges: unlockedBadges ?? this.unlockedBadges,
-      specialBadges: specialBadges ?? this.specialBadges,
+      // unlockedBadges: unlockedBadges ?? this.unlockedBadges,
+      // specialBadges: specialBadges ?? this.specialBadges,
     );
   }
 }
 
-class AuraBadge {
-  final String id;
-  final String name;
-  final String description;
-  final String emoji;
-  final int level;
-  final Color color;
-  final DateTime unlockedAt;
 
-  AuraBadge({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.emoji,
-    required this.level,
-    required this.color,
-    required this.unlockedAt,
-  });
-
-  static AuraBadge createForLevel(int level) {
-    final badgeData = _getBadgeDataForLevel(level);
-    return AuraBadge(
-      id: 'aura_badge_$level',
-      name: badgeData['name'],
-      description: badgeData['description'],
-      emoji: badgeData['emoji'],
-      level: level,
-      color: badgeData['color'],
-      unlockedAt: DateTime.now(),
-    );
-  }
-
-  static Map<String, dynamic> _getBadgeDataForLevel(int level) {
-    switch (level) {
-      case 1:
-        return {
-          'name': 'Débutant',
-          'description': 'Bienvenue dans votre parcours HabitoX !',
-          'emoji': '💎',
-          'color': Colors.grey[600],
-        };
-      case 5:
-        return {
-          'name': 'Apprenti',
-          'description': 'Vous progressez avec détermination !',
-          'emoji': '⭐',
-          'color': Colors.blue[600],
-        };
-      case 10:
-        return {
-          'name': 'Persévérant',
-          'description': 'Votre persévérance porte ses fruits !',
-          'emoji': '🔥',
-          'color': Colors.green[600],
-        };
-      case 15:
-        return {
-          'name': 'Déterminé',
-          'description': 'Rien ne peut vous arrêter maintenant !',
-          'emoji': '⚡',
-          'color': Colors.orange[600],
-        };
-      case 20:
-        return {
-          'name': 'Expert',
-          'description': 'Vous maîtrisez l\'art de la constance !',
-          'emoji': '🔮',
-          'color': Colors.purple[600],
-        };
-      case 25:
-        return {
-          'name': 'Maître',
-          'description': 'Votre discipline est exemplaire !',
-          'emoji': '👑',
-          'color': Colors.red[600],
-        };
-      case 30:
-        return {
-          'name': 'Champion',
-          'description': 'Vous êtes une source d\'inspiration !',
-          'emoji': '🏆',
-          'color': Colors.amber[600],
-        };
-      case 35:
-        return {
-          'name': 'Elite',
-          'description': 'You are one of our elite users!',
-          'emoji': '💫',
-          'color': Colors.indigo[600],
-        };
-      case 40:
-        return {
-          'name': 'Légende',
-          'description': 'Votre légende inspire les autres !',
-          'emoji': '🌟',
-          'color': Colors.deepPurple[600],
-        };
-      default:
-        // Pour les niveaux de badges non définis spécifiquement
-        if (level >= 49) {
-          return {
-            'name': 'Transcendant',
-            'description': 'Vous avez transcendé tous les niveaux !',
-            'emoji': '🌌',
-            'color': Colors.deepPurple[800],
-          };
-        } else {
-          return {
-            'name': 'Badge Niveau $level',
-            'description': 'Badge exceptionnel de niveau $level',
-            'emoji': '🏅',
-            'color': Colors.amber[600],
-          };
-        }
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'emoji': emoji,
-      'level': level,
-      'color': color.value,
-      'unlockedAt': unlockedAt.millisecondsSinceEpoch,
-    };
-  }
-
-  factory AuraBadge.fromJson(Map<String, dynamic> json) {
-    return AuraBadge(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      emoji: json['emoji'],
-      level: json['level'],
-      color: Color(json['color']),
-      unlockedAt: DateTime.fromMillisecondsSinceEpoch(json['unlockedAt']),
-    );
-  }
-}
 
 // Classe pour les résultats de gain de niveau
 class LevelUpResult {
@@ -624,86 +383,86 @@ class LevelUpResult {
 }
 
 // Classe pour les badges spéciaux
-class SpecialBadge {
-  final String id;
-  final String name;
-  final String description;
-  final String emoji;
-  final String type;
-  final DateTime unlockedAt;
+// class SpecialBadge {
+//   final String id;
+//   final String name;
+//   final String description;
+//   final String emoji;
+//   final String type;
+//   final DateTime unlockedAt;
 
-  SpecialBadge({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.emoji,
-    required this.type,
-    required this.unlockedAt,
-  });
+//   SpecialBadge({
+//     required this.id,
+//     required this.name,
+//     required this.description,
+//     required this.emoji,
+//     required this.type,
+//     required this.unlockedAt,
+//   });
 
-  static SpecialBadge createLightningBadge() {
-    return SpecialBadge(
-      id: 'special_lightning',
-      name: 'Éclair',
-      description: '3 objectifs complétés en une semaine !',
-      emoji: '⚡',
-      type: 'lightning',
-      unlockedAt: DateTime.now(),
-    );
-  }
+//   static SpecialBadge createLightningBadge() {
+//     return SpecialBadge(
+//       id: 'special_lightning',
+//       name: 'Éclair',
+//       description: '3 objectifs complétés en une semaine !',
+//       emoji: '⚡',
+//       type: 'lightning',
+//       unlockedAt: DateTime.now(),
+//     );
+//   }
 
-  static SpecialBadge createMarathonBadge() {
-    return SpecialBadge(
-      id: 'special_marathon',
-      name: 'Marathon',
-      description: 'Objectif de 30+ jours terminé !',
-      emoji: '🏃‍♂️',
-      type: 'marathon',
-      unlockedAt: DateTime.now(),
-    );
-  }
+//   static SpecialBadge createMarathonBadge() {
+//     return SpecialBadge(
+//       id: 'special_marathon',
+//       name: 'Marathon',
+//       description: 'Objectif de 30+ jours terminé !',
+//       emoji: '🏃‍♂️',
+//       type: 'marathon',
+//       unlockedAt: DateTime.now(),
+//     );
+//   }
 
-  static SpecialBadge createPerfectionistBadge() {
-    return SpecialBadge(
-      id: 'special_perfectionist',
-      name: 'Perfectionniste',
-      description: '5 objectifs terminés avant la deadline !',
-      emoji: '🎯',
-      type: 'perfectionist',
-      unlockedAt: DateTime.now(),
-    );
-  }
+//   static SpecialBadge createPerfectionistBadge() {
+//     return SpecialBadge(
+//       id: 'special_perfectionist',
+//       name: 'Perfectionniste',
+//       description: '5 objectifs terminés avant la deadline !',
+//       emoji: '🎯',
+//       type: 'perfectionist',
+//       unlockedAt: DateTime.now(),
+//     );
+//   }
 
-  static SpecialBadge createConsistentBadge() {
-    return SpecialBadge(
-      id: 'special_consistent',
-      name: 'Régulier',
-      description: '7 jours consécutifs d\'activité !',
-      emoji: '📅',
-      type: 'consistent',
-      unlockedAt: DateTime.now(),
-    );
-  }
+//   static SpecialBadge createConsistentBadge() {
+//     return SpecialBadge(
+//       id: 'special_consistent',
+//       name: 'Régulier',
+//       description: '7 jours consécutifs d\'activité !',
+//       emoji: '📅',
+//       type: 'consistent',
+//       unlockedAt: DateTime.now(),
+//     );
+//   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'emoji': emoji,
-      'type': type,
-      'unlockedAt': unlockedAt.millisecondsSinceEpoch,
-    };
-  }
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'id': id,
+//       'name': name,
+//       'description': description,
+//       'emoji': emoji,
+//       'type': type,
+//       'unlockedAt': unlockedAt.millisecondsSinceEpoch,
+//     };
+//   }
 
-  factory SpecialBadge.fromJson(Map<String, dynamic> json) {
-    return SpecialBadge(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      emoji: json['emoji'],
-      type: json['type'],
-      unlockedAt: DateTime.fromMillisecondsSinceEpoch(json['unlockedAt']),
-    );
-  }
-}
+//   factory SpecialBadge.fromJson(Map<String, dynamic> json) {
+//     return SpecialBadge(
+//       id: json['id'],
+//       name: json['name'],
+//       description: json['description'],
+//       emoji: json['emoji'],
+//       type: json['type'],
+//       unlockedAt: DateTime.fromMillisecondsSinceEpoch(json['unlockedAt']),
+//     );
+//   }
+// }

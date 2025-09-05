@@ -79,7 +79,6 @@ class _BadgesScreenState extends State<BadgesScreen>
                         final level =
                             profileService.userProfile?.currentLevel ?? 1;
                         
-                        // Trouver le dernier badge acquis (niveau de badge le plus élevé ≤ niveau actuel)
                         final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
                         int lastUnlockedBadgeLevel = 1;
                         for (int badgeLevel in badgeLevels) {
@@ -110,7 +109,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Dernier Badge Acquis',
+                              'Latest Badge Earned',
                               style: TextStyle(
                                 fontSize: isTablet ? 16.0 : 14.0,
                                 fontWeight: FontWeight.w500,
@@ -119,7 +118,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Niveau $lastUnlockedBadgeLevel',
+                              'Level $lastUnlockedBadgeLevel',
                               style: TextStyle(
                                 fontSize: isTablet ? 20.0 : 16.0,
                                 fontWeight: FontWeight.w700,

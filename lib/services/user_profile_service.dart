@@ -52,13 +52,13 @@ class UserProfileService extends ChangeNotifier {
   }
 
   // Méthode appelée quand un objectif est terminé (ancien système)
-  Future<void> onGoalCompleted() async {
-    if (_userProfile != null) {
-      _userProfile!.onGoalCompleted();
-      await _saveProfile();
-      notifyListeners();
-    }
-  }
+  // Future<void> onGoalCompleted() async {
+  //   if (_userProfile != null) {
+  //     _userProfile!.onGoalCompleted();
+  //     await _saveProfile();
+  //     notifyListeners();
+  //   }
+  // }
 
   // Nouvelle méthode pour ajouter de l'XP
   Future<LevelUpResult?> addExperience(
@@ -125,32 +125,32 @@ class UserProfileService extends ChangeNotifier {
       'levelName': _userProfile!.levelName,
       'levelColor': _userProfile!.levelColor,
       'totalCompletedGoals': _userProfile!.totalCompletedGoals,
-      'badgesCount': _userProfile!.unlockedBadges.length,
-      'specialBadgesCount': _userProfile!.specialBadges.length,
+      // 'badgesCount': _userProfile!.unlockedBadges.length,
+      // 'specialBadgesCount': _userProfile!.specialBadges.length,
     };
   }
 
   // Obtenir les badges débloqués
-  List<AuraBadge> get unlockedBadges {
-    return _userProfile?.unlockedBadges ?? [];
-  }
+  // List<AuraBadge> get unlockedBadges {
+  //   return _userProfile?.unlockedBadges ?? [];
+  // }
 
   // Vérifier si un nouveau badge a été débloqué
-  bool get hasNewBadge {
-    if (_userProfile == null) return false;
+  // bool get hasNewBadge {
+  //   if (_userProfile == null) return false;
 
-    final lastBadge = _userProfile!.unlockedBadges.isNotEmpty
-        ? _userProfile!.unlockedBadges.last
-        : null;
+  //   final lastBadge = _userProfile!.unlockedBadges.isNotEmpty
+  //       ? _userProfile!.unlockedBadges.last
+  //       : null;
 
-    if (lastBadge != null) {
-      final timeSinceUnlock = DateTime.now().difference(lastBadge.unlockedAt);
-      return timeSinceUnlock.inMinutes <
-          5; // Nouveau si débloqué il y a moins de 5 minutes
-    }
+  //   if (lastBadge != null) {
+  //     final timeSinceUnlock = DateTime.now().difference(lastBadge.unlockedAt);
+  //     return timeSinceUnlock.inMinutes <
+  //         5; // Nouveau si débloqué il y a moins de 5 minutes
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   // Obtenir les points nécessaires pour le prochain niveau
   // int get pointsNeededForNextLevel {

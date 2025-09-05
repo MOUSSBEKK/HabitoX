@@ -210,9 +210,9 @@ class GoalService extends ChangeNotifier {
       }
 
       // Notifier le profil utilisateur qu'un objectif a été terminé
-      if (profileService != null) {
-        await profileService.onGoalCompleted();
-      }
+      // if (profileService != null) {
+      //   await profileService.onGoalCompleted();
+      // }
 
       await _saveGoals();
       notifyListeners();
@@ -383,16 +383,5 @@ class GoalService extends ChangeNotifier {
     return highest;
   }
 
-  // Method to check if a calendar shape should be unlocked based on goal progress
-  bool shouldUnlockCalendarShape(CalendarShape shape) {
-    if (_goals.isEmpty) return false;
 
-    // Check if any active goal has enough progress to unlock the shape
-    for (final goal in _goals) {
-      if (goal.isActive && goal.totalDays >= shape.totalDays) {
-        return true;
-      }
-    }
-    return false;
-  }
 }
