@@ -5,6 +5,7 @@ import '../models/calendar_shape.dart';
 import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
 import '../services/user_profile_service.dart';
+import '../services/home_widget_service.dart';
 import 'level_up_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -466,6 +467,14 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     );
                   }
                 }
+
+                // Mettre à jour le widget d'accueil après toute progression
+                final calendarService = context.read<CalendarService>();
+                await HomeWidgetService.updateActiveGoalHeatmap(
+                  context,
+                  goalService,
+                  calendarService,
+                );
               },
         icon: const Icon(Icons.check, size: 20),
         label: const Text(
