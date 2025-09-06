@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'active_goal_calendar_widget.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Couleurs du design épuré
 class SkillProgressColors {
@@ -35,7 +36,27 @@ class SkillProgressWidget extends StatelessWidget {
         final padding = isTablet ? 32.0 : 20.0;
 
         return Scaffold(
-          appBar: AppBar(title: Text('HabitoX')),
+          appBar: AppBar(
+            title: Text('HabitoX'),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: FaIcon(
+                  FontAwesomeIcons.chartLine,
+                  size: 20,
+                  color: Color(0xFF1F4843),
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: FaIcon(
+                  FontAwesomeIcons.circleArrowUp,
+                  size: 20,
+                  color: Color(0xFF1F4843),
+                ),
+              ),
+            ],
+          ),
           body: Container(
             decoration: BoxDecoration(
               color: const Color.fromRGBO(226, 239, 243, 1),

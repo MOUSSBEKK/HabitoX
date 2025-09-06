@@ -6,6 +6,7 @@ import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
 import '../services/user_profile_service.dart';
 import 'level_up_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -31,8 +32,8 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             currentShape.totalDays != activeGoal.targetDays ||
             currentShape.color != activeGoal.color) {
           calendarService.ensureShapeForTargetDays(
-            activeGoal.targetDays, 
-            goalColor: activeGoal.color
+            activeGoal.targetDays,
+            goalColor: activeGoal.color,
           );
         }
 
@@ -166,16 +167,16 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
   double _calculateSquareSize(int totalDays) {
     // Pour les petites durées (≤ 7 jours), carrés plus grands
     if (totalDays <= 7) return 24.0;
-    
+
     // Pour les durées moyennes (8-21 jours), taille normale
     if (totalDays <= 21) return 18.0;
-    
+
     // Pour les durées moyennes-élevées (22-42 jours), un peu plus petit
     if (totalDays <= 42) return 14.0;
-    
+
     // Pour les durées élevées (43-70 jours), carrés plus petits
     if (totalDays <= 70) return 12.0;
-    
+
     // Pour les très longues durées (> 70 jours), carrés très petits
     return 10.0;
   }
@@ -195,10 +196,10 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
     // Déterminer le nombre optimal de colonnes basé sur le nombre total de jours
     final columnsPerRow = _calculateOptimalColumns(maxDays);
-    
+
     // Créer une liste de tous les jours visibles
     final allDays = List.generate(maxDays, (index) => index + 1);
-    
+
     // Organiser les jours en lignes
     final rows = <List<int>>[];
     for (int i = 0; i < allDays.length; i += columnsPerRow) {
@@ -215,7 +216,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             child: Row(
               children: row.map((dayNumber) {
                 final isCompleted = dayNumber <= daysCompleted;
-                
+
                 return Expanded(
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
@@ -242,17 +243,17 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
   int _calculateOptimalColumns(int totalDays) {
     // Pour les très petits nombres, une seule ligne
     if (totalDays <= 7) return totalDays;
-    
+
     // Pour les durées moyennes, essayer de faire des lignes équilibrées
     if (totalDays <= 14) return 7;
     if (totalDays <= 21) return 7;
     if (totalDays <= 28) return 7;
     if (totalDays <= 42) return 7;
-    
+
     // Pour les longues durées, plus de colonnes pour optimiser l'espace
     if (totalDays <= 70) return 10;
     if (totalDays <= 100) return 12;
-    
+
     // Pour les très longues durées
     return 14;
   }
@@ -366,22 +367,30 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             ? null
             : () async {
                 final profileService = context.read<UserProfileService>();
-                
+
                 // Utiliser le nouveau système XP
-                final levelUpResult = await profileService.addExperience(2); // XP pour session quotidienne
-                
+                final levelUpResult = await profileService.addExperience(
+                  2,
+                ); // XP pour session quotidienne
+
                 // Afficher animation XP
                 if (context.mounted) {
                   // Pour l'instant, on ne fait qu'un print, on ajoutera l'animation plus tard
                   print('Gained 2 XP!');
                 }
-                
+
                 // Si level up, afficher popup
-                if (levelUpResult != null && levelUpResult.hasLeveledUp && context.mounted) {
-                  final badgeAsset = 'assets/badges/BADGE${levelUpResult.newLevel}.png';
-                  final badgeName = profileService.userProfile?.levelName ?? 'Niveau ${levelUpResult.newLevel}';
-                  final badgeDescription = 'Félicitations ! Vous avez atteint le niveau ${levelUpResult.newLevel} !';
-                  
+                if (levelUpResult != null &&
+                    levelUpResult.hasLeveledUp &&
+                    context.mounted) {
+                  final badgeAsset =
+                      'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                  final badgeName =
+                      profileService.userProfile?.levelName ??
+                      'Niveau ${levelUpResult.newLevel}';
+                  final badgeDescription =
+                      'Félicitations ! Vous avez atteint le niveau ${levelUpResult.newLevel} !';
+
                   showDialog(
                     context: context,
                     barrierDismissible: true,
@@ -393,8 +402,11 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     ),
                   );
                 }
-                
-                final updateResult = await goalService.updateProgress(goal.id, profileService);
+
+                final updateResult = await goalService.updateProgress(
+                  goal.id,
+                  profileService,
+                );
                 // BadgeSyncService.checkAndUnlockBadges(context);
 
                 // Afficher le toast approprié selon le résultat
@@ -403,7 +415,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     // Objectif terminé complètement
                     final xpGained = updateResult['xpGained'] as int? ?? 0;
                     final levelUpResult = updateResult['levelUpResult'];
-                    
+
                     toastification.show(
                       context: context,
                       title: const Text('🎉 Objectif Terminé !'),
@@ -412,12 +424,17 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                       style: ToastificationStyle.flatColored,
                       autoCloseDuration: const Duration(seconds: 4),
                     );
-                    
+
                     // Si level up, afficher popup
-                    if (levelUpResult != null && levelUpResult.hasLeveledUp && context.mounted) {
-                      final badgeAsset = 'assets/badges/BADGE${levelUpResult.newLevel}.png';
-                      final badgeName = profileService.userProfile?.levelName ?? 'Niveau ${levelUpResult.newLevel}';
-                      
+                    if (levelUpResult != null &&
+                        levelUpResult.hasLeveledUp &&
+                        context.mounted) {
+                      final badgeAsset =
+                          'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                      final badgeName =
+                          profileService.userProfile?.levelName ??
+                          'Niveau ${levelUpResult.newLevel}';
+
                       showDialog(
                         context: context,
                         barrierDismissible: true,
@@ -425,7 +442,8 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                           levelUpResult: levelUpResult,
                           badgeAssetPath: badgeAsset,
                           badgeName: badgeName,
-                          badgeDescription: 'Vous avez atteint un nouveau niveau !',
+                          badgeDescription:
+                              'Vous avez atteint un nouveau niveau !',
                         ),
                       );
                     }
@@ -485,11 +503,11 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               ).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(Icons.flag_outlined, size: 48, color: primaryColor),
+            child: FaIcon(FontAwesomeIcons.flag, size: 48, color: primaryColor),
           ),
           const SizedBox(height: 24),
           Text(
-            'Aucun objectif actif',
+            'No active target',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w600,

@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     FontAwesomeIcons.bullseye,
                     size: isTablet ? 28.0 : 24.0,
                   ),
-                  label: 'Objectifs',
+                  label: 'Objectives',
                 ),
                 BottomNavigationBarItem(
                   icon: FaIcon(
@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     FontAwesomeIcons.user,
                     size: isTablet ? 28.0 : 24.0,
                   ),
-                  label: 'Profil',
+                  label: 'Profile',
                 ),
               ],
             ),

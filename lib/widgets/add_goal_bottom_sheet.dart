@@ -143,6 +143,20 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFE0E0E0),
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                          color: AddGoalBottomSheetColors.primaryColor,
+                          width: 1,
+                        ),
+                      ),
                       prefixIcon: const Padding(
                         padding: EdgeInsets.all(12.0),
                         child: FaIcon(FontAwesomeIcons.fontAwesome),
@@ -163,10 +177,25 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     decoration: InputDecoration(
                       labelText: 'Description',
                       hintText: 'Describe your goal...',
+                      focusColor: AddGoalBottomSheetColors.primaryColor,
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                          color: Color(0xFFE0E0E0),
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(
+                          color: AddGoalBottomSheetColors.primaryColor,
+                          width: 1,
+                        ),
                       ),
                       prefixIcon: const Padding(
                         padding: EdgeInsets.all(12.0),
@@ -202,9 +231,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text(
-                            widget.goal != null ? 'Modifier' : 'Créer',
-                          ),
+                          child: Text(widget.goal != null ? 'Edit' : 'Create'),
                         ),
                       ),
                     ],
@@ -987,7 +1014,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         goalService.addGoal(newGoal);
         toastification.show(
           context: context,
-          title: const Text('Objectif créé avec succès !'),
+          title: const Text('Goal successfully created!'),
           type: ToastificationType.success,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),

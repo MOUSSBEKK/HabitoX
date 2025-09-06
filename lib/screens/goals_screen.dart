@@ -102,7 +102,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                FaIcon(
                   emptyIcon,
                   size: isTablet ? 100.0 : 80.0,
                   color: Colors.grey[400],
@@ -187,9 +187,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
       return _buildGoalsList(
         context,
         (goalService) => goalService.goals.where((g) => g.isActive).toList(),
-        'Aucun objectif actif',
-        'Commencez par créer votre premier objectif !',
-        Icons.flag_outlined,
+        'No active target',
+        'Start by creating your first goal!',
+        FontAwesomeIcons.flag,
         isTablet,
       );
     }
@@ -197,9 +197,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
       return _buildGoalsList(
         context,
         (goalService) => goalService.completedGoals,
-        'Aucun objectif complété',
-        'Complétez vos objectifs pour les voir ici !',
-        Icons.check_circle_outline,
+        'No objectives completed',
+        'Complete your goals to see them here !',
+        FontAwesomeIcons.checkCircle,
         isTablet,
       );
     }
@@ -208,9 +208,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
       (goalService) => goalService.goals
           .where((g) => !g.isActive && !g.isCompleted)
           .toList(),
-      'Aucun objectif archivé',
-      'Archivez vos objectifs pour les organiser !',
-      Icons.folder_copy_outlined,
+      'No archived objectives',
+      'Archive your goals to organize them !',
+      FontAwesomeIcons.folderOpen,
       isTablet,
     );
   }

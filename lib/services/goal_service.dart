@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/goal.dart';
-import '../models/calendar_shape.dart';
 import '../models/user_profile.dart';
 import 'user_profile_service.dart';
 
@@ -21,24 +20,24 @@ class GoalService extends ChangeNotifier {
       _goals.where((goal) => !goal.isActive && !goal.isCompleted).toList();
 
   // Icônes prédéfinies pour les objectifs
-  static final List<Map<String, dynamic>> predefinedIcons = [
-    {'icon': Icons.fitness_center, 'name': 'Fitness', 'color': Colors.red},
-    {'icon': Icons.music_note, 'name': 'Musique', 'color': Colors.purple},
-    {'icon': Icons.book, 'name': 'Lecture', 'color': Colors.blue},
-    {'icon': Icons.code, 'name': 'Programmation', 'color': Colors.green},
-    {'icon': Icons.language, 'name': 'Langues', 'color': Colors.orange},
-    {'icon': Icons.brush, 'name': 'Art', 'color': Colors.pink},
-    {'icon': Icons.psychology, 'name': 'Méditation', 'color': Colors.indigo},
-    {'icon': Icons.sports_soccer, 'name': 'Sport', 'color': Colors.teal},
-    {'icon': Icons.restaurant, 'name': 'Cuisine', 'color': Colors.amber},
-    {'icon': Icons.work, 'name': 'Travail', 'color': Colors.brown},
-    {'icon': Icons.school, 'name': 'Études', 'color': Colors.cyan},
-    {
-      'icon': Icons.volunteer_activism,
-      'name': 'Bénévolat',
-      'color': Colors.deepOrange,
-    },
-  ];
+  // static final List<Map<String, dynamic>> predefinedIcons = [
+  //   {'icon': Icons.fitness_center, 'name': 'Fitness', 'color': Colors.red},
+  //   {'icon': Icons.music_note, 'name': 'Musique', 'color': Colors.purple},
+  //   {'icon': Icons.book, 'name': 'Lecture', 'color': Colors.blue},
+  //   {'icon': Icons.code, 'name': 'Programmation', 'color': Colors.green},
+  //   {'icon': Icons.language, 'name': 'Langues', 'color': Colors.orange},
+  //   {'icon': Icons.brush, 'name': 'Art', 'color': Colors.pink},
+  //   {'icon': Icons.psychology, 'name': 'Méditation', 'color': Colors.indigo},
+  //   {'icon': Icons.sports_soccer, 'name': 'Sport', 'color': Colors.teal},
+  //   {'icon': Icons.restaurant, 'name': 'Cuisine', 'color': Colors.amber},
+  //   {'icon': Icons.work, 'name': 'Travail', 'color': Colors.brown},
+  //   {'icon': Icons.school, 'name': 'Études', 'color': Colors.cyan},
+  //   {
+  //     'icon': Icons.volunteer_activism,
+  //     'name': 'Bénévolat',
+  //     'color': Colors.deepOrange,
+  //   },
+  // ];
 
   GoalService() {
     _loadGoals();
@@ -277,10 +276,7 @@ class GoalService extends ChangeNotifier {
         } else {
           await _saveGoals();
           notifyListeners();
-          return {
-            'goalCompleted': false,
-            'sessionCompleted': true,
-          };
+          return {'goalCompleted': false, 'sessionCompleted': true};
         }
       }
     }
@@ -294,7 +290,12 @@ class GoalService extends ChangeNotifier {
     int targetDays, {
     bool completedEarly = false,
   }) async {
-    await completeGoalWithXPAndReturn(goalId, profileService, targetDays, completedEarly: completedEarly);
+    await completeGoalWithXPAndReturn(
+      goalId,
+      profileService,
+      targetDays,
+      completedEarly: completedEarly,
+    );
   }
 
   // Méthode qui retourne les informations de completion
@@ -321,10 +322,13 @@ class GoalService extends ChangeNotifier {
 
       LevelUpResult? levelUpResult;
       int xpGained = 0;
-      
+
       // Ajouter XP avec nouveau système
       if (profileService != null) {
-        xpGained = UserProfile.calculateGoalXp(targetDays, completedEarly: completedEarly);
+        xpGained = UserProfile.calculateGoalXp(
+          targetDays,
+          completedEarly: completedEarly,
+        );
         levelUpResult = await profileService.onGoalCompletedXP(
           targetDays,
           completedEarly: completedEarly,
@@ -333,16 +337,10 @@ class GoalService extends ChangeNotifier {
 
       await _saveGoals();
       notifyListeners();
-      
-      return {
-        'xpGained': xpGained,
-        'levelUpResult': levelUpResult,
-      };
+
+      return {'xpGained': xpGained, 'levelUpResult': levelUpResult};
     }
-    return {
-      'xpGained': 0,
-      'levelUpResult': null,
-    };
+    return {'xpGained': 0, 'levelUpResult': null};
   }
 
   Future<void> resetStreak(String goalId) async {
@@ -382,6 +380,4 @@ class GoalService extends ChangeNotifier {
     }
     return highest;
   }
-
-
 }
