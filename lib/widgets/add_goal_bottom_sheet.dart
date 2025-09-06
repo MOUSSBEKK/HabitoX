@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddGoalBottomSheetColors {
   static const Color primaryColor = Color(0xFFA7C6A5);
@@ -106,8 +107,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     children: [
                       Text(
                         widget.goal != null
-                            ? 'Modifier l\'objectif'
-                            : 'Nouvel objectif',
+                            ? 'Change the objective'
+                            : 'New objective',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
@@ -117,7 +118,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       const Spacer(),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close),
+                        icon: FaIcon(FontAwesomeIcons.close, size: 16),
                       ),
                     ],
                   ),
@@ -135,18 +136,21 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   TextFormField(
                     controller: _titleController,
                     decoration: const InputDecoration(
-                      labelText: 'Titre de l\'objectif',
-                      hintText: 'Ex: Apprendre la guitare',
+                      labelText: 'Objective title',
+                      hintText: 'Ex: Learn to play the guitar',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
-                      prefixIcon: Icon(Icons.flag),
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: FaIcon(FontAwesomeIcons.fontAwesome),
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Veuillez saisir un titre';
+                        return 'Please enter a title';
                       }
                       return null;
                     },
@@ -156,20 +160,23 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   TextFormField(
                     controller: _descriptionController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Description',
-                      hintText: 'Décrivez votre objectif...',
+                      hintText: 'Describe your goal...',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
-                      prefixIcon: Icon(Icons.description),
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: FaIcon(FontAwesomeIcons.fileLines),
+                      ),
                     ),
                     maxLines: 3,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Veuillez saisir une description';
+                        return 'Please enter a description';
                       }
                       return null;
                     },
@@ -241,7 +248,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Icône',
+              'Icon',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -261,9 +268,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 16,
+                  FaIcon(
+                    FontAwesomeIcons.arrowRight,
+                    size: 12,
                     color: AddGoalBottomSheetColors.primaryColor,
                   ),
                 ],
@@ -346,7 +353,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Couleur',
+              'Colors',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -366,9 +373,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 16,
+                  FaIcon(
+                    FontAwesomeIcons.arrowRight,
+                    size: 12,
                     color: AddGoalBottomSheetColors.primaryColor,
                   ),
                 ],
@@ -442,7 +449,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Date de début',
+                      'Start date',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -453,7 +460,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     Text(
                       _startDate != null
                           ? '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}'
-                          : 'Sélectionner une date',
+                          : 'Select a date',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -485,7 +492,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Date de fin',
+                      'End date',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -496,7 +503,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     Text(
                       _endDate != null
                           ? '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}'
-                          : 'Sélectionner une date',
+                          : 'Select a date',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -518,7 +525,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            'Durée: $_calculatedDays jours',
+            'Duration: $_calculatedDays days',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -777,7 +784,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Choisir une icône',
+                    'Choose an icon',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -877,7 +884,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Choisir une couleur',
+                    'Choose a color',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
