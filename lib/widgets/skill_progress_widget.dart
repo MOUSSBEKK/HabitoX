@@ -43,23 +43,23 @@ class SkillProgressWidget extends StatelessWidget {
                 onPressed: () {},
                 icon: FaIcon(
                   FontAwesomeIcons.chartLine,
-                  size: 20,
-                  color: Color(0xFF1F4843),
+                  size: 22,
+                  color: Color(0xFFA7C6A5),
                 ),
               ),
               IconButton(
                 onPressed: () {},
                 icon: FaIcon(
                   FontAwesomeIcons.circleArrowUp,
-                  size: 20,
-                  color: Color(0xFF1F4843),
+                  size: 22,
+                  color: Color(0xFFA7C6A5),
                 ),
               ),
             ],
           ),
           body: Container(
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(226, 239, 243, 1),
+              color: Theme.of(context).colorScheme.surface,
             ),
             child: SafeArea(
               child: SingleChildScrollView(

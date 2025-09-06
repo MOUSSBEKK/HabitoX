@@ -46,34 +46,31 @@ class _GoalsScreenState extends State<GoalsScreen> {
           appBar: AppBar(title: Text('Objectifs')),
           body: Container(
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(226, 239, 243, 1),
+              color: Theme.of(context).colorScheme.surface,
             ),
             child: SafeArea(
               child: Column(
                 children: [
                   SizedBox(height: isTablet ? 24.0 : 20.0),
-                  // Boutons segmentés (Actifs, Complétés, Archivés)
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: padding),
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(
                         isTablet ? 20.0 : 16.0,
                       ),
                     ),
                     child: Row(
                       children: [
-                        _buildSegmentButton('Actifs', 0, isTablet),
-                        _buildSegmentButton('Complétés', 1, isTablet),
-                        _buildSegmentButton('Archivés', 2, isTablet),
+                        _buildSegmentButton('Assets', 0, isTablet),
+                        _buildSegmentButton('Completed', 1, isTablet),
+                        _buildSegmentButton('Archived', 2, isTablet),
                       ],
                     ),
                   ),
 
                   SizedBox(height: isTablet ? 24.0 : 20.0),
-
-                  // Contenu selon l'onglet sélectionné
                   Expanded(child: _buildCurrentTabContent(isTablet)),
                 ],
               ),
@@ -163,7 +160,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
           padding: EdgeInsets.symmetric(vertical: isTablet ? 14 : 12),
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            color: isSelected ? GoalsColors.primaryColor : Colors.white,
+            color: isSelected
+                ? GoalsColors.primaryColor
+                : Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(isTablet ? 14 : 12),
           ),
           child: Center(
@@ -172,7 +171,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
               style: TextStyle(
                 fontSize: isTablet ? 16 : 14,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : Colors.black87,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.tertiaryFixed
+                    : Theme.of(context).colorScheme.tertiaryContainer,
               ),
             ),
           ),

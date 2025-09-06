@@ -153,16 +153,16 @@ class UserProfile {
 
   // Obtenir le nom du niveau selon le nouveau système
   String get levelName {
-    if (currentLevel >= 45) return 'Transcendant';
-    if (currentLevel >= 40) return 'Légende';
+    if (currentLevel >= 45) return 'Transcendent';
+    if (currentLevel >= 40) return 'Legend';
     if (currentLevel >= 35) return 'Elite';
     if (currentLevel >= 30) return 'Champion';
-    if (currentLevel >= 25) return 'Maître';
+    if (currentLevel >= 25) return 'Master';
     if (currentLevel >= 20) return 'Expert';
-    if (currentLevel >= 15) return 'Déterminé';
-    if (currentLevel >= 10) return 'Persévérant';
-    if (currentLevel >= 5) return 'Apprenti';
-    return 'Débutant';
+    if (currentLevel >= 15) return 'Determined';
+    if (currentLevel >= 10) return 'Persevering';
+    if (currentLevel >= 5) return 'Apprentice';
+    return 'Beginner';
   }
 
   // Obtenir la couleur du niveau
@@ -246,8 +246,6 @@ class UserProfile {
       maxConsecutiveDays: maxConsecutiveDays ?? this.maxConsecutiveDays,
       lastActivityDate: lastActivityDate ?? this.lastActivityDate,
       createdAt: createdAt ?? this.createdAt,
-      // unlockedBadges: unlockedBadges ?? this.unlockedBadges,
-      // specialBadges: specialBadges ?? this.specialBadges,
     );
   }
 }

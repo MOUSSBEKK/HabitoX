@@ -49,7 +49,7 @@ class _BadgesScreenState extends State<BadgesScreen>
           appBar: AppBar(title: Text('Achievements')),
           body: Container(
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(226, 239, 243, 1),
+              color: Theme.of(context).colorScheme.surface,
             ),
             child: SafeArea(
               child: Column(
@@ -60,15 +60,13 @@ class _BadgesScreenState extends State<BadgesScreen>
                     margin: EdgeInsets.symmetric(horizontal: padding),
                     padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(
-                        isTablet ? 24.0 : 20.0,
+                        isTablet ? 24.0 : 12.0,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: BadgesScreenColors.darkColor.withValues(
-                            alpha: 0.06,
-                          ),
+                          color: Theme.of(context).colorScheme.shadow,
                           blurRadius: 16,
                           offset: const Offset(0, 6),
                         ),
@@ -78,7 +76,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                       builder: (context, profileService, child) {
                         final level =
                             profileService.userProfile?.currentLevel ?? 1;
-                        
+
                         final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
                         int lastUnlockedBadgeLevel = 1;
                         for (int badgeLevel in badgeLevels) {
@@ -88,10 +86,12 @@ class _BadgesScreenState extends State<BadgesScreen>
                             break;
                           }
                         }
-                        
-                        final assetPath = _getBadgeAssetForLevel(lastUnlockedBadgeLevel);
+
+                        final assetPath = _getBadgeAssetForLevel(
+                          lastUnlockedBadgeLevel,
+                        );
                         final imageSize = isTablet ? 160.0 : 120.0;
-                        
+
                         return Column(
                           children: [
                             SizedBox(
@@ -113,7 +113,9 @@ class _BadgesScreenState extends State<BadgesScreen>
                               style: TextStyle(
                                 fontSize: isTablet ? 16.0 : 14.0,
                                 fontWeight: FontWeight.w500,
-                                color: BadgesScreenColors.darkColor.withOpacity(0.7),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.tertiaryContainer,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -122,7 +124,9 @@ class _BadgesScreenState extends State<BadgesScreen>
                               style: TextStyle(
                                 fontSize: isTablet ? 20.0 : 16.0,
                                 fontWeight: FontWeight.w700,
-                                color: BadgesScreenColors.darkColor,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.tertiaryContainer,
                               ),
                             ),
                           ],
@@ -227,11 +231,11 @@ class _BadgesScreenState extends State<BadgesScreen>
       'BADGE9.png',
       'BADGE10.png',
     ];
-    
+
     // Mapping des niveaux de badges vers les indices des assets
     final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
     int badgeIndex = 0;
-    
+
     for (int i = 0; i < badgeLevels.length; i++) {
       if (level >= badgeLevels[i]) {
         badgeIndex = i;
@@ -239,7 +243,7 @@ class _BadgesScreenState extends State<BadgesScreen>
         break;
       }
     }
-    
+
     badgeIndex = badgeIndex.clamp(0, assetFiles.length - 1);
     return 'assets/badges/${assetFiles[badgeIndex]}';
   }
@@ -351,11 +355,11 @@ class _BadgeProgressTile extends StatelessWidget {
             Container(
               height: isTablet ? 110.0 : 92.0,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius: radius,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Theme.of(context).colorScheme.shadow,
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -418,7 +422,9 @@ class _BadgeProgressTile extends StatelessWidget {
                           style: TextStyle(
                             fontSize: isTablet ? 18.0 : 16.0,
                             fontWeight: FontWeight.w700,
-                            color: BadgesScreenColors.darkColor,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.tertiaryContainer,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -428,9 +434,10 @@ class _BadgeProgressTile extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: isTablet ? 14.0 : 12.5,
-                            color: BadgesScreenColors.darkColor.withValues(
-                              alpha: 0.7,
-                            ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .tertiaryContainer
+                                .withValues(alpha: 0.7),
                           ),
                         ),
                       ],

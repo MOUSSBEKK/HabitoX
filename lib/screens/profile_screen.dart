@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         return Scaffold(
           appBar: AppBar(title: Text('Account')),
-          backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(padding),
@@ -52,7 +52,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 }
 
 extension on _ProfileScreenState {
-  
   // Fonction helper pour obtenir le bon badge selon le niveau
   String _getBadgeAssetForLevel(int level) {
     final List<String> assetFiles = [
@@ -66,11 +65,11 @@ extension on _ProfileScreenState {
       'BADGE9.png',
       'BADGE10.png',
     ];
-    
+
     // Mapping des niveaux de badges vers les indices des assets
     final badgeLevels = [1, 5, 10, 15, 20, 25, 30, 35, 40];
     int badgeIndex = 0;
-    
+
     for (int i = 0; i < badgeLevels.length; i++) {
       if (level >= badgeLevels[i]) {
         badgeIndex = i;
@@ -78,10 +77,11 @@ extension on _ProfileScreenState {
         break;
       }
     }
-    
+
     badgeIndex = badgeIndex.clamp(0, assetFiles.length - 1);
     return 'assets/badges/${assetFiles[badgeIndex]}';
   }
+
   Widget _buildUpgradeCard(bool isTablet) {
     return GestureDetector(
       // Ouvre la page de souscription premium
@@ -97,6 +97,7 @@ extension on _ProfileScreenState {
           ),
           boxShadow: [
             BoxShadow(
+              // ! changer pour Theme.of(context).colorScheme.shadow
               color: const Color(0xFF6db399).withOpacity(0.25),
               blurRadius: 18,
               offset: const Offset(0, 8),
@@ -159,7 +160,7 @@ extension on _ProfileScreenState {
         return Container(
           padding: EdgeInsets.all(isTablet ? 20 : 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           ),
           child: Column(
@@ -192,7 +193,7 @@ extension on _ProfileScreenState {
                         Row(
                           children: [
                             Text(
-                              'Niveau $level',
+                              'Level $level',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -222,7 +223,7 @@ extension on _ProfileScreenState {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '$experiencePoints XP Total',
+                          '$experiencePoints Total XP',
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.darkColor.withOpacity(0.7),
@@ -245,7 +246,7 @@ extension on _ProfileScreenState {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Progression XP',
+                        'XP progression',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -309,27 +310,36 @@ extension on _ProfileScreenState {
 
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
-      // _SettingItem(Icons.credit_card, 'Payment Methods'),
-      // _SettingItem(FaIcon(FontAwesomeIcons.chessQueen), 'Billing & Subscriptions'),
-      _SettingItem(FaIcon(FontAwesomeIcons.eye), 'App Appearance'),
-      _SettingItem(FaIcon(FontAwesomeIcons.chartLine), 'Data & Analytics'),
-      _SettingItem(FaIcon(FontAwesomeIcons.fileImport), 'Import', locked: true),
-      _SettingItem(FaIcon(FontAwesomeIcons.fileExport), 'Export', locked: true),
+      _SettingItem(FaIcon(FontAwesomeIcons.eye, size: 20), 'App Appearance'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.lock),
-        'Politique de confidentialité',
+        FaIcon(FontAwesomeIcons.chartLine, size: 20),
+        'Data & Analytics',
       ),
-      _SettingItem(FaIcon(FontAwesomeIcons.instagram), 'Suivre sur Insta'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.circleArrowUp),
-        'Les Mise à jour de l\'app',
+        FaIcon(FontAwesomeIcons.fileImport, size: 20),
+        'Import',
+        locked: true,
       ),
-      _SettingItem(FaIcon(FontAwesomeIcons.star), 'Noter l\'app'),
+      _SettingItem(
+        FaIcon(FontAwesomeIcons.fileExport, size: 20),
+        'Export',
+        locked: true,
+      ),
+      _SettingItem(FaIcon(FontAwesomeIcons.lock, size: 20), 'Privacy Policy'),
+      _SettingItem(
+        FaIcon(FontAwesomeIcons.circleArrowUp, size: 20),
+        'App Updates',
+      ),
+      _SettingItem(FaIcon(FontAwesomeIcons.star, size: 20), 'Rate the app'),
+      _SettingItem(
+        FaIcon(FontAwesomeIcons.instagram, size: 20),
+        'Follow on Insta',
+      ),
     ];
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
         boxShadow: [
           BoxShadow(

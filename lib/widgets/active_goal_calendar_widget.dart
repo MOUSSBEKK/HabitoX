@@ -40,7 +40,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Colors.grey[200]!),
           ),
@@ -58,6 +58,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                   calendarService.currentShape!,
                   activeGoal,
                   calendarService,
+                  context,
                 )
               else
                 _buildEmptyCalendarCard(),
@@ -79,7 +80,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: primaryColor.withValues(alpha: 0.15),
+            color: const Color.fromARGB(
+              255,
+              48,
+              83,
+              45,
+            ).withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(icon, size: 28, color: primaryColor),
@@ -119,6 +125,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     CalendarShape shape,
     dynamic activeGoal,
     CalendarService calendarService,
+    BuildContext context,
   ) {
     final progress = activeGoal != null ? activeGoal.totalDays : 0;
     final maxDays = shape.totalDays;
@@ -136,9 +143,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey[200]!),
           ),
@@ -484,9 +491,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(138, 255, 255, 255),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey[200]!),
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -511,7 +518,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w600,
-              color: darkColor,
+              color: const Color.fromARGB(255, 232, 227, 227),
             ),
           ),
         ],

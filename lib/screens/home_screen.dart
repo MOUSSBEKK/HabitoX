@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final isTablet = constraints.maxWidth > 600;
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: IndexedStack(
             index: _currentIndex,
             children: [
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: HomeColors.darkColor.withValues(alpha: 0.08),
+                  color: Theme.of(context).colorScheme.shadow,
                   blurRadius: 20,
                   offset: const Offset(0, -5),
                 ),
@@ -88,9 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
               type: isTablet
                   ? BottomNavigationBarType.fixed
                   : BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               selectedItemColor: HomeColors.primaryColor,
-              unselectedItemColor: HomeColors.darkColor.withValues(alpha: 0.5),
+              unselectedItemColor: Theme.of(context).colorScheme.tertiary,
               selectedLabelStyle: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: isTablet ? 14.0 : 12.0,
