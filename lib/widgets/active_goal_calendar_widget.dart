@@ -7,6 +7,7 @@ import '../services/goal_service.dart';
 import '../services/user_profile_service.dart';
 import 'level_up_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -42,7 +43,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: Colors.grey.shade200),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,12 +148,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: Colors.grey.shade200),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildCalendarMatrix(shape, progress, maxDays),
+              _buildHeatMap(context, shape, activeGoal),
               const SizedBox(height: 8),
               Text(
                 '$progress / $maxDays jours complétés',
@@ -170,99 +171,101 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  // Calcule la taille adaptative des carrés en fonction du nombre de jours
-  double _calculateSquareSize(int totalDays) {
-    // Pour les petites durées (≤ 7 jours), carrés plus grands
-    if (totalDays <= 7) return 24.0;
+  // Construit la heatmap type GitHub à partir des sessions réalisées
+  Widget _buildHeatMap(
+    BuildContext context,
+    CalendarShape shape,
+    dynamic activeGoal,
+  ) {
+    final now = DateTime.now();
+    final start = now.subtract(const Duration(days: 90));
 
-    // Pour les durées moyennes (8-21 jours), taille normale
-    if (totalDays <= 21) return 18.0;
-
-    // Pour les durées moyennes-élevées (22-42 jours), un peu plus petit
-    if (totalDays <= 42) return 14.0;
-
-    // Pour les durées élevées (43-70 jours), carrés plus petits
-    if (totalDays <= 70) return 12.0;
-
-    // Pour les très longues durées (> 70 jours), carrés très petits
-    return 10.0;
-  }
-
-  // Calcule l'espacement adaptatif en fonction de la taille des carrés
-  double _calculateSquareMargin(double squareSize) {
-    if (squareSize >= 20) return 3.0;
-    if (squareSize >= 16) return 2.5;
-    if (squareSize >= 12) return 2.0;
-    return 1.5;
-  }
-
-  Widget _buildCalendarMatrix(CalendarShape shape, int progress, int maxDays) {
-    final daysCompleted = progress;
-    final squareSize = _calculateSquareSize(maxDays);
-    final squareMargin = _calculateSquareMargin(squareSize);
-
-    // Déterminer le nombre optimal de colonnes basé sur le nombre total de jours
-    final columnsPerRow = _calculateOptimalColumns(maxDays);
-
-    // Créer une liste de tous les jours visibles
-    final allDays = List.generate(maxDays, (index) => index + 1);
-
-    // Organiser les jours en lignes
-    final rows = <List<int>>[];
-    for (int i = 0; i < allDays.length; i += columnsPerRow) {
-      final endIndex = (i + columnsPerRow).clamp(0, allDays.length);
-      rows.add(allDays.sublist(i, endIndex));
+    // Agréger les sessions par jour et calculer une valeur de streak pour l'intensité
+    final Map<DateTime, int> rawCounts = {};
+    for (final session in activeGoal.completedSessions) {
+      final day = DateTime(session.year, session.month, session.day);
+      if (day.isBefore(start) || day.isAfter(now)) continue;
+      rawCounts.update(day, (v) => v + 1, ifAbsent: () => 1);
     }
 
-    return Column(
-      children: [
-        const SizedBox(height: 4),
-        ...rows.map((row) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: squareMargin / 2),
-            child: Row(
-              children: row.map((dayNumber) {
-                final isCompleted = dayNumber <= daysCompleted;
+    // Calcul d'une intensité basée sur le streak jusqu'à chaque date
+    final sortedDays = rawCounts.keys.toList()..sort();
+    final Map<DateTime, int> datasets = {};
+    DateTime? previousDay;
+    int currentStreak = 0;
+    for (final day in sortedDays) {
+      if (previousDay != null && day.difference(previousDay).inDays == 1) {
+        currentStreak += 1;
+      } else {
+        currentStreak = 1;
+      }
+      previousDay = day;
+      // Limiter l'intensité pour correspondre aux paliers de couleurs
+      datasets[day] = currentStreak.clamp(1, 7);
+    }
 
-                return Expanded(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    height: squareSize,
-                    margin: EdgeInsets.symmetric(horizontal: squareMargin),
-                    decoration: BoxDecoration(
-                      color: isCompleted
-                          ? shape.color
-                          : shape.color.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(squareSize * 0.15),
-                    ),
-                  ),
-                );
-              }).toList(),
+    final base = shape.color;
+    final colorsets = <int, Color>{
+      1: base.withValues(alpha: 0.25),
+      2: base.withValues(alpha: 0.35),
+      3: base.withValues(alpha: 0.45),
+      4: base.withValues(alpha: 0.60),
+      5: base.withValues(alpha: 0.70),
+      6: base.withValues(alpha: 0.85),
+      7: base,
+    };
+
+    return HeatMap(
+      startDate: DateTime(start.year, start.month, start.day),
+      endDate: DateTime(now.year, now.month, now.day),
+      size: 18,
+      margin: const EdgeInsets.all(2),
+      fontSize: 10,
+      scrollable: true,
+      showText: false,
+      showColorTip: true,
+      colorMode: ColorMode.color,
+      defaultColor: Theme.of(context).colorScheme.primary,
+      textColor: Colors.grey[700],
+      datasets: datasets,
+      colorsets: colorsets,
+      onClick: (selectedDay) async {
+        final today = DateTime(now.year, now.month, now.day);
+        if (selectedDay == today) {
+          final goalService = context.read<GoalService>();
+          final profileService = context.read<UserProfileService>();
+
+          // Vérifier si déjà marqué aujourd'hui
+          final already = activeGoal.completedSessions.any(
+            (d) => DateTime(d.year, d.month, d.day) == today,
+          );
+          if (!already) {
+            final update = await goalService.updateProgress(
+              activeGoal.id,
+              profileService,
+            );
+            if (update != null) {
+              toastification.show(
+                context: context,
+                title: const Text('Session marquée !'),
+                description: const Text('+2 XP'),
+                type: ToastificationType.success,
+                style: ToastificationStyle.flatColored,
+                autoCloseDuration: const Duration(seconds: 3),
+              );
+            }
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '${selectedDay.day}/${selectedDay.month}/${selectedDay.year}',
+              ),
             ),
           );
-        }).toList(),
-      ],
+        }
+      },
     );
-  }
-
-  // Calcule le nombre optimal de colonnes par ligne selon le nombre total de jours
-  int _calculateOptimalColumns(int totalDays) {
-    // Pour les très petits nombres, une seule ligne
-    if (totalDays <= 7) return totalDays;
-
-    // Pour les durées moyennes, essayer de faire des lignes équilibrées
-    if (totalDays <= 14) return 7;
-    if (totalDays <= 21) return 7;
-    if (totalDays <= 28) return 7;
-    if (totalDays <= 42) return 7;
-
-    // Pour les longues durées, plus de colonnes pour optimiser l'espace
-    if (totalDays <= 70) return 10;
-    if (totalDays <= 100) return 12;
-
-    // Pour les très longues durées
-    return 14;
   }
 
   Widget _buildProgressInfo(CalendarShape shape, dynamic activeGoal) {
@@ -532,7 +535,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         children: [
