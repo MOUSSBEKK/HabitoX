@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.3.2
   flutter_launcher_icons: "^0.14.4"
   flutter_heatmap_calendar: ^1.0.5
+  home_widget: ^0.8.0
 
 dev_dependencies:
   flutter_test:
