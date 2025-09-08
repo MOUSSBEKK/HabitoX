@@ -136,11 +136,11 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Progression du calendrier',
+          'Calendar progress',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         const SizedBox(height: 12),
@@ -217,13 +217,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     };
 
     return HeatMapCalendar(
-      // startDate: DateTime(start.year, start.month, start.day),
-      // endDate: DateTime(now.year, now.month, now.day),
-      size: 30,
+      size: 35,
       margin: const EdgeInsets.all(2),
-      fontSize: 10,
-      // scrollable: true,
-      // showText: false,
+      fontSize: 14,
       showColorTip: false,
       colorMode: ColorMode.color,
       defaultColor: Theme.of(context).colorScheme.primary,
@@ -257,14 +253,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               );
             }
           }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '${selectedDay.day}/${selectedDay.month}/${selectedDay.year}',
-              ),
-            ),
-          );
         }
       },
     );
@@ -305,15 +293,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 '${((progress / maxDays) * 100).clamp(0, 100).toInt()}%',
                 Icons.trending_up,
                 shape.color,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildInfoCard(
-                'Objectif actif',
-                activeGoal?.title ?? 'Aucun',
-                Icons.flag,
-                activeGoal?.color ?? Colors.grey,
               ),
             ),
           ],
@@ -392,28 +371,28 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 }
 
                 // Si level up, afficher popup
-                if (levelUpResult != null &&
-                    levelUpResult.hasLeveledUp &&
-                    context.mounted) {
-                  final badgeAsset =
-                      'assets/badges/BADGE${levelUpResult.newLevel}.png';
-                  final badgeName =
-                      profileService.userProfile?.levelName ??
-                      'Niveau ${levelUpResult.newLevel}';
-                  final badgeDescription =
-                      'Félicitations ! Vous avez atteint le niveau ${levelUpResult.newLevel} !';
+                // if (levelUpResult != null &&
+                //     levelUpResult.hasLeveledUp &&
+                //     context.mounted) {
+                //   final badgeAsset =
+                //       'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                //   final badgeName =
+                //       profileService.userProfile?.levelName ??
+                //       'Niveau ${levelUpResult.newLevel}';
+                //   final badgeDescription =
+                //       'Congratulations ! You have reached level ${levelUpResult.newLevel} !';
 
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (context) => LevelUpDialog(
-                      levelUpResult: levelUpResult,
-                      badgeAssetPath: badgeAsset,
-                      badgeName: badgeName,
-                      badgeDescription: badgeDescription,
-                    ),
-                  );
-                }
+                //   showDialog(
+                //     context: context,
+                //     barrierDismissible: true,
+                //     builder: (context) => LevelUpDialog(
+                //       levelUpResult: levelUpResult,
+                //       badgeAssetPath: badgeAsset,
+                //       badgeName: badgeName,
+                //       badgeDescription: badgeDescription,
+                //     ),
+                //   );
+                // }
 
                 final updateResult = await goalService.updateProgress(
                   goal.id,
@@ -430,8 +409,8 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
                     toastification.show(
                       context: context,
-                      title: const Text('🎉 Objectif Terminé !'),
-                      description: Text('Félicitations ! +$xpGained XP'),
+                      title: const Text('🎉 Goal Completed !'),
+                      description: Text('Congratulations ! +$xpGained XP'),
                       type: ToastificationType.success,
                       style: ToastificationStyle.flatColored,
                       autoCloseDuration: const Duration(seconds: 4),
@@ -454,8 +433,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                           levelUpResult: levelUpResult,
                           badgeAssetPath: badgeAsset,
                           badgeName: badgeName,
-                          badgeDescription:
-                              'Vous avez atteint un nouveau niveau !',
+                          badgeDescription: 'You have reached a new level !',
                         ),
                       );
                     }
@@ -480,20 +458,33 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                   calendarService,
                 );
               },
-        icon: const Icon(Icons.check, size: 20),
-        label: const Text(
+        icon: Icon(
+          Icons.check,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        label: Text(
           'Marquer session',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          foregroundColor: Theme.of(context).colorScheme.secondary,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
-          shadowColor: primaryColor.withValues(alpha: 0.3),
+          shadowColor: const Color.fromARGB(
+            255,
+            38,
+            217,
+            25,
+          ).withValues(alpha: 0.3),
         ),
       ),
     );

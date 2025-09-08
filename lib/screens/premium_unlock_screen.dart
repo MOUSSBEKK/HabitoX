@@ -20,8 +20,8 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color bg = const Color.fromRGBO(226, 239, 243, 1);
-    final Color card = Colors.white;
+    final Color bg = Theme.of(context).colorScheme.surface;
+    final Color card = Theme.of(context).colorScheme.primary;
     final Color border = AppColors.borderColorLight;
     final Color accent = const Color(0xFF6db399);
 
@@ -30,7 +30,12 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
       appBar: AppBar(
         backgroundColor: bg,
         foregroundColor: AppColors.darkColor,
-        title: const Text('HabitoX Premium'),
+        title: Text(
+          'HabitoX Premium',
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
+        ),
       ),
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(20, 8, 20, 16),
@@ -39,13 +44,13 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           child: ElevatedButton(
             onPressed: _onContinue,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF7C3AED),
+              backgroundColor: Color(0xFF6db399),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
             child: const Text(
-              'Continuer',
+              'Continue',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -67,21 +72,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                 border: border,
                 accent: accent,
               ),
-              const SizedBox(height: 16),
-              Center(
-                child: TextButton(
-                  onPressed: _onRestorePurchase,
-                  child: const Text(
-                    'Déjà abonné ? Rétablir l\'achat',
-                    style: TextStyle(
-                      color: Color(0xFF8B5CF6),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
               _buildFeaturesCardDark(
                 card: card,
                 border: border,
@@ -105,7 +96,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildPlanCard(
-          title: 'Mensuel',
+          title: 'Monthly',
           price: _priceMonthly,
           selected: _selectedPlan == 'Mensuel',
           onTap: () => setState(() => _selectedPlan = 'Mensuel'),
@@ -115,7 +106,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         ),
         const SizedBox(height: 12),
         _buildPlanCard(
-          title: 'Annuel',
+          title: 'Annual',
           price: _priceAnnual,
           oldPrice: _priceAnnualOld,
           discountBadge: '-50%',
@@ -128,7 +119,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         const SizedBox(height: 10),
         Center(
           child: Text(
-            'Facturation récurrente. Annulez à tout moment.',
+            'Recurring billing. Cancel anytime.',
             style: TextStyle(
               color: AppColors.darkColor.withOpacity(0.8),
               fontSize: 13,
@@ -138,7 +129,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         const SizedBox(height: 12),
         Center(
           child: Text(
-            'ou',
+            'or',
             style: TextStyle(
               color: AppColors.darkColor.withOpacity(0.9),
               fontSize: 15,
@@ -148,7 +139,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         ),
         const SizedBox(height: 12),
         _buildPlanCard(
-          title: 'A vie',
+          title: 'For life ',
           price: _priceLifetime,
           selected: _selectedPlan == 'A vie',
           onTap: () => setState(() => _selectedPlan = 'A vie'),
@@ -159,7 +150,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         const SizedBox(height: 6),
         Center(
           child: Text(
-            'Payez une fois. Accès illimité pour toujours.',
+            'Pay once. Unlimited access forever.',
             style: TextStyle(
               color: AppColors.darkColor.withOpacity(0.8),
               fontSize: 13,
@@ -221,8 +212,8 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          color: AppColors.darkColor,
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
                         ),
@@ -235,13 +226,15 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFA500),
+                            color: Color(0xFFA7C6A5),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             discountBadge,
-                            style: const TextStyle(
-                              color: Colors.black,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.color,
                               fontWeight: FontWeight.w800,
                               fontSize: 12,
                             ),
@@ -257,7 +250,9 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                         Text(
                           oldPrice,
                           style: TextStyle(
-                            color: AppColors.darkColor.withOpacity(0.6),
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color?.withOpacity(0.6),
                             decoration: TextDecoration.lineThrough,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -266,14 +261,18 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                         const SizedBox(width: 6),
                         Icon(
                           Icons.arrow_right_alt,
-                          color: Colors.black.withOpacity(0.45),
+                          color: Theme.of(
+                            context,
+                          ).iconTheme.color?.withOpacity(0.45),
                           size: 20,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           price,
-                          style: const TextStyle(
-                            color: AppColors.darkColor,
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),

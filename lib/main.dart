@@ -8,7 +8,6 @@ import 'services/user_profile_service.dart';
 import 'services/theme_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/premium_unlock_screen.dart';
-import 'screens/settings/payment_methods_screen.dart';
 import 'screens/settings/app_appearance_screen.dart';
 import 'screens/settings/data_analytics_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
@@ -155,7 +154,6 @@ class HabitoXApp extends StatelessWidget {
             home: const HomeScreen(),
             routes: {
               '/premium_unlock': (context) => const PremiumUnlockScreen(),
-              '/payment_methods': (context) => const PaymentMethodsScreen(),
 
               '/app_appearance': (context) => const AppAppearanceScreen(),
               '/data_analytics': (context) => const DataAnalyticsScreen(),

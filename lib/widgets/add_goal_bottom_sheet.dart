@@ -86,7 +86,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     final mediaQuery = MediaQuery.of(context);
 
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         top: false,
         child: Padding(
@@ -112,7 +112,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
-                          color: AddGoalBottomSheetColors.darkColor,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
                       const Spacer(),
@@ -135,11 +135,14 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   TextFormField(
                     controller: _titleController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Objective title',
+                      labelStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
                       hintText: 'Ex: Learn to play the guitar',
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
@@ -157,9 +160,12 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           width: 1,
                         ),
                       ),
-                      prefixIcon: const Padding(
+                      prefixIcon: Padding(
                         padding: EdgeInsets.all(12.0),
-                        child: FaIcon(FontAwesomeIcons.fontAwesome),
+                        child: FaIcon(
+                          FontAwesomeIcons.fontAwesome,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -176,10 +182,13 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     controller: _descriptionController,
                     decoration: InputDecoration(
                       labelText: 'Description',
+                      labelStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
                       hintText: 'Describe your goal...',
                       focusColor: AddGoalBottomSheetColors.primaryColor,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
@@ -197,9 +206,12 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           width: 1,
                         ),
                       ),
-                      prefixIcon: const Padding(
+                      prefixIcon: Padding(
                         padding: EdgeInsets.all(12.0),
-                        child: FaIcon(FontAwesomeIcons.fileLines),
+                        child: FaIcon(
+                          FontAwesomeIcons.fileLines,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                       ),
                     ),
                     maxLines: 3,
@@ -279,7 +291,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             GestureDetector(
@@ -384,7 +396,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             GestureDetector(
@@ -464,13 +476,16 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.primary,
               border: Border.all(color: Colors.grey[300]!),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                Icon(Icons.calendar_today, color: Colors.grey[600]),
+                Icon(
+                  Icons.calendar_today,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -479,7 +494,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       'Start date',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -507,13 +522,13 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.primary,
               border: Border.all(color: Colors.grey[300]!),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                Icon(Icons.event, color: Colors.grey[600]),
+                Icon(Icons.event, color: Theme.of(context).iconTheme.color),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -522,7 +537,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       'End date',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -592,6 +607,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               DateTime.now().add(const Duration(days: 30))),
       firstDate: _startDate ?? DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
+      cancelText: "Cancel",
     );
     if (picked != null && picked != _endDate) {
       setState(() {
@@ -799,7 +815,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     }
 
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height * 0.8,
@@ -850,7 +866,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           color: isSelected
                               ? AddGoalBottomSheetColors.primaryColor
                                     .withValues(alpha: 0.2)
-                              : Colors.grey[100],
+                              : Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isSelected
@@ -863,7 +879,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           icon,
                           color: isSelected
                               ? AddGoalBottomSheetColors.primaryColor
-                              : Colors.grey[600],
+                              : Theme.of(context).iconTheme.color,
                           size: 24,
                         ),
                       ),

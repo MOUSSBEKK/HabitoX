@@ -5,8 +5,8 @@ import '../services/calendar_service.dart';
 import '../models/calendar_shape.dart';
 
 class HomeWidgetService {
-  static const String androidProvider =
-      'com.example.habitox.ActiveGoalHeatmapWidgetProvider';
+  // IMPORTANT: fournir seulement le nom de classe (le plugin préfixe avec applicationId)
+  static const String androidProvider = 'ActiveGoalHeatmapWidgetProvider';
 
   static Future<void> updateActiveGoalHeatmap(
     BuildContext context,
@@ -48,7 +48,13 @@ class HomeWidgetService {
       logicalSize: const Size(320, 160),
     );
 
-    await HomeWidget.updateWidget(name: androidProvider);
+    try {
+      await HomeWidget.updateWidget(name: androidProvider);
+    } catch (e) {
+      // Si aucun widget n'est ajouté, le plugin peut lever une erreur (ClassNotFoundException)
+      // On ignore silencieusement pour ne pas perturber le flux de l'application
+      debugPrint('HomeWidget update ignorée: $e');
+    }
   }
 }
 

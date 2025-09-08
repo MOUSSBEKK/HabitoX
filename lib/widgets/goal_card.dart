@@ -32,7 +32,7 @@ class GoalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -102,7 +102,7 @@ class GoalCard extends StatelessWidget {
                   PopupMenuButton<String>(
                     icon: Icon(
                       Icons.more_vert,
-                      color: GoalCardColors.darkColor.withValues(alpha: 0.6),
+                      color: Theme.of(context).iconTheme.color,
                     ),
                     onSelected: (value) {
                       switch (value) {
@@ -119,13 +119,16 @@ class GoalCard extends StatelessWidget {
                     },
                     itemBuilder: (context) => [
                       if (onEdit != null)
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Row(
                             children: [
                               Icon(Icons.edit, size: 20),
                               SizedBox(width: 8),
-                              Text('Modifier'),
+                              Text(
+                                'Modifier',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
                             ],
                           ),
                         ),
@@ -139,7 +142,10 @@ class GoalCard extends StatelessWidget {
                                 size: 20,
                               ),
                               const SizedBox(width: 8),
-                              Text(goal.isActive ? 'Pauser' : 'Activer'),
+                              Text(
+                                goal.isActive ? 'Pauser' : 'Activer',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
                             ],
                           ),
                         ),
@@ -165,7 +171,7 @@ class GoalCard extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Barre de progression
-            _buildProgressSection(),
+            _buildProgressSection(context),
 
             const SizedBox(height: 20),
 
@@ -227,7 +233,7 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressSection() {
+  Widget _buildProgressSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -239,7 +245,7 @@ class GoalCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey[700],
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             Text(
@@ -262,8 +268,11 @@ class GoalCard extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '${goal.totalDays} jours sur ${goal.targetDays}',
-          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          '${goal.totalDays} days over ${goal.targetDays}',
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
         ),
       ],
     );
