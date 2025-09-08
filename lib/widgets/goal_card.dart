@@ -283,19 +283,10 @@ class GoalCard extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: _buildStatItem(
-            'Meilleure',
+            'Best',
             '${goal.maxStreak}',
             Icons.emoji_events,
             Colors.amber,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatItem(
-            'Grade',
-            goal.currentGrade.emoji,
-            Icons.star,
-            goal.currentGrade.color,
           ),
         ),
       ],

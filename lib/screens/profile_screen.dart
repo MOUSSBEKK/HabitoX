@@ -5,6 +5,7 @@ import '../services/user_profile_service.dart';
 import '../constants/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -197,7 +198,7 @@ extension on _ProfileScreenState {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.darkColor,
+                                color: Theme.of(context).textTheme.bodyLarge?.color,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -293,7 +294,7 @@ extension on _ProfileScreenState {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Prochain niveau: ${level + 1}',
+                    'Next level: ${level + 1}',
                     style: TextStyle(
                       fontSize: 10,
                       color: AppColors.darkColor.withOpacity(0.6),
@@ -310,29 +311,29 @@ extension on _ProfileScreenState {
 
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
-      _SettingItem(FaIcon(FontAwesomeIcons.eye, size: 20), 'App Appearance'),
+      _SettingItem(FaIcon(FontAwesomeIcons.eye, size: 20,color: Theme.of(context).iconTheme.color), 'App Appearance'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.chartLine, size: 20),
+        FaIcon(FontAwesomeIcons.chartLine, size: 20, color: Theme.of(context).iconTheme.color),
         'Data & Analytics',
       ),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.fileImport, size: 20),
+        FaIcon(FontAwesomeIcons.fileImport, size: 20, color: Theme.of(context).iconTheme.color),
         'Import',
         locked: true,
       ),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.fileExport, size: 20),
+        FaIcon(FontAwesomeIcons.fileExport, size: 20, color: Theme.of(context).iconTheme.color),
         'Export',
         locked: true,
       ),
-      _SettingItem(FaIcon(FontAwesomeIcons.lock, size: 20), 'Privacy Policy'),
+      _SettingItem(FaIcon(FontAwesomeIcons.lock, size: 20, color: Theme.of(context).iconTheme.color), 'Privacy Policy'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.circleArrowUp, size: 20),
+        FaIcon(FontAwesomeIcons.circleArrowUp, size: 20, color: Theme.of(context).iconTheme.color),
         'App Updates',
       ),
-      _SettingItem(FaIcon(FontAwesomeIcons.star, size: 20), 'Rate the app'),
+      _SettingItem(FaIcon(FontAwesomeIcons.star, size: 20, color: Theme.of(context).iconTheme.color), 'Rate the app'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.instagram, size: 20),
+        FaIcon(FontAwesomeIcons.instagram, size: 20, color: Theme.of(context).iconTheme.color),
         'Follow on Insta',
       ),
     ];
@@ -366,21 +367,22 @@ extension on _ProfileScreenState {
       fontSize: isTablet ? 16 : 14,
       fontWeight: FontWeight.w600,
       color: item.locked
-          ? AppColors.darkColor.withOpacity(0.4)
-          : AppColors.darkColor,
+          ? Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.4)
+          : Theme.of(context).textTheme.bodyLarge?.color,
     );
 
     return ListTile(
+      key: Key(item.title),
       leading: item.icon,
       // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
       trailing: item.locked
-          ? const Icon(Icons.lock, color: Colors.grey)
-          : const Icon(Icons.chevron_right),
+          ? Icon(Icons.lock, color: Theme.of(context).iconTheme.color)
+          : Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color),
       onTap: item.locked
           ? () => toastification.show(
               context: context,
-              title: const Text('Premium requis'),
+              title: const Text('Premium required'),
               type: ToastificationType.warning,
               style: ToastificationStyle.flatColored,
               autoCloseDuration: const Duration(seconds: 3),
@@ -397,15 +399,6 @@ extension on _ProfileScreenState {
   // KIWI changer pour remplacer un id par un nom de page
   void _navigateToSetting(String settingTitle) {
     switch (settingTitle) {
-      case 'Payment Methods':
-        Navigator.pushNamed(context, '/payment_methods');
-        break;
-      case 'Billing & Subscriptions':
-        Navigator.pushNamed(context, '/billing_subscriptions');
-        break;
-      case 'Account & Security':
-        Navigator.pushNamed(context, '/account_security');
-        break;
       case 'App Appearance':
         Navigator.pushNamed(context, '/app_appearance');
         break;
@@ -418,8 +411,8 @@ extension on _ProfileScreenState {
       case 'Suivre sur Insta':
         _openInstagram();
         break;
-      case 'Noter l\'app':
-        Navigator.pushNamed(context, '/rate_app');
+      case 'Rate the app':
+        _rateApp();
         break;
       case 'Les Mise à jour de l\'app':
         Navigator.pushNamed(context, '/app_updates');
@@ -484,6 +477,54 @@ extension on _ProfileScreenState {
           type: ToastificationType.error,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
+        );
+      }
+    }
+  }
+
+  Future<void> _rateApp() async {
+    final InAppReview inAppReview = InAppReview.instance;
+    
+    try {
+      // Vérifier si la fonctionnalité de notation est disponible
+      if (await inAppReview.isAvailable()) {
+        // Demander la notation in-app
+        await inAppReview.requestReview();
+        
+        // Afficher un message de remerciement
+        toastification.show(
+          context: context,
+          title: const Text('Merci pour votre retour !'),
+          description: const Text('Votre avis nous aide à améliorer l\'application'),
+          type: ToastificationType.success,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+      } else {
+        // Si la notation in-app n'est pas disponible, ouvrir le store
+        await inAppReview.openStoreListing();
+      }
+    } catch (e) {
+      // En cas d'erreur, proposer d'ouvrir le store directement
+      toastification.show(
+        context: context,
+        title: const Text('Erreur'),
+        description: const Text('Impossible d\'ouvrir la notation. Redirection vers le store...'),
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+      
+      try {
+        await inAppReview.openStoreListing();
+      } catch (storeError) {
+        toastification.show(
+          context: context,
+          title: const Text('Erreur'),
+          description: const Text('Impossible d\'ouvrir le store. Veuillez noter l\'app manuellement.'),
+          type: ToastificationType.error,
+          style: ToastificationStyle.flatColored,
+          autoCloseDuration: const Duration(seconds: 4),
         );
       }
     }
