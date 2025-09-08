@@ -215,20 +215,21 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       7: base,
     };
 
-    return HeatMap(
-      startDate: DateTime(start.year, start.month, start.day),
-      endDate: DateTime(now.year, now.month, now.day),
-      size: 18,
+    return HeatMapCalendar(
+      // startDate: DateTime(start.year, start.month, start.day),
+      // endDate: DateTime(now.year, now.month, now.day),
+      size: 30,
       margin: const EdgeInsets.all(2),
       fontSize: 10,
-      scrollable: true,
-      showText: false,
-      showColorTip: true,
+      // scrollable: true,
+      // showText: false,
+      showColorTip: false,
       colorMode: ColorMode.color,
       defaultColor: Theme.of(context).colorScheme.primary,
       textColor: Colors.grey[700],
       datasets: datasets,
       colorsets: colorsets,
+      // enlever le onclick
       onClick: (selectedDay) async {
         final today = DateTime(now.year, now.month, now.day);
         if (selectedDay == today) {
