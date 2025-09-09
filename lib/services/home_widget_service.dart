@@ -17,7 +17,7 @@ class HomeWidgetService {
 
     // Préparer des titres
     final String title = 'HabitoX';
-    final String subtitle = goal != null ? goal.title : 'Aucun objectif actif';
+    final String subtitle = goal != null ? goal.title : 'No active goal';
 
     await HomeWidget.saveWidgetData<String>('widget_title', title);
     await HomeWidget.saveWidgetData<String>('widget_subtitle', subtitle);

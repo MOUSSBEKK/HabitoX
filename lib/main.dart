@@ -1,20 +1,20 @@
+import 'constants/app_colors.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'services/goal_service.dart';
-import 'services/calendar_service.dart';
-import 'services/user_profile_service.dart';
-import 'services/theme_service.dart';
-import 'services/onboarding_service.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/startup_screen.dart';
 import 'screens/premium_unlock_screen.dart';
 import 'screens/settings/app_appearance_screen.dart';
-import 'screens/settings/data_analytics_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
-import 'constants/app_colors.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'screens/settings/data_analytics_screen.dart';
+import 'screens/startup_screen.dart';
+import 'services/calendar_service.dart';
+import 'services/goal_service.dart';
+import 'services/onboarding_service.dart';
+import 'services/theme_service.dart';
+import 'services/user_profile_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

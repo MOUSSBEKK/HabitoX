@@ -507,17 +507,19 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               color: AppColors.lightColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: FaIcon(
-              FontAwesomeIcons.flag,
-              size: 40,
-              color: AppColors.lightColor.withValues(alpha: 0.6),
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.flag,
+                size: 40,
+                color: AppColors.lightColor.withValues(alpha: 0.6),
+              ),
             ),
           ),
           const SizedBox(height: 32),
-          
+
           // Titre principal
           Text(
-            'Aucun objectif actif',
+            'No active goal',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -527,10 +529,10 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
-          
+
           // Sous-titre explicatif
           Text(
-            'Créez votre premier objectif pour\ncommencer votre parcours',
+            'Create your first goal to\nstart your journey',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,

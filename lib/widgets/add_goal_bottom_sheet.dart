@@ -368,7 +368,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   Widget _buildColorSelector() {
     // Couleurs principales à afficher dans la ligne
-    final mainColors = AddGoalBottomSheetColors.goalColors.take(8).toList();
+    final mainColors = AddGoalBottomSheetColors.goalColors.take(6).toList();
 
     // Organiser les couleurs pour mettre la sélectionnée en premier
     final orderedMainColors = <Color>[];
@@ -436,8 +436,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       });
                     },
                     child: Container(
-                      height: 40,
-                      width: 40,
+                      height: 48,
+                      width: 48,
                       decoration: BoxDecoration(
                         color: color,
                         shape: BoxShape.circle,
@@ -626,6 +626,178 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     }
   }
 
+  // Catégories d'icônes (affichage par blocs)
+  static final Map<String, List<IconData>> iconCategories = {
+    'Sports & Fitness': [
+      Icons.fitness_center,
+      Icons.sports_soccer,
+      Icons.sports_basketball,
+      Icons.sports_tennis,
+      Icons.sports_volleyball,
+      Icons.sports_football,
+      Icons.sports_baseball,
+      Icons.sports_hockey,
+      Icons.sports_golf,
+      Icons.sports_motorsports,
+      Icons.sports_esports,
+      Icons.pool,
+      Icons.snowboarding,
+      Icons.surfing,
+      Icons.skateboarding,
+    ],
+    'Arts & Creativity': [
+      Icons.brush,
+      Icons.palette,
+      Icons.music_note,
+      Icons.piano,
+      Icons.mic,
+      Icons.headphones,
+      Icons.camera,
+      Icons.camera_alt,
+      Icons.video_camera_back,
+      Icons.theater_comedy,
+      Icons.movie,
+      Icons.photo,
+      Icons.draw,
+      Icons.colorize,
+    ],
+    'Learning & Education': [
+      Icons.book,
+      Icons.school,
+      Icons.science,
+      Icons.biotech,
+      Icons.psychology,
+      Icons.calculate,
+      Icons.language,
+      Icons.translate,
+      Icons.history_edu,
+      Icons.menu_book,
+      Icons.library_books,
+      Icons.quiz,
+      Icons.assignment,
+      Icons.edit,
+      Icons.article,
+    ],
+    'Technology & Work': [
+      Icons.code,
+      Icons.computer,
+      Icons.laptop,
+      Icons.smartphone,
+      Icons.web,
+      Icons.developer_mode,
+      Icons.bug_report,
+      Icons.settings,
+      Icons.build,
+      Icons.work,
+      Icons.business,
+      Icons.slideshow,
+      Icons.analytics,
+      Icons.trending_up,
+      Icons.monetization_on,
+    ],
+    'Health & Wellness': [
+      Icons.health_and_safety,
+      Icons.medical_services,
+      Icons.medication,
+      Icons.local_hospital,
+      Icons.healing,
+      Icons.spa,
+      Icons.self_improvement,
+      Icons.favorite,
+      Icons.mood,
+      Icons.sentiment_very_satisfied,
+      Icons.nights_stay,
+      Icons.wb_sunny,
+      Icons.eco,
+      Icons.nature,
+      Icons.park,
+    ],
+    'Food & Cooking': [
+      Icons.restaurant,
+      Icons.local_restaurant,
+      Icons.food_bank,
+      Icons.cake,
+      Icons.coffee,
+      Icons.local_cafe,
+      Icons.local_bar,
+      Icons.kitchen,
+      Icons.soup_kitchen,
+      Icons.ramen_dining,
+      Icons.lunch_dining,
+      Icons.dinner_dining,
+      Icons.breakfast_dining,
+      Icons.fastfood,
+      Icons.local_pizza,
+    ],
+    'Travel & Adventure': [
+      Icons.flight,
+      Icons.train,
+      Icons.directions_car,
+      Icons.directions_bike,
+      Icons.hiking,
+      Icons.terrain,
+      Icons.map,
+      Icons.explore,
+      Icons.public,
+      Icons.location_on,
+      Icons.camera_outdoor,
+      Icons.hotel,
+      Icons.beach_access,
+      Icons.forest,
+      Icons.landscape,
+    ],
+    'Goals & Achievement': [
+      Icons.flag,
+      Icons.star,
+      Icons.emoji_events,
+      Icons.military_tech,
+      Icons.workspace_premium,
+      Icons.diamond,
+      Icons.toll,
+      Icons.verified,
+      Icons.new_releases,
+      Icons.trending_up,
+      Icons.whatshot,
+      Icons.flash_on,
+      Icons.bolt,
+      Icons.rocket_launch,
+      Icons.celebration,
+    ],
+    'Social & Relationships': [
+      Icons.people,
+      Icons.group,
+      Icons.family_restroom,
+      Icons.child_care,
+      Icons.elderly,
+      Icons.volunteer_activism,
+      Icons.handshake,
+      Icons.diversity_1,
+      Icons.diversity_2,
+      Icons.diversity_3,
+      Icons.forum,
+      Icons.chat,
+      Icons.call,
+      Icons.video_call,
+      Icons.share,
+    ],
+    'Hobbies & Interests': [
+      Icons.games,
+      Icons.casino,
+      Icons.toys,
+      Icons.extension,
+      Icons.auto_stories,
+      Icons.collections_bookmark,
+      Icons.inventory,
+      Icons.shopping_cart,
+      Icons.local_florist,
+      Icons.pets,
+      Icons.cruelty_free,
+      Icons.grass,
+      Icons.agriculture,
+      Icons.yard,
+    ],
+  };
+
   // Toutes les icônes disponibles
   static final List<IconData> allIcons = [
     // Sports & Fitness
@@ -800,28 +972,20 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   void _showAllIconsModal() {
     showMaterialModalBottomSheet(
       context: context,
+      enableDrag: false,
       builder: (context) => _buildAllIconsModal(),
     );
   }
 
   Widget _buildAllIconsModal() {
-    // Organiser les icônes pour mettre la sélectionnée en premier
-    final orderedIcons = <IconData>[];
-    if (allIcons.contains(_selectedIcon)) {
-      orderedIcons.add(_selectedIcon);
-      orderedIcons.addAll(allIcons.where((icon) => icon != _selectedIcon));
-    } else {
-      orderedIcons.addAll(allIcons);
-    }
-
     return Material(
       color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height * 0.8,
           padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            controller: ModalScrollController.of(context),
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -841,52 +1005,82 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                 ],
               ),
               const SizedBox(height: 16),
-              Expanded(
-                child: GridView.builder(
-                  controller: ModalScrollController.of(context),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 6,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemCount: orderedIcons.length,
-                  itemBuilder: (context, index) {
-                    final icon = orderedIcons[index];
-                    final isSelected = icon == _selectedIcon;
+              ...iconCategories.entries.map((entry) {
+                final String category = entry.key;
+                final List<IconData> icons = entry.value;
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedIcon = icon;
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AddGoalBottomSheetColors.primaryColor
-                                    .withValues(alpha: 0.2)
-                              : Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? AddGoalBottomSheetColors.primaryColor
-                                : Colors.grey[300]!,
-                            width: isSelected ? 2 : 1,
+                // Organiser les icônes pour mettre la sélectionnée en premier dans la catégorie
+                final List<IconData> ordered = icons.contains(_selectedIcon)
+                    ? [_selectedIcon, ...icons.where((i) => i != _selectedIcon)]
+                    : List<IconData>.from(icons);
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4, bottom: 8),
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                           ),
                         ),
-                        child: Icon(
-                          icon,
-                          color: isSelected
-                              ? AddGoalBottomSheetColors.primaryColor
-                              : Theme.of(context).iconTheme.color,
-                          size: 24,
-                        ),
                       ),
-                    );
-                  },
-                ),
-              ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 6,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                            ),
+                        itemCount: ordered.length,
+                        itemBuilder: (context, index) {
+                          final icon = ordered[index];
+                          final isSelected = icon == _selectedIcon;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedIcon = icon;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AddGoalBottomSheetColors.primaryColor
+                                          .withValues(alpha: 0.2)
+                                    : Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AddGoalBottomSheetColors.primaryColor
+                                      : Colors.grey[300]!,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                              ),
+                              child: Icon(
+                                icon,
+                                color: isSelected
+                                    ? AddGoalBottomSheetColors.primaryColor
+                                    : Theme.of(context).iconTheme.color,
+                                size: 24,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              }),
             ],
           ),
         ),
