@@ -417,14 +417,6 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
     // TODO: intégrer la logique d'achat (StoreKit/Play Billing/Stripe)
   }
 
-  void _onRestorePurchase() {
-    // Placeholder restauration
-    // TODO: intégrer la restauration des achats
-    setState(() {
-      _errorMessage =
-          "Quelque chose s'est mal passé. Essayez à nouveau plus tard";
-    });
-  }
 }
 
 class _FeatureItem {

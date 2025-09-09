@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_profile.dart';
-import 'dart:math';
 
 class UserProfileService extends ChangeNotifier {
   static const String _profileKey = 'userProfile';

@@ -6,6 +6,7 @@ import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
 import '../services/user_profile_service.dart';
 import '../services/home_widget_service.dart';
+import '../constants/app_colors.dart';
 import 'level_up_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
@@ -493,37 +494,50 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
   Widget _buildNoActiveGoal(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Icône moderne avec style épuré
           Container(
-            padding: const EdgeInsets.all(20),
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(
-                255,
-                136,
-                239,
-                128,
-              ).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+              color: AppColors.lightColor.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
             ),
-            child: FaIcon(FontAwesomeIcons.flag, size: 48, color: primaryColor),
+            child: FaIcon(
+              FontAwesomeIcons.flag,
+              size: 40,
+              color: AppColors.lightColor.withValues(alpha: 0.6),
+            ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
+          
+          // Titre principal
           Text(
-            'No active target',
+            'Aucun objectif actif',
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w600,
-              color: const Color.fromARGB(255, 232, 227, 227),
+              color: AppColors.textPrimary,
+              letterSpacing: -0.5,
             ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          
+          // Sous-titre explicatif
+          Text(
+            'Créez votre premier objectif pour\ncommencer votre parcours',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: AppColors.textSecondary,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

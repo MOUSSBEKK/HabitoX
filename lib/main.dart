@@ -7,7 +7,6 @@ import 'services/calendar_service.dart';
 import 'services/user_profile_service.dart';
 import 'services/theme_service.dart';
 import 'services/onboarding_service.dart';
-import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/startup_screen.dart';
 import 'screens/premium_unlock_screen.dart';
@@ -15,6 +14,7 @@ import 'screens/settings/app_appearance_screen.dart';
 import 'screens/settings/data_analytics_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
 import 'constants/app_colors.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +45,16 @@ class HabitoXApp extends StatelessWidget {
             //   GlobalWidgetsLocalizations.delegate,
             //   GlobalCupertinoLocalizations.delegate, // This is required
             // ],
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              Locale('en'), // English
+              Locale('fr'), // French
+              Locale('es'), // Spanish
+            ],
             debugShowCheckedModeBanner: false,
             title: 'HabitoX',
             themeMode: themeService.themeMode,
