@@ -6,7 +6,10 @@ import 'services/goal_service.dart';
 import 'services/calendar_service.dart';
 import 'services/user_profile_service.dart';
 import 'services/theme_service.dart';
+import 'services/onboarding_service.dart';
 import 'screens/home_screen.dart';
+import 'screens/onboarding_screen.dart';
+import 'screens/startup_screen.dart';
 import 'screens/premium_unlock_screen.dart';
 import 'screens/settings/app_appearance_screen.dart';
 import 'screens/settings/data_analytics_screen.dart';
@@ -31,6 +34,7 @@ class HabitoXApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CalendarService()),
         ChangeNotifierProvider(create: (context) => UserProfileService()),
         ChangeNotifierProvider(create: (context) => ThemeService()),
+        ChangeNotifierProvider(create: (context) => OnboardingService()),
       ],
       child: ToastificationWrapper(
         child: Consumer<ThemeService>(
@@ -151,13 +155,12 @@ class HabitoXApp extends StatelessWidget {
 
               cardColor: const Color(0xFF1F232B),
             ),
-            home: const HomeScreen(),
+            home: const StartupScreen(),
             routes: {
+              '/onboarding': (context) => const OnboardingScreen(),
               '/premium_unlock': (context) => const PremiumUnlockScreen(),
-
               '/app_appearance': (context) => const AppAppearanceScreen(),
               '/data_analytics': (context) => const DataAnalyticsScreen(),
-              // '/rate_app': (context) => const RateAppScreen(),
               '/app_updates': (context) => const AppUpdatesScreen(),
             },
           ),

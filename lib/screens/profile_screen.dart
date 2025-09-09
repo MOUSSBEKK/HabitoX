@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import '../services/user_profile_service.dart';
+import '../services/onboarding_service.dart';
 import '../constants/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -336,6 +338,12 @@ extension on _ProfileScreenState {
         FaIcon(FontAwesomeIcons.instagram, size: 20, color: Theme.of(context).iconTheme.color),
         'Follow on Insta',
       ),
+      // Bouton de reset onboarding uniquement en mode debug
+      if (kDebugMode)
+        _SettingItem(
+          FaIcon(FontAwesomeIcons.rotateLeft, size: 20, color: Theme.of(context).iconTheme.color),
+          'Reset Onboarding (Debug)',
+        ),
     ];
 
     return Container(
@@ -417,6 +425,9 @@ extension on _ProfileScreenState {
       case 'Les Mise à jour de l\'app':
         Navigator.pushNamed(context, '/app_updates');
         break;
+      case 'Reset Onboarding (Debug)':
+        _resetOnboarding();
+        break;
       default:
         toastification.show(
           context: context,
@@ -425,6 +436,22 @@ extension on _ProfileScreenState {
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
+    }
+  }
+
+  Future<void> _resetOnboarding() async {
+    if (kDebugMode) {
+      final onboardingService = Provider.of<OnboardingService>(context, listen: false);
+      await onboardingService.resetOnboarding();
+      
+      toastification.show(
+        context: context,
+        title: const Text('Onboarding réinitialisé'),
+        description: const Text('Redémarrez l\'app pour voir l\'onboarding'),
+        type: ToastificationType.success,
+        style: ToastificationStyle.flatColored,
+        autoCloseDuration: const Duration(seconds: 4),
+      );
     }
   }
 
