@@ -2,27 +2,6 @@ import 'package:flutter/material.dart';
 import 'active_goal_calendar_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Couleurs du design épuré
-class SkillProgressColors {
-  static const Color primaryColor = Color(
-    0xFFA7C6A5,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
-  static const Color darkColor = Color(
-    0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
-}
-
-class HomeColors {
-  static const Color primaryColor = Color(
-    0xFFA7C6A5,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
-  static const Color darkColor = Color(
-    0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
-}
-
 class SkillProgressWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
 

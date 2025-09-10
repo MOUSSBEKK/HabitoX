@@ -133,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+          // Bouton de débogage flottant (seulement en mode debug)
         );
       },
     );

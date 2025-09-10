@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import '../services/goal_service.dart';
 import '../services/calendar_service.dart';
 import '../models/calendar_shape.dart';
@@ -16,7 +17,7 @@ class HomeWidgetService {
     final goal = goalService.activeGoal;
 
     // Préparer des titres
-    final String title = 'HabitoX';
+    final String title = 'HabitoX TEST';
     final String subtitle = goal != null ? goal.title : 'No active goal';
 
     await HomeWidget.saveWidgetData<String>('widget_title', title);
@@ -34,18 +35,18 @@ class HomeWidgetService {
         textDirection: TextDirection.ltr,
         child: MediaQuery(
           data: const MediaQueryData(
-            size: Size(320, 160),
+            size: Size(400, 200),
             devicePixelRatio: 1.0,
           ),
           child: Container(
             color: const Color(0xFF1F222A),
             alignment: Alignment.center,
-            child: SizedBox(width: 320, height: 160, child: heatmapOnly),
+            child: SizedBox(width: 400, height: 200, child: heatmapOnly),
           ),
         ),
       ),
       key: 'heatmap_image',
-      logicalSize: const Size(320, 160),
+      logicalSize: const Size(400, 200),
     );
 
     try {
@@ -88,26 +89,18 @@ class _HeatmapRender extends StatelessWidget {
     // Afficher uniquement la grille de heatmap compacte avec LayoutBuilder
     return Container(
       color: const Color(0xFF1F222A),
-      padding: const EdgeInsets.all(8),
+      // padding: const EdgeInsets.all(8),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
           final height = constraints.maxHeight;
-          final shortest = width < height ? width : height;
-          // Ajuster la taille des cases en fonction de la place disponible
-          final totalDays = shape.totalDays;
-          final cols = _CompactHeatmap.columnsFor(totalDays);
-          final rows = (totalDays / cols).ceil();
-          final hSpace = width - 16; // padding total 8 + 8
-          final vSpace = height - 16;
-          final cellWidth = (hSpace / cols).clamp(4.0, 16.0);
-          final cellHeight = (vSpace / rows).clamp(4.0, 16.0);
-          final cell = cellWidth < cellHeight ? cellWidth : cellHeight;
+          // Calculer une taille de cellule plus grande pour le widget
+          final cellSize = (width < height ? width : height) * 0.9 / 7;
+          final cell = cellSize.clamp(8.0, 20.0);
 
-          return _CompactHeatmap(
-            totalDays: totalDays,
-            completedDays: activeGoal.totalDays,
-            color: shape.color,
+          return _CompactHeatMapCalendar(
+            activeGoal: activeGoal,
+            shape: shape,
             squareSize: cell,
           );
         },
@@ -116,63 +109,55 @@ class _HeatmapRender extends StatelessWidget {
   }
 }
 
-class _CompactHeatmap extends StatelessWidget {
-  final int totalDays;
-  final int completedDays;
-  final Color color;
+class _CompactHeatMapCalendar extends StatelessWidget {
+  final dynamic activeGoal;
+  final CalendarShape shape;
   final double? squareSize;
 
-  const _CompactHeatmap({
-    required this.totalDays,
-    required this.completedDays,
-    required this.color,
+  const _CompactHeatMapCalendar({
+    required this.activeGoal,
+    required this.shape,
     this.squareSize,
   });
 
-  static int columnsFor(int total) {
-    if (total <= 7) return total;
-    if (total <= 14) return 7;
-    if (total <= 21) return 7;
-    if (total <= 28) return 7;
-    if (total <= 42) return 7;
-    if (total <= 70) return 10;
-    if (total <= 100) return 12;
-    return 14;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final cols = columnsFor(totalDays);
-    final rows = (totalDays / cols).ceil();
-    final squareSize = this.squareSize ?? 8.0;
-    final margin = squareSize >= 12 ? 2.0 : 1.2;
+    final now = DateTime.now();
+    final start = now.subtract(const Duration(days: 90));
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(rows, (r) {
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: margin / 2),
-          child: Row(
-            children: List.generate(cols, (c) {
-              final index = r * cols + c;
-              if (index >= totalDays) {
-                return const SizedBox.shrink();
-              }
-              final filled = index + 1 <= completedDays;
-              return Expanded(
-                child: Container(
-                  height: squareSize,
-                  margin: EdgeInsets.symmetric(horizontal: margin),
-                  decoration: BoxDecoration(
-                    color: filled ? color : color.withAlpha(64),
-                    borderRadius: BorderRadius.circular(squareSize * 0.15),
-                  ),
-                ),
-              );
-            }),
-          ),
-        );
-      }),
+    // Créer les datasets pour HeatMapCalendar
+    final Map<DateTime, int> datasets = {};
+    for (final session in activeGoal.completedSessions) {
+      final day = DateTime(session.year, session.month, session.day);
+      if (day.isBefore(start) || day.isAfter(now)) continue;
+      datasets[day] = 7; // niveau d'intensité max
+    }
+
+    final base = shape.color;
+    final colorsets = <int, Color>{
+      1: base.withValues(alpha: 0.25),
+      2: base.withValues(alpha: 0.35),
+      3: base.withValues(alpha: 0.45),
+      4: base.withValues(alpha: 0.60),
+      5: base.withValues(alpha: 0.70),
+      6: base.withValues(alpha: 0.85),
+      7: base,
+    };
+
+    final cellSize = squareSize ?? 8.0;
+    final margin = cellSize >= 12 ? 2.0 : 1.2;
+
+    return HeatMapCalendar(
+      size: 25,
+      margin: EdgeInsets.all(margin),
+      fontSize: cellSize * 0.3,
+      showColorTip: false,
+      colorMode: ColorMode.color,
+      defaultColor: const Color(0xFF1F222A),
+      textColor: Colors.white70,
+      weekTextColor: const Color(0xFFA7C6A5),
+      datasets: datasets,
+      colorsets: colorsets,
     );
   }
 }

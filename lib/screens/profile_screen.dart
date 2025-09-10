@@ -314,103 +314,137 @@ extension on _ProfileScreenState {
   }
 
   Widget _buildSettingsGroup(bool isTablet) {
-    final items = <_SettingItem>[
-      _SettingItem(
-        key: SettingKey.appAppearance,
-        icon: FaIcon(
-          FontAwesomeIcons.eye,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
+    return Column(
+      children: [
+        // Catégorie Préférences
+        _buildSettingsCategory(
+          title: 'Préférences',
+          items: [
+            _SettingItem(
+              key: SettingKey.appAppearance,
+              icon: FaIcon(
+                FontAwesomeIcons.eye,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_appearance,
+            ),
+            _SettingItem(
+              key: SettingKey.language,
+              icon: FaIcon(
+                FontAwesomeIcons.language,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_language,
+            ),
+            _SettingItem(
+              key: SettingKey.dataAnalytics,
+              icon: FaIcon(
+                FontAwesomeIcons.chartLine,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_data_analytics,
+            ),
+          ],
+          isTablet: isTablet,
         ),
-        title: AppLocalizations.of(context)!.settings_appearance,
-      ),
-      _SettingItem(
-        key: SettingKey.dataAnalytics,
-        icon: FaIcon(
-          FontAwesomeIcons.chartLine,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_data_analytics,
-      ),
-      _SettingItem(
-        key: SettingKey.language,
-        icon: FaIcon(
-          FontAwesomeIcons.language,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_language,
-      ),
-      _SettingItem(
-        key: SettingKey.importData,
-        icon: FaIcon(
-          FontAwesomeIcons.fileImport,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_import,
-        locked: true,
-      ),
-      _SettingItem(
-        key: SettingKey.exportData,
-        icon: FaIcon(
-          FontAwesomeIcons.fileExport,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_export,
-        locked: true,
-      ),
-      _SettingItem(
-        key: SettingKey.privacyPolicy,
-        icon: FaIcon(
-          FontAwesomeIcons.lock,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_privacy_policy,
-      ),
-      _SettingItem(
-        key: SettingKey.appUpdates,
-        icon: FaIcon(
-          FontAwesomeIcons.circleArrowUp,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_app_updates,
-      ),
-      _SettingItem(
-        key: SettingKey.rateApp,
-        icon: FaIcon(
-          FontAwesomeIcons.star,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_rate_app,
-      ),
-      _SettingItem(
-        key: SettingKey.followInstagram,
-        icon: FaIcon(
-          FontAwesomeIcons.instagram,
-          size: 20,
-          color: Theme.of(context).iconTheme.color,
-        ),
-        title: AppLocalizations.of(context)!.settings_follow_instagram,
-      ),
-      // Bouton de reset onboarding uniquement en mode debug
-      if (kDebugMode)
-        _SettingItem(
-          key: SettingKey.resetOnboarding,
-          icon: FaIcon(
-            FontAwesomeIcons.rotateLeft,
-            size: 20,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          title: 'Reset Onboarding (Debug)',
-        ),
-    ];
 
+        const SizedBox(height: 16),
+
+        // Catégorie Ressources
+        _buildSettingsCategory(
+          title: 'Ressources',
+          items: [
+            _SettingItem(
+              key: SettingKey.importData,
+              icon: FaIcon(
+                FontAwesomeIcons.fileImport,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_import,
+              locked: true,
+            ),
+            _SettingItem(
+              key: SettingKey.exportData,
+              icon: FaIcon(
+                FontAwesomeIcons.fileExport,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_export,
+              locked: true,
+            ),
+            _SettingItem(
+              key: SettingKey.privacyPolicy,
+              icon: FaIcon(
+                FontAwesomeIcons.lock,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_privacy_policy,
+            ),
+            _SettingItem(
+              key: SettingKey.appUpdates,
+              icon: FaIcon(
+                FontAwesomeIcons.circleArrowUp,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_app_updates,
+            ),
+            _SettingItem(
+              key: SettingKey.rateApp,
+              icon: FaIcon(
+                FontAwesomeIcons.star,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_rate_app,
+            ),
+            _SettingItem(
+              key: SettingKey.followInstagram,
+              icon: FaIcon(
+                FontAwesomeIcons.instagram,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: AppLocalizations.of(context)!.settings_follow_instagram,
+            ),
+          ],
+          isTablet: isTablet,
+        ),
+
+        // Catégorie Debug (uniquement en mode debug)
+        if (kDebugMode) ...[
+          const SizedBox(height: 16),
+          _buildSettingsCategory(
+            title: 'Debug',
+            items: [
+              _SettingItem(
+                key: SettingKey.resetOnboarding,
+                icon: FaIcon(
+                  FontAwesomeIcons.rotateLeft,
+                  size: 20,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                title: 'Reset Onboarding (Debug)',
+              ),
+            ],
+            isTablet: isTablet,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSettingsCategory({
+    required String title,
+    required List<_SettingItem> items,
+    required bool isTablet,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
@@ -424,12 +458,38 @@ extension on _ProfileScreenState {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (int i = 0; i < items.length; i++) ...[
-            _buildSettingTile(items[i], isTablet),
-            if (i != items.length - 1)
-              Divider(height: 1, color: Colors.grey.shade200),
-          ],
+          // Titre de la catégorie
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              isTablet ? 20 : 16,
+              isTablet ? 16 : 12,
+              isTablet ? 20 : 16,
+              8,
+            ),
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: isTablet ? 16 : 14,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.color?.withOpacity(0.7),
+              ),
+            ),
+          ),
+
+          // Liste des éléments
+          Column(
+            children: [
+              for (int i = 0; i < items.length; i++) ...[
+                _buildSettingTile(items[i], isTablet),
+                if (i != items.length - 1)
+                  Divider(height: 1, color: Colors.grey.shade200),
+              ],
+            ],
+          ),
         ],
       ),
     );

@@ -45,7 +45,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
           child: Column(
@@ -55,6 +55,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 activeGoal.icon,
                 activeGoal.title,
                 activeGoal.description,
+                calendarService.currentShape!,
                 context,
               ),
               const SizedBox(height: 24),
@@ -87,6 +88,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     IconData icon,
     String title,
     String description,
+    CalendarShape shape,
     BuildContext context,
   ) {
     return Row(
@@ -94,15 +96,10 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(
-              255,
-              48,
-              83,
-              45,
-            ).withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(16),
+            color: shape.color.withValues(alpha: 0.25),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 28, color: primaryColor),
+          child: Icon(icon, size: 28, color: shape.color),
         ),
         const SizedBox(width: 20),
         Expanded(
@@ -159,17 +156,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Theme.of(context).colorScheme.outline),
-          ),
+          padding: EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildHeatMap(context, shape, activeGoal),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Text(
                 '${progress} / ${maxDays} ${AppLocalizations.of(context)!.calendar_completed_days}',
                 style: TextStyle(
@@ -215,9 +207,10 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     };
 
     return HeatMapCalendar(
-      size: 35,
-      margin: const EdgeInsets.all(2),
+      size: 39,
       fontSize: 14,
+      monthFontSize: 16,
+      weekFontSize: 14,
       showColorTip: false,
       colorMode: ColorMode.color,
       defaultColor: Theme.of(context).colorScheme.primary,
@@ -284,9 +277,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.25),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Column(
         children: [
@@ -306,7 +299,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             title,
-            style: TextStyle(fontSize: 10, color: color.withValues(alpha: 0.8)),
+            style: TextStyle(fontSize: 10, color: color),
             textAlign: TextAlign.center,
           ),
         ],
@@ -332,41 +325,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             ? null
             : () async {
                 final profileService = context.read<UserProfileService>();
-
+                final int experience = 2;
                 // Utiliser le nouveau système XP
-                await profileService.addExperience(
-                  2,
-                ); // XP pour session quotidienne
-
-                // Afficher animation XP
-                if (context.mounted) {
-                  // Pour l'instant, on ne fait qu'un print, on ajoutera l'animation plus tard
-                  print('Gained 2 XP!');
-                }
-
-                // Si level up, afficher popup
-                // if (levelUpResult != null &&
-                //     levelUpResult.hasLeveledUp &&
-                //     context.mounted) {
-                //   final badgeAsset =
-                //       'assets/badges/BADGE${levelUpResult.newLevel}.png';
-                //   final badgeName =
-                //       profileService.userProfile?.levelName ??
-                //       'Niveau ${levelUpResult.newLevel}';
-                //   final badgeDescription =
-                //       'Congratulations ! You have reached level ${levelUpResult.newLevel} !';
-
-                //   showDialog(
-                //     context: context,
-                //     barrierDismissible: true,
-                //     builder: (context) => LevelUpDialog(
-                //       levelUpResult: levelUpResult,
-                //       badgeAssetPath: badgeAsset,
-                //       badgeName: badgeName,
-                //       badgeDescription: badgeDescription,
-                //     ),
-                //   );
-                // }
+                await profileService.addExperience(experience);
 
                 final updateResult = await goalService.updateProgress(
                   goal.id,
@@ -416,7 +377,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     toastification.show(
                       context: context,
                       title: const Text('Session marquée comme complétée !'),
-                      description: const Text('+2 XP'),
+                      description: Text('+${experience} XP'),
                       type: ToastificationType.success,
                       style: ToastificationStyle.flatColored,
                       autoCloseDuration: const Duration(seconds: 3),
@@ -446,19 +407,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          foregroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: Color(0xFFA7C6A5),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-          shadowColor: const Color.fromARGB(
-            255,
-            38,
-            217,
-            25,
-          ).withValues(alpha: 0.3),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
