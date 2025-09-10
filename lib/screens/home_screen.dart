@@ -7,6 +7,7 @@ import '../widgets/skill_progress_widget.dart';
 import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../l10n/app_localizations.dart';
 
 // Couleurs du design épuré
 class HomeColors {
@@ -107,28 +108,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     FontAwesomeIcons.house,
                     size: isTablet ? 28.0 : 24.0,
                   ),
-                  label: 'Home',
+                  label: AppLocalizations.of(context)!.home,
                 ),
                 BottomNavigationBarItem(
                   icon: FaIcon(
                     FontAwesomeIcons.bullseye,
                     size: isTablet ? 28.0 : 24.0,
                   ),
-                  label: 'Objectives',
+                  label: AppLocalizations.of(context)!.nav_objectives,
                 ),
                 BottomNavigationBarItem(
                   icon: FaIcon(
                     FontAwesomeIcons.trophy,
                     size: isTablet ? 28.0 : 24.0,
                   ),
-                  label: 'Badges',
+                  label: AppLocalizations.of(context)!.nav_badges,
                 ),
                 BottomNavigationBarItem(
                   icon: FaIcon(
                     FontAwesomeIcons.user,
                     size: isTablet ? 28.0 : 24.0,
                   ),
-                  label: 'Profile',
+                  label: AppLocalizations.of(context)!.nav_profile,
                 ),
               ],
             ),

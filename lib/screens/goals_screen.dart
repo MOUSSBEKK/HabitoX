@@ -7,6 +7,7 @@ import '../services/goal_service.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../l10n/app_localizations.dart';
 
 // Couleurs du design épuré
 class GoalsColors {
@@ -63,9 +64,21 @@ class _GoalsScreenState extends State<GoalsScreen> {
                     ),
                     child: Row(
                       children: [
-                        _buildSegmentButton('Assets', 0, isTablet),
-                        _buildSegmentButton('Completed', 1, isTablet),
-                        _buildSegmentButton('Archived', 2, isTablet),
+                        _buildSegmentButton(
+                          AppLocalizations.of(context)!.objectives_actif,
+                          0,
+                          isTablet,
+                        ),
+                        _buildSegmentButton(
+                          AppLocalizations.of(context)!.objectives_completed,
+                          1,
+                          isTablet,
+                        ),
+                        _buildSegmentButton(
+                          AppLocalizations.of(context)!.objectives_archived,
+                          2,
+                          isTablet,
+                        ),
                       ],
                     ),
                   ),
@@ -188,8 +201,8 @@ class _GoalsScreenState extends State<GoalsScreen> {
       return _buildGoalsList(
         context,
         (goalService) => goalService.goals.where((g) => g.isActive).toList(),
-        'No active target',
-        'Start by creating your first goal!',
+        AppLocalizations.of(context)!.objectives_actif_empty_title,
+        AppLocalizations.of(context)!.objectives_actif_empty_subtitle,
         FontAwesomeIcons.flag,
         isTablet,
       );
@@ -198,8 +211,8 @@ class _GoalsScreenState extends State<GoalsScreen> {
       return _buildGoalsList(
         context,
         (goalService) => goalService.completedGoals,
-        'No objectives completed',
-        'Complete your goals to see them here !',
+        AppLocalizations.of(context)!.objectives_completed_empty_title,
+        AppLocalizations.of(context)!.objectives_completed_empty_subtitle,
         FontAwesomeIcons.checkCircle,
         isTablet,
       );
@@ -209,8 +222,8 @@ class _GoalsScreenState extends State<GoalsScreen> {
       (goalService) => goalService.goals
           .where((g) => !g.isActive && !g.isCompleted)
           .toList(),
-      'No archived objectives',
-      'Archive your goals to organize them !',
+      AppLocalizations.of(context)!.objectives_archived_empty_title,
+      AppLocalizations.of(context)!.objectives_archived_empty_subtitle,
       FontAwesomeIcons.folderOpen,
       isTablet,
     );

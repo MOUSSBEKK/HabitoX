@@ -10,6 +10,8 @@ import '../constants/app_colors.dart';
 import 'level_up_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -64,10 +66,14 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                   context,
                 )
               else
-                _buildEmptyCalendarCard(),
+                _buildEmptyCalendarCard(context),
               const SizedBox(height: 20),
               if (calendarService.currentShape != null)
-                _buildProgressInfo(calendarService.currentShape!, activeGoal),
+                _buildProgressInfo(
+                  calendarService.currentShape!,
+                  activeGoal,
+                  context,
+                ),
               const SizedBox(height: 24),
               _buildMarkSessionButton(context, goalService, activeGoal),
             ],
@@ -137,7 +143,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Calendar progress',
+          AppLocalizations.of(context)!.calendar_progress,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -158,7 +164,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               _buildHeatMap(context, shape, activeGoal),
               const SizedBox(height: 8),
               Text(
-                '$progress / $maxDays jours complétés',
+                '${progress} / ${maxDays} ${AppLocalizations.of(context)!.calendar_completed_days}',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[600],
@@ -259,7 +265,11 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressInfo(CalendarShape shape, dynamic activeGoal) {
+  Widget _buildProgressInfo(
+    CalendarShape shape,
+    dynamic activeGoal,
+    BuildContext context,
+  ) {
     final progress = activeGoal != null ? activeGoal.totalDays : 0;
     final maxDays = shape.totalDays;
     final remainingDays = maxDays - progress;
@@ -269,7 +279,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Informations',
+          AppLocalizations.of(context)!.calendar_informations,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -465,7 +475,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           color: Theme.of(context).iconTheme.color,
         ),
         label: Text(
-          'Marquer session',
+          AppLocalizations.of(context)!.calendar_mark_session,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -519,7 +529,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
           // Titre principal
           Text(
-            'No active goal',
+            AppLocalizations.of(context)!.calendar_empty_state,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
@@ -532,7 +542,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
           // Sous-titre explicatif
           Text(
-            'Create your first goal to\nstart your journey',
+            AppLocalizations.of(context)!.calender_empty_state_subtitle,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,
@@ -546,7 +556,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyCalendarCard() {
+  Widget _buildEmptyCalendarCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -559,7 +569,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           Icon(Icons.calendar_month, size: 40, color: Colors.grey[400]),
           const SizedBox(height: 12),
           Text(
-            'Chargement du calendrier...',
+            AppLocalizations.of(context)!.calendar_loading,
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],

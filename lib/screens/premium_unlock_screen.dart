@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../l10n/app_localizations.dart';
 
 class PremiumUnlockScreen extends StatefulWidget {
   const PremiumUnlockScreen({super.key});
@@ -49,8 +50,8 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: const Text(
-              'Continue',
+            child: Text(
+              AppLocalizations.of(context)!.premium_btn,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -96,7 +97,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildPlanCard(
-          title: 'Monthly',
+          title: AppLocalizations.of(context)!.premium_monthly,
           price: _priceMonthly,
           selected: _selectedPlan == 'Mensuel',
           onTap: () => setState(() => _selectedPlan = 'Mensuel'),
@@ -106,7 +107,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         ),
         const SizedBox(height: 12),
         _buildPlanCard(
-          title: 'Annual',
+          title: AppLocalizations.of(context)!.premium_annual,
           price: _priceAnnual,
           oldPrice: _priceAnnualOld,
           discountBadge: '-50%',
@@ -119,7 +120,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         const SizedBox(height: 10),
         Center(
           child: Text(
-            'Recurring billing. Cancel anytime.',
+            AppLocalizations.of(context)!.premium_subscribe_subtitle,
             style: TextStyle(
               color: AppColors.darkColor.withOpacity(0.8),
               fontSize: 13,
@@ -139,7 +140,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         ),
         const SizedBox(height: 12),
         _buildPlanCard(
-          title: 'For life ',
+          title: AppLocalizations.of(context)!.premium_life,
           price: _priceLifetime,
           selected: _selectedPlan == 'A vie',
           onTap: () => setState(() => _selectedPlan = 'A vie'),
@@ -150,7 +151,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
         const SizedBox(height: 6),
         Center(
           child: Text(
-            'Pay once. Unlimited access forever.',
+            AppLocalizations.of(context)!.premium_paiement_subtitle,
             style: TextStyle(
               color: AppColors.darkColor.withOpacity(0.8),
               fontSize: 13,
@@ -313,27 +314,26 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
   }) {
     final features = <_FeatureItem>[
       _FeatureItem(
-        title: 'Accéder aux import et export',
-        subtitle: 'Sauvegardez ou migrez vos données en toute simplicité.',
+        title: AppLocalizations.of(context)!.premium_feature_title1,
+        subtitle: AppLocalizations.of(context)!.premium_feature_title1_desc,
         icon: Icons.import_export,
         color: const Color(0xFF10B981),
       ),
       _FeatureItem(
-        title: "Widget sur l'écran d'accueil",
-        subtitle:
-            'Accédez à vos habitudes favorites depuis l\'écran d\'accueil.',
+        title: AppLocalizations.of(context)!.premium_feature_title2,
+        subtitle: AppLocalizations.of(context)!.premium_feature_title2_desc,
         icon: Icons.widgets,
         color: const Color(0xFF3B82F6),
       ),
       _FeatureItem(
-        title: 'Accès à des graphiques et statistiques',
-        subtitle: 'Visualisez vos tendances et votre régularité.',
+        title: AppLocalizations.of(context)!.premium_feature_title3,
+        subtitle: AppLocalizations.of(context)!.premium_feature_title3_desc,
         icon: Icons.show_chart,
         color: const Color(0xFFF59E0B),
       ),
       _FeatureItem(
-        title: 'Badges personnalisés',
-        subtitle: 'Créez des récompenses uniques adaptées à vos objectifs.',
+        title: AppLocalizations.of(context)!.premium_feature_title4,
+        subtitle: AppLocalizations.of(context)!.premium_feature_title4_desc,
         icon: Icons.emoji_events,
         color: const Color(0xFF8B5CF6),
       ),
@@ -416,7 +416,6 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
     });
     // TODO: intégrer la logique d'achat (StoreKit/Play Billing/Stripe)
   }
-
 }
 
 class _FeatureItem {

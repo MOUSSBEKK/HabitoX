@@ -8,6 +8,8 @@ import '../constants/app_colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
+import '../l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -122,8 +124,8 @@ extension on _ProfileScreenState {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Upgrade Plan Now!',
+                  Text(
+                    AppLocalizations.of(context)!.upgrade_card_title,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -131,7 +133,7 @@ extension on _ProfileScreenState {
                     ),
                   ),
                   Text(
-                    'Enjoy all the benefits and explore more possibilities',
+                    AppLocalizations.of(context)!.upgrade_card_subtitle,
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.95),
                       fontSize: 12,
@@ -200,7 +202,9 @@ extension on _ProfileScreenState {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
-                                color: Theme.of(context).textTheme.bodyLarge?.color,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.color,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -313,36 +317,99 @@ extension on _ProfileScreenState {
 
   Widget _buildSettingsGroup(bool isTablet) {
     final items = <_SettingItem>[
-      _SettingItem(FaIcon(FontAwesomeIcons.eye, size: 20,color: Theme.of(context).iconTheme.color), 'App Appearance'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.chartLine, size: 20, color: Theme.of(context).iconTheme.color),
-        'Data & Analytics',
+        key: SettingKey.appAppearance,
+        icon: FaIcon(
+          FontAwesomeIcons.eye,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_appearance,
       ),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.fileImport, size: 20, color: Theme.of(context).iconTheme.color),
-        'Import',
+        key: SettingKey.dataAnalytics,
+        icon: FaIcon(
+          FontAwesomeIcons.chartLine,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_data_analytics,
+      ),
+      _SettingItem(
+        key: SettingKey.language,
+        icon: FaIcon(
+          FontAwesomeIcons.language,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_language,
+      ),
+      _SettingItem(
+        key: SettingKey.importData,
+        icon: FaIcon(
+          FontAwesomeIcons.fileImport,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_import,
         locked: true,
       ),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.fileExport, size: 20, color: Theme.of(context).iconTheme.color),
-        'Export',
+        key: SettingKey.exportData,
+        icon: FaIcon(
+          FontAwesomeIcons.fileExport,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_export,
         locked: true,
       ),
-      _SettingItem(FaIcon(FontAwesomeIcons.lock, size: 20, color: Theme.of(context).iconTheme.color), 'Privacy Policy'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.circleArrowUp, size: 20, color: Theme.of(context).iconTheme.color),
-        'App Updates',
+        key: SettingKey.privacyPolicy,
+        icon: FaIcon(
+          FontAwesomeIcons.lock,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_privacy_policy,
       ),
-      _SettingItem(FaIcon(FontAwesomeIcons.star, size: 20, color: Theme.of(context).iconTheme.color), 'Rate the app'),
       _SettingItem(
-        FaIcon(FontAwesomeIcons.instagram, size: 20, color: Theme.of(context).iconTheme.color),
-        'Follow on Insta',
+        key: SettingKey.appUpdates,
+        icon: FaIcon(
+          FontAwesomeIcons.circleArrowUp,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_app_updates,
+      ),
+      _SettingItem(
+        key: SettingKey.rateApp,
+        icon: FaIcon(
+          FontAwesomeIcons.star,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_rate_app,
+      ),
+      _SettingItem(
+        key: SettingKey.followInstagram,
+        icon: FaIcon(
+          FontAwesomeIcons.instagram,
+          size: 20,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        title: AppLocalizations.of(context)!.settings_follow_instagram,
       ),
       // Bouton de reset onboarding uniquement en mode debug
       if (kDebugMode)
         _SettingItem(
-          FaIcon(FontAwesomeIcons.rotateLeft, size: 20, color: Theme.of(context).iconTheme.color),
-          'Reset Onboarding (Debug)',
+          key: SettingKey.resetOnboarding,
+          icon: FaIcon(
+            FontAwesomeIcons.rotateLeft,
+            size: 20,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          title: 'Reset Onboarding (Debug)',
         ),
     ];
 
@@ -380,7 +447,7 @@ extension on _ProfileScreenState {
     );
 
     return ListTile(
-      key: Key(item.title),
+      key: Key(item.key.name),
       leading: item.icon,
       // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
@@ -395,7 +462,7 @@ extension on _ProfileScreenState {
               style: ToastificationStyle.flatColored,
               autoCloseDuration: const Duration(seconds: 3),
             )
-          : () => _navigateToSetting(item.title),
+          : () => _navigateToSetting(item.key),
       enabled: !item.locked,
       contentPadding: EdgeInsets.symmetric(
         horizontal: isTablet ? 18 : 14,
@@ -404,46 +471,54 @@ extension on _ProfileScreenState {
     );
   }
 
-  // KIWI changer pour remplacer un id par un nom de page
-  void _navigateToSetting(String settingTitle) {
-    switch (settingTitle) {
-      case 'App Appearance':
+  // Navigation basée sur une clé stable (indépendante de la localisation)
+  void _navigateToSetting(SettingKey setting) {
+    switch (setting) {
+      case SettingKey.appAppearance:
         Navigator.pushNamed(context, '/app_appearance');
         break;
-      case 'Data & Analytics':
+      case SettingKey.dataAnalytics:
         Navigator.pushNamed(context, '/data_analytics');
         break;
-      case 'Politique de confidentialité':
+      case SettingKey.language:
+        Navigator.pushNamed(context, '/language_settings');
+        break;
+      case SettingKey.privacyPolicy:
         _openPrivacyPolicy();
         break;
-      case 'Suivre sur Insta':
+      case SettingKey.followInstagram:
         _openInstagram();
         break;
-      case 'Rate the app':
+      case SettingKey.rateApp:
         _rateApp();
         break;
-      case 'Les Mise à jour de l\'app':
+      case SettingKey.appUpdates:
         Navigator.pushNamed(context, '/app_updates');
         break;
-      case 'Reset Onboarding (Debug)':
+      case SettingKey.resetOnboarding:
         _resetOnboarding();
         break;
-      default:
+      case SettingKey.importData:
+      case SettingKey.exportData:
         toastification.show(
           context: context,
-          title: Text('Page "$settingTitle" en cours de développement'),
+          title: const Text('Fonctionnalité à venir'),
           type: ToastificationType.info,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
+        break;
     }
   }
 
   Future<void> _resetOnboarding() async {
     if (kDebugMode) {
-      final onboardingService = Provider.of<OnboardingService>(context, listen: false);
+      final onboardingService = Provider.of<OnboardingService>(
+        context,
+        listen: false,
+      );
       await onboardingService.resetOnboarding();
-      
+
       toastification.show(
         context: context,
         title: const Text('Onboarding réinitialisé'),
@@ -511,18 +586,20 @@ extension on _ProfileScreenState {
 
   Future<void> _rateApp() async {
     final InAppReview inAppReview = InAppReview.instance;
-    
+
     try {
       // Vérifier si la fonctionnalité de notation est disponible
       if (await inAppReview.isAvailable()) {
         // Demander la notation in-app
         await inAppReview.requestReview();
-        
+
         // Afficher un message de remerciement
         toastification.show(
           context: context,
           title: const Text('Merci pour votre retour !'),
-          description: const Text('Votre avis nous aide à améliorer l\'application'),
+          description: const Text(
+            'Votre avis nous aide à améliorer l\'application',
+          ),
           type: ToastificationType.success,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
@@ -536,19 +613,23 @@ extension on _ProfileScreenState {
       toastification.show(
         context: context,
         title: const Text('Erreur'),
-        description: const Text('Impossible d\'ouvrir la notation. Redirection vers le store...'),
+        description: const Text(
+          'Impossible d\'ouvrir la notation. Redirection vers le store...',
+        ),
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
         autoCloseDuration: const Duration(seconds: 3),
       );
-      
+
       try {
         await inAppReview.openStoreListing();
       } catch (storeError) {
         toastification.show(
           context: context,
           title: const Text('Erreur'),
-          description: const Text('Impossible d\'ouvrir le store. Veuillez noter l\'app manuellement.'),
+          description: const Text(
+            'Impossible d\'ouvrir le store. Veuillez noter l\'app manuellement.',
+          ),
           type: ToastificationType.error,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 4),
@@ -558,9 +639,29 @@ extension on _ProfileScreenState {
   }
 }
 
+enum SettingKey {
+  appAppearance,
+  dataAnalytics,
+  language,
+  importData,
+  exportData,
+  privacyPolicy,
+  appUpdates,
+  rateApp,
+  followInstagram,
+  resetOnboarding,
+}
+
 class _SettingItem {
+  final SettingKey key;
   final FaIcon icon;
   final String title;
   final bool locked;
-  _SettingItem(this.icon, this.title, {this.locked = false});
+
+  _SettingItem({
+    required this.key,
+    required this.icon,
+    required this.title,
+    this.locked = false,
+  });
 }

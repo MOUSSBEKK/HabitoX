@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../models/user_profile.dart';
+import '../l10n/app_localizations.dart';
 
 // Couleurs du design épuré
 class BadgesScreenColors {
@@ -109,7 +110,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Latest Badge Earned',
+                              AppLocalizations.of(context)!.badge_earned,
                               style: TextStyle(
                                 fontSize: isTablet ? 16.0 : 14.0,
                                 fontWeight: FontWeight.w500,
@@ -120,7 +121,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Level $lastUnlockedBadgeLevel',
+                              '${AppLocalizations.of(context)!.badge_level} $lastUnlockedBadgeLevel',
                               style: TextStyle(
                                 fontSize: isTablet ? 20.0 : 16.0,
                                 fontWeight: FontWeight.w700,
@@ -256,55 +257,57 @@ class _BadgesScreenState extends State<BadgesScreen>
   _BadgeDisplayData _badgeDisplayData(int level) {
     if (level == 1) {
       return _BadgeDisplayData(
-        name: 'Beginner',
-        description: 'Welcome to your HabitoX journey!',
+        name: AppLocalizations.of(context)!.badge1_title,
+        description: AppLocalizations.of(context)!.badge1_desc,
         color: Colors.grey[600]!,
       );
     }
     if (level == 5) {
       return _BadgeDisplayData(
-        name: 'Determined',
-        description: 'Your determination is beginning to pay off!',
+        name: AppLocalizations.of(context)!.badge2_title,
+        description: AppLocalizations.of(context)!.badge2_desc,
         color: Colors.orange[600]!,
       );
     }
     if (level == 10) {
       return _BadgeDisplayData(
-        name: 'Elite',
-        description: 'You are one of our elite users!',
+        name: AppLocalizations.of(context)!.badge3_title,
+        description: AppLocalizations.of(context)!.badge3_desc,
         color: Colors.purple[600]!,
       );
     }
     if (level == 20) {
       return _BadgeDisplayData(
-        name: 'Master',
-        description: 'Your command of the subject is exceptional!',
+        name: AppLocalizations.of(context)!.badge4_title,
+        description: AppLocalizations.of(context)!.badge4_desc,
         color: Colors.red[600]!,
       );
     }
     if (level == 30) {
       return _BadgeDisplayData(
-        name: 'Champion',
-        description: 'You are a true champion!',
+        name: AppLocalizations.of(context)!.badge5_title,
+        description: AppLocalizations.of(context)!.badge5_desc,
         color: Colors.amber[600]!,
       );
     }
     if (level == 40) {
       return _BadgeDisplayData(
-        name: 'Legend',
-        description: 'Your legend inspires others!',
+        name: AppLocalizations.of(context)!.badge6_title,
+        description: AppLocalizations.of(context)!.badge6_desc,
         color: Colors.deepPurple[600]!,
       );
     }
     if (level >= 50) {
       return _BadgeDisplayData(
-        name: level >= 69 ? 'Transcendent' : 'High rank',
+        name: level >= 69
+            ? AppLocalizations.of(context)!.badge9_title
+            : AppLocalizations.of(context)!.badge7_title,
         description: 'Reach level $level for this badge..',
         color: level >= 69 ? Colors.deepPurple[800]! : Colors.amber[600]!,
       );
     }
     return _BadgeDisplayData(
-      name: 'Level badge $level',
+      name: '${AppLocalizations.of(context)!.badge_level} $level',
       description: 'Unlock this badge at level $level.',
       color: Colors.amber[600]!,
     );

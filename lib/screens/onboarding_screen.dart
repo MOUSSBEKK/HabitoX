@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/onboarding_service.dart';
+import '../l10n/app_localizations.dart';
 
 /// Page d'onboarding engageante pour les nouveaux utilisateurs de HabitoX
 /// Présente les principes et fonctionnalités de l'application de suivi d'habitudes
@@ -16,7 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  
+
   // Contrôleurs d'animation
   late AnimationController _fadeController;
   late AnimationController _slideController;
@@ -34,7 +35,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -44,12 +45,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     // Démarre les animations
     _fadeController.forward();
@@ -76,7 +75,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   void _completeOnboarding() {
-    final onboardingService = Provider.of<OnboardingService>(context, listen: false);
+    final onboardingService = Provider.of<OnboardingService>(
+      context,
+      listen: false,
+    );
     onboardingService.completeOnboarding();
     Navigator.of(context).pushReplacementNamed('/');
   }
@@ -111,7 +113,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ],
               ),
             ),
-            
+
             // Indicateurs de page et boutons
             _buildBottomSection(isTablet),
           ],
@@ -119,7 +121,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       ),
     );
   }
-
 
   Widget _buildWelcomePage(bool isTablet, Size screenSize) {
     return FadeTransition(
@@ -134,9 +135,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/icon_launcher/logo_launcher_habitox.png', width: isTablet ? 200 : 160, height: isTablet ? 200 : 160),
+              Image.asset(
+                'assets/icon_launcher/logo_launcher_habitox.png',
+                width: isTablet ? 200 : 160,
+                height: isTablet ? 200 : 160,
+              ),
               SizedBox(height: isTablet ? 48 : 40),
-              
+
               // Titre principal
               Text(
                 'Welcome to',
@@ -148,9 +153,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               SizedBox(height: isTablet ? 12 : 8),
-              
+
               // Logo/Nom de l'app avec style
               Container(
                 padding: EdgeInsets.symmetric(
@@ -182,12 +187,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                 ),
               ),
-              
+
               SizedBox(height: isTablet ? 32 : 24),
-              
+
               // Message principal
               Text(
-                'Transform your daily life by\nbuilding lasting habits',
+                AppLocalizations.of(context)!.onboarding_title,
                 style: TextStyle(
                   fontSize: isTablet ? 22 : 18,
                   fontWeight: FontWeight.w600,
@@ -196,9 +201,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               SizedBox(height: isTablet ? 24 : 20),
-              
+
               // Message rassurant
               Container(
                 padding: EdgeInsets.symmetric(
@@ -206,7 +211,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   vertical: isTablet ? 16 : 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -219,7 +226,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     ),
                     SizedBox(width: isTablet ? 12 : 8),
                     Text(
-                      'A few minutes a day to change your life',
+                      AppLocalizations.of(context)!.onboarding_popup,
                       style: TextStyle(
                         fontSize: isTablet ? 16 : 14,
                         fontWeight: FontWeight.w500,
@@ -251,7 +258,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             children: [
               // Titre
               Text(
-                'How does it work?',
+                AppLocalizations.of(context)!.onboarding2_title,
                 style: TextStyle(
                   fontSize: isTablet ? 32 : 28,
                   fontWeight: FontWeight.w700,
@@ -259,35 +266,35 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               SizedBox(height: isTablet ? 48 : 40),
-              
+
               // Étapes
               _buildStep(
                 isTablet,
                 FontAwesomeIcons.bullseye,
-                'Set your goals',
-                'Define the habits you want to develop',
+                AppLocalizations.of(context)!.onboarding_title_card1,
+                AppLocalizations.of(context)!.onboarding_subtitles_card1,
                 const Color(0xFF6db399),
               ),
-              
+
               SizedBox(height: isTablet ? 32 : 24),
-              
+
               _buildStep(
                 isTablet,
                 FontAwesomeIcons.chartLine,
-                'Track your progress',
-                'Mark your daily successes with a simple tap',
+                AppLocalizations.of(context)!.onboarding_title_card2,
+                AppLocalizations.of(context)!.onboarding_subtitles_card2,
                 const Color(0xFFa9c4a5),
               ),
-              
+
               SizedBox(height: isTablet ? 32 : 24),
-              
+
               _buildStep(
                 isTablet,
                 FontAwesomeIcons.trophy,
-                'Celebrate your successes',
-                'Unlock achievements and level up your life',
+                AppLocalizations.of(context)!.onboarding_title_card3,
+                AppLocalizations.of(context)!.onboarding_subtitles_card3,
                 const Color(0xFF85b8cb),
               ),
             ],
@@ -297,7 +304,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 
-  Widget _buildStep(bool isTablet, IconData icon, String title, String description, Color color) {
+  Widget _buildStep(
+    bool isTablet,
+    IconData icon,
+    String title,
+    String description,
+    Color color,
+  ) {
     return Container(
       padding: EdgeInsets.all(isTablet ? 20 : 16),
       decoration: BoxDecoration(
@@ -320,15 +333,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: FaIcon(
-              icon,
-              size: isTablet ? 28 : 24,
-              color: color,
-            ),
+            child: FaIcon(icon, size: isTablet ? 28 : 24, color: color),
           ),
-          
+
           SizedBox(width: isTablet ? 20 : 16),
-          
+
           // Texte
           Expanded(
             child: Column(
@@ -375,7 +384,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   width: _currentPage == i ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _currentPage == i 
+                    color: _currentPage == i
                         ? const Color(0xFF6db399)
                         : Theme.of(context).colorScheme.outline,
                     borderRadius: BorderRadius.circular(4),
@@ -383,9 +392,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
             ],
           ),
-          
+
           SizedBox(height: isTablet ? 32 : 24),
-          
+
           // Bouton principal
           SizedBox(
             width: double.infinity,
@@ -394,9 +403,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6db399),
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(
-                  vertical: isTablet ? 18 : 16,
-                ),
+                padding: EdgeInsets.symmetric(vertical: isTablet ? 18 : 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -404,7 +411,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 shadowColor: const Color(0xFF6db399).withOpacity(0.3),
               ),
               child: Text(
-                _currentPage == 1 ? 'Get Started' : 'Next',
+                _currentPage == 1
+                    ? AppLocalizations.of(context)!.onboarding2_btn
+                    : AppLocalizations.of(context)!.onboarding_btn,
                 style: TextStyle(
                   fontSize: isTablet ? 18 : 16,
                   fontWeight: FontWeight.w600,
