@@ -9,6 +9,11 @@
   "language_spanish": "Spanish",
   "theme_title": "Theme",
 
+
+  "cancel": "Cancel",
+  "accep": "Ok",
+
+
   "onboarding_title": "Transform your daily life by building lasting habits",
   "onboarding_popup": "A few minutes a day to change your life",
   "onboarding_btn": "Next",
@@ -28,11 +33,24 @@
   "nav_profile": "Profile",
 
   "bottom_modal_title": "New objective",
+  "bottom_modal_title2": "Change the objective",
   "bottom_modal_icon": "Icon",
+  "bottom_modal_icon_title": "Choose an Icon",
+  "bottom_modal_icon_categorie1": "Sports & Fitness",
+  "bottom_modal_icon_categorie3": "Arts & Creativity",
+  "bottom_modal_icon_categorie4": "Learning & Education",
+  "bottom_modal_icon_categorie5": "Technology & Work",
   "bottom_modal_color": "Colors",
+  "bottom_modal_color_title": "Choose a Color",
   "bottom_modal_view": "View All",
   "bottom_modal_input_title": "Objective title",
+  "bottom_modal_placeholder_title": "Ex: Learn to play the guitar",
+  "bottom_modal_error_title": "Please enter a title",
   "bottom_modal_input_desc": "Description",
+  "bottom_modal_placeholder_desc": "Describe your goal...",
+  "bottom_modal_error_desc": "Please enter a description",
+  "bottom_modal_modal_succes": "Objective successfully modified",
+  "bottom_modal_modal_created": "Goal successfully created",
   "bottom_modal_input_start_date": "Start date",
   "bottom_modal_input_start_end": "End date",
   "bottom_modal_duration": "Duration: {duration_days}",

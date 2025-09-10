@@ -50,7 +50,6 @@ class _HomeScreenState extends State<HomeScreen> {
         final isTablet = constraints.maxWidth > 600;
 
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
           body: IndexedStack(
             index: _currentIndex,
             children: [

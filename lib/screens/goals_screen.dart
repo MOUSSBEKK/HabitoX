@@ -46,9 +46,6 @@ class _GoalsScreenState extends State<GoalsScreen> {
         return Scaffold(
           appBar: AppBar(title: Text('Objectifs')),
           body: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-            ),
             child: SafeArea(
               child: Column(
                 children: [
@@ -112,11 +109,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FaIcon(
-                  emptyIcon,
-                  size: isTablet ? 100.0 : 80.0,
-                  color: Colors.grey[400],
-                ),
+                FaIcon(emptyIcon, size: isTablet ? 100.0 : 80.0),
                 SizedBox(height: isTablet ? 32.0 : 24.0),
                 Text(
                   emptyTitle.toUpperCase(),

@@ -156,6 +156,18 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get theme_title;
 
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @accep.
+  ///
+  /// In en, this message translates to:
+  /// **'Ok'**
+  String get accep;
+
   /// No description provided for @onboarding_title.
   ///
   /// In en, this message translates to:
@@ -252,17 +264,59 @@ abstract class AppLocalizations {
   /// **'New objective'**
   String get bottom_modal_title;
 
+  /// No description provided for @bottom_modal_title2.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the objective'**
+  String get bottom_modal_title2;
+
   /// No description provided for @bottom_modal_icon.
   ///
   /// In en, this message translates to:
   /// **'Icon'**
   String get bottom_modal_icon;
 
+  /// No description provided for @bottom_modal_icon_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an Icon'**
+  String get bottom_modal_icon_title;
+
+  /// No description provided for @bottom_modal_icon_categorie1.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports & Fitness'**
+  String get bottom_modal_icon_categorie1;
+
+  /// No description provided for @bottom_modal_icon_categorie3.
+  ///
+  /// In en, this message translates to:
+  /// **'Arts & Creativity'**
+  String get bottom_modal_icon_categorie3;
+
+  /// No description provided for @bottom_modal_icon_categorie4.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning & Education'**
+  String get bottom_modal_icon_categorie4;
+
+  /// No description provided for @bottom_modal_icon_categorie5.
+  ///
+  /// In en, this message translates to:
+  /// **'Technology & Work'**
+  String get bottom_modal_icon_categorie5;
+
   /// No description provided for @bottom_modal_color.
   ///
   /// In en, this message translates to:
   /// **'Colors'**
   String get bottom_modal_color;
+
+  /// No description provided for @bottom_modal_color_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Color'**
+  String get bottom_modal_color_title;
 
   /// No description provided for @bottom_modal_view.
   ///
@@ -276,11 +330,47 @@ abstract class AppLocalizations {
   /// **'Objective title'**
   String get bottom_modal_input_title;
 
+  /// No description provided for @bottom_modal_placeholder_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Ex: Learn to play the guitar'**
+  String get bottom_modal_placeholder_title;
+
+  /// No description provided for @bottom_modal_error_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a title'**
+  String get bottom_modal_error_title;
+
   /// No description provided for @bottom_modal_input_desc.
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get bottom_modal_input_desc;
+
+  /// No description provided for @bottom_modal_placeholder_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe your goal...'**
+  String get bottom_modal_placeholder_desc;
+
+  /// No description provided for @bottom_modal_error_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a description'**
+  String get bottom_modal_error_desc;
+
+  /// No description provided for @bottom_modal_modal_succes.
+  ///
+  /// In en, this message translates to:
+  /// **'Objective successfully modified'**
+  String get bottom_modal_modal_succes;
+
+  /// No description provided for @bottom_modal_modal_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal successfully created'**
+  String get bottom_modal_modal_created;
 
   /// No description provided for @bottom_modal_input_start_date.
   ///

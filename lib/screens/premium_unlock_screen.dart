@@ -13,7 +13,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
   String _selectedPlan = 'Annuel';
   String? _errorMessage;
 
-  // Prix affichés (vous pourrez brancher des valeurs dynamiques/i18n plus tard)
+  // ! KIWI a changer
   final String _priceMonthly = '1,99 €';
   final String _priceAnnual = '12,99 €';
   final String _priceAnnualOld = '23,88';
@@ -27,7 +27,6 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
     final Color accent = const Color(0xFF6db399);
 
     return Scaffold(
-      backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: bg,
         foregroundColor: AppColors.darkColor,
@@ -349,8 +348,8 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'En vous abonnant, vous débloquerez également :',
+          Text(
+            AppLocalizations.of(context)!.premium_feature_title,
             style: TextStyle(
               color: AppColors.darkColor,
               fontSize: 16,

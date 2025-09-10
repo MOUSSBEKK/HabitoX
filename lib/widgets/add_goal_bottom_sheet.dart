@@ -5,6 +5,7 @@ import 'package:toastification/toastification.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../l10n/app_localizations.dart';
 
 class AddGoalBottomSheetColors {
   static const Color primaryColor = Color(0xFFA7C6A5);
@@ -86,7 +87,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     final mediaQuery = MediaQuery.of(context);
 
     return Material(
-      color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         top: false,
         child: Padding(
@@ -107,8 +107,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     children: [
                       Text(
                         widget.goal != null
-                            ? 'Change the objective'
-                            : 'New objective',
+                            ? AppLocalizations.of(context)!.bottom_modal_title2
+                            : AppLocalizations.of(context)!.bottom_modal_title,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
@@ -140,7 +140,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
-                      hintText: 'Ex: Learn to play the guitar',
+                      hintText: AppLocalizations.of(
+                        context,
+                      )!.bottom_modal_placeholder_title,
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
@@ -149,7 +151,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                         borderSide: BorderSide(
-                          color: Color(0xFFE0E0E0),
+                          color: Theme.of(context).colorScheme.outline,
                           width: 1,
                         ),
                       ),
@@ -161,16 +163,15 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         ),
                       ),
                       prefixIcon: Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: FaIcon(
-                          FontAwesomeIcons.fontAwesome,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
+                        padding: EdgeInsets.fromLTRB(20, 12, 12, 12),
+                        child: FaIcon(FontAwesomeIcons.fontAwesome),
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please enter a title';
+                        return AppLocalizations.of(
+                          context,
+                        )!.bottom_modal_error_title;
                       }
                       return null;
                     },
@@ -185,17 +186,19 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
-                      hintText: 'Describe your goal...',
+                      hintText: AppLocalizations.of(
+                        context,
+                      )!.bottom_modal_placeholder_desc,
                       focusColor: AddGoalBottomSheetColors.primaryColor,
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
-                      enabledBorder: const OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                         borderSide: BorderSide(
-                          color: Color(0xFFE0E0E0),
+                          color: Theme.of(context).colorScheme.outline,
                           width: 1,
                         ),
                       ),
@@ -207,17 +210,16 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         ),
                       ),
                       prefixIcon: Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: FaIcon(
-                          FontAwesomeIcons.fileLines,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
+                        padding: EdgeInsets.fromLTRB(20, 12, 12, 12),
+                        child: FaIcon(FontAwesomeIcons.fileLines),
                       ),
                     ),
                     maxLines: 3,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please enter a description';
+                        return AppLocalizations.of(
+                          context,
+                        )!.bottom_modal_error_desc;
                       }
                       return null;
                     },
@@ -287,7 +289,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Icon',
+              AppLocalizations.of(context)!.bottom_modal_icon,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -299,19 +301,11 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               child: Row(
                 children: [
                   Text(
-                    'View All',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AddGoalBottomSheetColors.primaryColor,
-                    ),
+                    AppLocalizations.of(context)!.bottom_modal_view,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(width: 4),
-                  FaIcon(
-                    FontAwesomeIcons.arrowRight,
-                    size: 12,
-                    color: AddGoalBottomSheetColors.primaryColor,
-                  ),
+                  FaIcon(FontAwesomeIcons.arrowRight, size: 12),
                 ],
               ),
             ),
@@ -338,7 +332,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           color: icon == _selectedIcon
                               ? AddGoalBottomSheetColors.primaryColor
                                     .withValues(alpha: 0.2)
-                              : Colors.grey[100],
+                              : Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: icon == _selectedIcon
@@ -351,7 +345,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           icon,
                           color: icon == _selectedIcon
                               ? AddGoalBottomSheetColors.primaryColor
-                              : Colors.grey[600],
+                              : Theme.of(context).iconTheme.color,
                           size: 24,
                         ),
                       ),
@@ -392,7 +386,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Colors',
+              AppLocalizations.of(context)!.bottom_modal_color,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -404,19 +398,11 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               child: Row(
                 children: [
                   Text(
-                    'View All',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AddGoalBottomSheetColors.primaryColor,
-                    ),
+                    AppLocalizations.of(context)!.bottom_modal_view,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(width: 4),
-                  FaIcon(
-                    FontAwesomeIcons.arrowRight,
-                    size: 12,
-                    color: AddGoalBottomSheetColors.primaryColor,
-                  ),
+                  FaIcon(FontAwesomeIcons.arrowRight, size: 12),
                 ],
               ),
             ),
@@ -449,11 +435,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         ),
                       ),
                       child: color == _selectedColor
-                          ? const Icon(
-                              Icons.check,
-                              color: Color.fromARGB(255, 29, 29, 29),
-                              size: 16,
-                            )
+                          ? const Icon(Icons.check, size: 16)
                           : null,
                     ),
                   ),
@@ -477,7 +459,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
-              border: Border.all(color: Colors.grey[300]!),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -491,7 +473,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Start date',
+                      AppLocalizations.of(
+                        context,
+                      )!.bottom_modal_input_start_date,
                       style: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context).textTheme.bodyMedium?.color,
@@ -523,7 +507,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
-              border: Border.all(color: Colors.grey[300]!),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -534,7 +518,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'End date',
+                      AppLocalizations.of(
+                        context,
+                      )!.bottom_modal_input_start_end,
                       style: TextStyle(
                         fontSize: 14,
                         color: Theme.of(context).textTheme.bodyMedium?.color,
@@ -607,7 +593,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
               DateTime.now().add(const Duration(days: 30))),
       firstDate: _startDate ?? DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      cancelText: "Cancel",
+      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null && picked != _endDate) {
       setState(() {
@@ -798,177 +784,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
     ],
   };
 
-  // Toutes les icônes disponibles
-  static final List<IconData> allIcons = [
-    // Sports & Fitness
-    Icons.fitness_center,
-    Icons.sports_soccer,
-    Icons.sports_basketball,
-    Icons.sports_tennis,
-    Icons.sports_volleyball,
-    Icons.sports_football,
-    Icons.sports_baseball,
-    Icons.sports_hockey,
-    Icons.sports_golf,
-    Icons.sports_motorsports,
-    Icons.sports_esports,
-    Icons.pool,
-    Icons.snowboarding,
-    Icons.surfing,
-    Icons.skateboarding,
-
-    // Arts & Creativity
-    Icons.brush,
-    Icons.palette,
-    Icons.music_note,
-    Icons.piano,
-    Icons.mic,
-    Icons.headphones,
-    Icons.camera,
-    Icons.camera_alt,
-    Icons.video_camera_back,
-    Icons.theater_comedy,
-    Icons.movie,
-    Icons.photo,
-    Icons.draw,
-    Icons.colorize,
-
-    // Learning & Education
-    Icons.book,
-    Icons.school,
-    Icons.science,
-    Icons.biotech,
-    Icons.psychology,
-    Icons.calculate,
-    Icons.language,
-    Icons.translate,
-    Icons.history_edu,
-    Icons.menu_book,
-    Icons.library_books,
-    Icons.quiz,
-    Icons.assignment,
-    Icons.edit,
-    Icons.article,
-
-    // Technology & Work
-    Icons.code,
-    Icons.computer,
-    Icons.laptop,
-    Icons.smartphone,
-    Icons.web,
-    Icons.developer_mode,
-    Icons.bug_report,
-    Icons.settings,
-    Icons.build,
-    Icons.work,
-    Icons.business,
-    Icons.slideshow,
-    Icons.analytics,
-    Icons.trending_up,
-    Icons.monetization_on,
-
-    // Health & Wellness
-    Icons.health_and_safety,
-    Icons.medical_services,
-    Icons.medication,
-    Icons.local_hospital,
-    Icons.healing,
-    Icons.spa,
-    Icons.self_improvement,
-    Icons.favorite,
-    Icons.mood,
-    Icons.sentiment_very_satisfied,
-    Icons.nights_stay,
-    Icons.wb_sunny,
-    Icons.eco,
-    Icons.nature,
-    Icons.park,
-
-    // Food & Cooking
-    Icons.restaurant,
-    Icons.local_restaurant,
-    Icons.food_bank,
-    Icons.cake,
-    Icons.coffee,
-    Icons.local_cafe,
-    Icons.local_bar,
-    Icons.kitchen,
-    Icons.soup_kitchen,
-    Icons.ramen_dining,
-    Icons.lunch_dining,
-    Icons.dinner_dining,
-    Icons.breakfast_dining,
-    Icons.fastfood,
-    Icons.local_pizza,
-
-    // Travel & Adventure
-    Icons.flight,
-    Icons.train,
-    Icons.directions_car,
-    Icons.directions_bike,
-    Icons.hiking,
-    Icons.terrain,
-    Icons.map,
-    Icons.explore,
-    Icons.public,
-    Icons.location_on,
-    Icons.camera_outdoor,
-    Icons.hotel,
-    Icons.beach_access,
-    Icons.forest,
-    Icons.landscape,
-
-    // Goals & Achievement
-    Icons.flag,
-    Icons.star,
-    Icons.emoji_events,
-    Icons.military_tech,
-    Icons.workspace_premium,
-    Icons.diamond,
-    Icons.toll,
-    Icons.verified,
-    Icons.new_releases,
-    Icons.trending_up,
-    Icons.whatshot,
-    Icons.flash_on,
-    Icons.bolt,
-    Icons.rocket_launch,
-    Icons.celebration,
-
-    // Social & Relationships
-    Icons.people,
-    Icons.group,
-    Icons.family_restroom,
-    Icons.child_care,
-    Icons.elderly,
-    Icons.volunteer_activism,
-    Icons.handshake,
-    Icons.diversity_1,
-    Icons.diversity_2,
-    Icons.diversity_3,
-    Icons.forum,
-    Icons.chat,
-    Icons.call,
-    Icons.video_call,
-    Icons.share,
-
-    // Hobbies & Interests
-    Icons.games,
-    Icons.casino,
-    Icons.toys,
-    Icons.extension,
-    Icons.auto_stories,
-    Icons.collections_bookmark,
-    Icons.inventory,
-    Icons.shopping_cart,
-    Icons.local_florist,
-    Icons.pets,
-    Icons.cruelty_free,
-    Icons.grass,
-    Icons.agriculture,
-    Icons.yard,
-  ];
-
   void _showAllIconsModal() {
     showMaterialModalBottomSheet(
       context: context,
@@ -979,7 +794,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   Widget _buildAllIconsModal() {
     return Material(
-      color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height * 0.8,
@@ -991,16 +805,12 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Choose an icon',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AddGoalBottomSheetColors.darkColor,
-                    ),
+                    AppLocalizations.of(context)!.bottom_modal_icon_title,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
+                    icon: FaIcon(FontAwesomeIcons.close),
                   ),
                 ],
               ),
@@ -1121,7 +931,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Choose a color',
+                    AppLocalizations.of(context)!.bottom_modal_color_title,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -1130,7 +940,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
+                    icon: FaIcon(FontAwesomeIcons.close),
                   ),
                 ],
               ),
@@ -1169,11 +979,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         ),
                       ),
                       child: isSelected
-                          ? const Icon(
-                              Icons.check,
-                              color: Color.fromARGB(255, 51, 51, 51),
-                              size: 20,
-                            )
+                          ? const Icon(Icons.check, size: 25)
                           : null,
                     ),
                   );
@@ -1204,7 +1010,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         goalService.updateGoal(updatedGoal);
         toastification.show(
           context: context,
-          title: const Text('Objectif modifié avec succès !'),
+          title: Text(AppLocalizations.of(context)!.bottom_modal_modal_succes),
           type: ToastificationType.success,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
@@ -1224,7 +1030,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         goalService.addGoal(newGoal);
         toastification.show(
           context: context,
-          title: const Text('Goal successfully created!'),
+          title: Text(AppLocalizations.of(context)!.bottom_modal_modal_created),
           type: ToastificationType.success,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),

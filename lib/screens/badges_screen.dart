@@ -4,17 +4,6 @@ import '../services/user_profile_service.dart';
 import '../models/user_profile.dart';
 import '../l10n/app_localizations.dart';
 
-// Couleurs du design épuré
-class BadgesScreenColors {
-  static const Color primaryColor = Color(
-    0xFFA7C6A5,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
-  static const Color darkColor = Color(
-    0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
-}
-
 class BadgesScreen extends StatefulWidget {
   const BadgesScreen({super.key});
 
@@ -49,9 +38,6 @@ class _BadgesScreenState extends State<BadgesScreen>
         return Scaffold(
           appBar: AppBar(title: Text('Achievements')),
           body: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-            ),
             child: SafeArea(
               child: Column(
                 children: [

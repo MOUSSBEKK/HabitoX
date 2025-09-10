@@ -76,13 +76,13 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   void _startAnimations() async {
     // Démarrer l'effet de brillance en boucle
     _sparkleController.repeat(reverse: true);
-    
+
     // Animation du slide down
     await _slideController.forward();
-    
+
     // Animation du scale du badge
     await _scaleController.forward();
-    
+
     // Animation du compteur XP
     await _xpController.forward();
   }
@@ -102,11 +102,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
       children: [
         // Fond semi-transparent avec blur
         Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.5),
-          ),
+          decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.5)),
         ),
-        
+
         // Effet de brillance d'arrière-plan
         AnimatedBuilder(
           animation: _sparkleAnimation,
@@ -117,7 +115,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                   center: Alignment.center,
                   radius: 1.0 + _sparkleAnimation.value * 0.3,
                   colors: [
-                    Colors.amber.withValues(alpha: 0.1 * _sparkleAnimation.value),
+                    Colors.amber.withValues(
+                      alpha: 0.1 * _sparkleAnimation.value,
+                    ),
                     Colors.transparent,
                   ],
                 ),
@@ -138,10 +138,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white,
-                    Colors.blue[50]!,
-                  ],
+                  colors: [Colors.white, Colors.blue[50]!],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
@@ -159,7 +156,10 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                   children: [
                     // Titre
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.amber[400]!, Colors.orange[400]!],
@@ -196,32 +196,18 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       child: Container(
                         width: 120,
                         height: 120,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
+                        decoration: BoxDecoration(shape: BoxShape.circle),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Image.asset(
-                              widget.badgeAssetPath,
-                              fit: BoxFit.contain
-                            ),
+                            widget.badgeAssetPath,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     ),
 
                     const SizedBox(height: 16),
-
-                    // // Nom du badge
-                    // Text(
-                    //   widget.badgeName,
-                    //   style: TextStyle(
-                    //     fontSize: 22,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.blue[700],
-                    //   ),
-                    // ),
-
-                    // const SizedBox(height: 8),
 
                     // Description
                     Text(
@@ -238,7 +224,10 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 
                     // XP gagné avec animation
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green[50],
                         borderRadius: BorderRadius.circular(12),
@@ -247,7 +236,11 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add_circle, color: Colors.green[600], size: 20),
+                          Icon(
+                            Icons.add_circle,
+                            color: Colors.green[600],
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           AnimatedBuilder(
                             animation: _xpAnimation,
@@ -298,24 +291,4 @@ class _LevelUpDialogState extends State<LevelUpDialog>
       ],
     );
   }
-
-  // // Méthode statique pour afficher la popup
-  // static void show(
-  //   BuildContext context, 
-  //   LevelUpResult levelUpResult,
-  //   String badgeAssetPath,
-  //   String badgeName,
-  //   String badgeDescription,
-  // ) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: true,
-  //     builder: (context) => LevelUpDialog(
-  //       levelUpResult: levelUpResult,
-  //       badgeAssetPath: badgeAssetPath,
-  //       badgeName: badgeName,
-  //       badgeDescription: badgeDescription,
-  //     ),
-  //   );
-  // }
 }

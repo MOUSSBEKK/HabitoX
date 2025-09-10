@@ -46,18 +46,13 @@ class HabitoXApp extends StatelessWidget {
       child: ToastificationWrapper(
         child: Consumer<ThemeService>(
           builder: (context, themeService, _) => MaterialApp(
-            // regarder la dépendance adaptive_dialog
-            // localizationsDelegates: const [
-            //   GlobalMaterialLocalizations.delegate,
-            //   GlobalWidgetsLocalizations.delegate,
-            //   GlobalCupertinoLocalizations.delegate, // This is required
-            // ],
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+            // langue supportées
             supportedLocales: const [
               Locale('en'),
               Locale('fr'),
@@ -72,9 +67,7 @@ class HabitoXApp extends StatelessWidget {
             theme: ThemeData(
               useMaterial3: true,
               primaryColor: AppColors.primaryColor,
-              // scaffoldBackgroundColor: AppColors.lightColor.withValues(
-              //   alpha: 0.15,
-              // ),
+              scaffoldBackgroundColor: Color.fromRGBO(226, 239, 243, 1),
               colorScheme: ColorScheme.dark(
                 primary: Colors.white, // blanc
                 secondary: Color(0xFFA7C6A5),
@@ -84,8 +77,8 @@ class HabitoXApp extends StatelessWidget {
                 tertiaryFixed: Colors.white,
                 tertiaryContainer: Colors.black,
 
-                // background
-                surface: const Color.fromRGBO(226, 239, 243, 1),
+                // background card
+                surface: AppColors.surfaceColor,
 
                 // bordure
                 outline: Colors.white,
@@ -93,7 +86,9 @@ class HabitoXApp extends StatelessWidget {
                 // shadow
                 shadow: Color(0xFF1F4843).withValues(alpha: 0.08),
               ),
+
               textTheme: TextTheme(
+                titleLarge: TextStyle(color: AppColors.primaryColor),
                 bodyLarge: TextStyle(
                   color: const Color.fromARGB(255, 11, 11, 11),
                 ),
@@ -107,7 +102,7 @@ class HabitoXApp extends StatelessWidget {
                 elevation: 0,
                 centerTitle: true,
                 backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
-                foregroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 0, 0, 0),
                 titleTextStyle: TextStyle(
                   color: AppColors.darkColor,
                   fontSize: 26,
@@ -116,19 +111,19 @@ class HabitoXApp extends StatelessWidget {
               ),
 
               // Divider
-              dividerTheme: DividerThemeData(
-                color: AppColors.lightColor.withValues(alpha: 0.5),
-                thickness: 1,
-              ),
+              // dividerTheme: DividerThemeData(
+              //   color: AppColors.lightColor.withValues(alpha: 0.5),
+              //   thickness: 1,
+              // ),
 
               // Icon
-              iconTheme: IconThemeData(color: Colors.black),
+              iconTheme: IconThemeData(color: const Color(0xFF191919)),
             ),
             darkTheme: ThemeData(
               useMaterial3: true,
               brightness: Brightness.dark,
               primaryColor: AppColors.primaryColor,
-              scaffoldBackgroundColor: const Color(0xFF181920),
+              scaffoldBackgroundColor: AppColors.scaffoldBackgroundColorDark,
               colorScheme: ColorScheme.dark(
                 primary: Color(0xFF1f222a),
                 secondary: Color(0xFFA7C6A5),
@@ -149,13 +144,14 @@ class HabitoXApp extends StatelessWidget {
               ),
 
               textTheme: TextTheme(
+                titleLarge: TextStyle(color: AppColors.darkColor),
                 bodyLarge: TextStyle(color: Colors.white),
-                bodyMedium: TextStyle(color: Colors.white70),
+                bodyMedium: TextStyle(color: Colors.white),
                 bodySmall: TextStyle(color: Colors.white60),
               ),
 
               iconTheme: IconThemeData(
-                color: const Color.fromARGB(255, 223, 218, 218),
+                color: Color.fromARGB(255, 223, 218, 218),
               ),
 
               appBarTheme: const AppBarTheme(

@@ -41,26 +41,15 @@ class SkillProgressWidget extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: () {},
-                icon: FaIcon(
-                  FontAwesomeIcons.chartLine,
-                  size: 22,
-                  color: Color(0xFFA7C6A5),
-                ),
+                icon: FaIcon(FontAwesomeIcons.chartLine, size: 22),
               ),
               IconButton(
                 onPressed: () {},
-                icon: FaIcon(
-                  FontAwesomeIcons.circleArrowUp,
-                  size: 22,
-                  color: Color(0xFFA7C6A5),
-                ),
+                icon: FaIcon(FontAwesomeIcons.circleArrowUp, size: 22),
               ),
             ],
           ),
           body: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-            ),
             child: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(padding),

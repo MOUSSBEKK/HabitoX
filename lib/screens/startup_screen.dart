@@ -50,10 +50,11 @@ class _LoadingScreenState extends State<_LoadingScreen>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _animation = Tween<double>(begin: 0.8, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-    
+    _animation = Tween<double>(
+      begin: 0.8,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
     // Animation en boucle
     _controller.repeat(reverse: true);
   }
@@ -67,7 +68,6 @@ class _LoadingScreenState extends State<_LoadingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -110,9 +110,9 @@ class _LoadingScreenState extends State<_LoadingScreen>
                 );
               },
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Nom de l'app
             const Text(
               'HabitoX',
@@ -122,9 +122,9 @@ class _LoadingScreenState extends State<_LoadingScreen>
                 letterSpacing: 2.0,
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // Indicateur de chargement
             SizedBox(
               width: 40,

@@ -89,11 +89,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     final isTablet = screenSize.width > 600;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
-            // Contenu principal avec PageView
             Expanded(
               child: PageView(
                 controller: _pageController,
@@ -101,7 +99,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   setState(() {
                     _currentPage = page;
                   });
-                  // Relance les animations à chaque changement de page
                   _fadeController.reset();
                   _slideController.reset();
                   _fadeController.forward();

@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         return Scaffold(
           appBar: AppBar(title: Text('Account')),
-          backgroundColor: Theme.of(context).colorScheme.surface,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(padding),
@@ -430,7 +428,7 @@ extension on _ProfileScreenState {
           for (int i = 0; i < items.length; i++) ...[
             _buildSettingTile(items[i], isTablet),
             if (i != items.length - 1)
-              Divider(height: 1, color: AppColors.lightColor.withOpacity(0.2)),
+              Divider(height: 1, color: Colors.grey.shade200),
           ],
         ],
       ),
@@ -452,7 +450,7 @@ extension on _ProfileScreenState {
       // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
       trailing: item.locked
-          ? Icon(Icons.lock, color: Theme.of(context).iconTheme.color)
+          ? Icon(Icons.lock)
           : Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color),
       onTap: item.locked
           ? () => toastification.show(

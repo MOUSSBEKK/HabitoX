@@ -10,7 +10,6 @@ import '../constants/app_colors.dart';
 import 'level_up_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../l10n/app_localizations.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
@@ -46,8 +45,8 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey.shade200),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,6 +55,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 activeGoal.icon,
                 activeGoal.title,
                 activeGoal.description,
+                context,
               ),
               const SizedBox(height: 24),
               if (calendarService.currentShape != null)
@@ -83,7 +83,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(IconData icon, String title, String description) {
+  Widget _buildHeader(
+    IconData icon,
+    String title,
+    String description,
+    BuildContext context,
+  ) {
     return Row(
       children: [
         Container(
@@ -109,7 +114,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
-                  color: darkColor,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
                 ),
               ),
               const SizedBox(height: 4),
@@ -117,7 +122,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 description,
                 style: TextStyle(
                   fontSize: 15,
-                  color: darkColor.withValues(alpha: 0.7),
+                  color: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.color?.withValues(alpha: 0.8),
                   height: 1.3,
                 ),
                 maxLines: 2,
@@ -156,7 +163,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -167,7 +174,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 '${progress} / ${maxDays} ${AppLocalizations.of(context)!.calendar_completed_days}',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey[600],
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
@@ -188,28 +195,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     final now = DateTime.now();
     final start = now.subtract(const Duration(days: 90));
 
-    // Agréger les sessions par jour et calculer une valeur de streak pour l'intensité
-    final Map<DateTime, int> rawCounts = {};
+    // Pour chaque jour complété, appliquer directement l'intensité maximale (couleur la plus foncée)
+    final Map<DateTime, int> datasets = {};
     for (final session in activeGoal.completedSessions) {
       final day = DateTime(session.year, session.month, session.day);
       if (day.isBefore(start) || day.isAfter(now)) continue;
-      rawCounts.update(day, (v) => v + 1, ifAbsent: () => 1);
-    }
-
-    // Calcul d'une intensité basée sur le streak jusqu'à chaque date
-    final sortedDays = rawCounts.keys.toList()..sort();
-    final Map<DateTime, int> datasets = {};
-    DateTime? previousDay;
-    int currentStreak = 0;
-    for (final day in sortedDays) {
-      if (previousDay != null && day.difference(previousDay).inDays == 1) {
-        currentStreak += 1;
-      } else {
-        currentStreak = 1;
-      }
-      previousDay = day;
-      // Limiter l'intensité pour correspondre aux paliers de couleurs
-      datasets[day] = currentStreak.clamp(1, 7);
+      datasets[day] = 7; // niveau d'intensité max correspondant à colorsets
     }
 
     final base = shape.color;
@@ -230,38 +221,10 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       showColorTip: false,
       colorMode: ColorMode.color,
       defaultColor: Theme.of(context).colorScheme.primary,
-      textColor: Colors.grey[700],
+      textColor: Theme.of(context).textTheme.bodyMedium?.color,
+      weekTextColor: Color(0xFFA7C6A5),
       datasets: datasets,
       colorsets: colorsets,
-      // enlever le onclick
-      onClick: (selectedDay) async {
-        final today = DateTime(now.year, now.month, now.day);
-        if (selectedDay == today) {
-          final goalService = context.read<GoalService>();
-          final profileService = context.read<UserProfileService>();
-
-          // Vérifier si déjà marqué aujourd'hui
-          final already = activeGoal.completedSessions.any(
-            (d) => DateTime(d.year, d.month, d.day) == today,
-          );
-          if (!already) {
-            final update = await goalService.updateProgress(
-              activeGoal.id,
-              profileService,
-            );
-            if (update != null) {
-              toastification.show(
-                context: context,
-                title: const Text('Session marquée !'),
-                description: const Text('+2 XP'),
-                type: ToastificationType.success,
-                style: ToastificationStyle.flatColored,
-                autoCloseDuration: const Duration(seconds: 3),
-              );
-            }
-          }
-        }
-      },
     );
   }
 
@@ -283,7 +246,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[700],
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         const SizedBox(height: 12),
@@ -371,7 +334,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 final profileService = context.read<UserProfileService>();
 
                 // Utiliser le nouveau système XP
-                final levelUpResult = await profileService.addExperience(
+                await profileService.addExperience(
                   2,
                 ); // XP pour session quotidienne
 
@@ -514,14 +477,14 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.lightColor.withValues(alpha: 0.1),
+              color: Color(0xFFA7C6A5).withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: FaIcon(
                 FontAwesomeIcons.flag,
                 size: 40,
-                color: AppColors.lightColor.withValues(alpha: 0.6),
+                color: Color(0xFFA7C6A5),
               ),
             ),
           ),
@@ -562,7 +525,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         children: [

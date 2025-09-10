@@ -36,6 +36,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get theme_title => 'Thema';
 
   @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get accep => 'Ok';
+
+  @override
   String get onboarding_title =>
       'Verändere deinen Alltag mit dauerhaften Gewohnheiten';
 
@@ -89,10 +95,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bottom_modal_title => 'Neues Ziel';
 
   @override
+  String get bottom_modal_title2 => 'Change the objective';
+
+  @override
   String get bottom_modal_icon => 'Symbol';
 
   @override
+  String get bottom_modal_icon_title => 'Choose an Icon';
+
+  @override
+  String get bottom_modal_icon_categorie1 => 'Sports & Fitness';
+
+  @override
+  String get bottom_modal_icon_categorie3 => 'Arts & Creativity';
+
+  @override
+  String get bottom_modal_icon_categorie4 => 'Learning & Education';
+
+  @override
+  String get bottom_modal_icon_categorie5 => 'Technology & Work';
+
+  @override
   String get bottom_modal_color => 'Farben';
+
+  @override
+  String get bottom_modal_color_title => 'Choose a Color';
 
   @override
   String get bottom_modal_view => 'Alle anzeigen';
@@ -101,7 +128,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bottom_modal_input_title => 'Zieltitel';
 
   @override
+  String get bottom_modal_placeholder_title => 'Ex: Learn to play the guitar';
+
+  @override
+  String get bottom_modal_error_title => 'Please enter a title';
+
+  @override
   String get bottom_modal_input_desc => 'Beschreibung';
+
+  @override
+  String get bottom_modal_placeholder_desc => 'Describe your goal...';
+
+  @override
+  String get bottom_modal_error_desc => 'Please enter a description';
+
+  @override
+  String get bottom_modal_modal_succes => 'Objective successfully modified';
+
+  @override
+  String get bottom_modal_modal_created => 'Goal successfully created';
 
   @override
   String get bottom_modal_input_start_date => 'Startdatum';

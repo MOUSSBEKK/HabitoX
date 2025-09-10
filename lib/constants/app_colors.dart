@@ -1,31 +1,20 @@
 import 'package:flutter/material.dart';
 
-/// Couleurs du design épuré global de l'application HabitoX
 class AppColors {
   // Couleurs principales
-  static const Color primaryColor = Color.fromARGB(
-    255,
-    209,
-    113,
-    50,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color.fromARGB(
-    255,
-    38,
-    132,
-    167,
-  ); // Bleu clair pour fonds
-  static const Color darkColor = Color(
-    0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
+  static const Color darkColor = Color(0xFFA7C6A5);
+  static const Color primaryColor = Color(0xFF1F4843);
 
-  // Couleurs dérivées pour la cohérence
-  static const Color primaryLight = Color(0xFFB8D1B6); // Vert plus clair
-  static const Color primaryDark = Color(0xFF8FB28D); // Vert plus foncé
+  static const Color primaryLight = Color(0xFFB8D1B6);
+  static const Color primaryDark = Color(0xFF8FB28D);
 
-  // Couleurs avec opacités pour les arrière-plans et bordures
-  static const Color lightColorTransparent = Color(0x1A85B8CB);
-  static const Color darkColorTransparent = Color(0x1A1F4843);
+  // Background Card
+  static const Color surfaceColor = Colors.white;
+  static const Color surfaceColorDark = Color(0xFF1f222a);
+
+  // Background
+  static const Color scaffoldBackgroundColor = Color.fromRGBO(226, 239, 243, 1);
+  static const Color scaffoldBackgroundColorDark = Color(0xFF181920);
 
   // Couleurs d'état
   static const Color successColor = Color(0xFF4CAF50);
@@ -37,10 +26,6 @@ class AppColors {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
 
-  // Couleurs de surface
-  static const Color surfaceColor = white;
-  static const Color scaffoldBackgroundColor = Color(0xFFF8F9FA);
-
   // Couleurs de texte - TOUT en vert foncé (#1f4843)
   static const Color textPrimary = darkColor; // #1f4843
   static const Color textSecondary = Color(
@@ -50,9 +35,8 @@ class AppColors {
     0xFF3A6A65,
   ); // Version encore plus claire
 
-  // Couleurs de bordure
-  static const Color borderColor = lightColor; // #85b8cb
   static const Color borderColorLight = Color(0xFFE9ECEF);
+  // Couleurs de bordure
 
   // Couleurs d'ombre
   static const Color shadowColor = darkColor; // #1f4843
@@ -63,21 +47,15 @@ class AppColors {
 class ComponentColors {
   // Couleurs pour les cartes
   static const Color cardBackground = AppColors.white;
-  static const Color cardBorder = AppColors.lightColor; // #85b8cb
   static const Color cardShadow = AppColors.darkColor; // #1f4843
 
   // Couleurs pour les boutons
   static const Color buttonPrimary = AppColors.primaryColor; // #a7c6a5
-  static const Color buttonSecondary = AppColors.lightColor; // #85b8cb
   static const Color buttonText = AppColors.darkColor; // #1f4843
 
   // Couleurs pour les inputs
-  static const Color inputBackground = AppColors.lightColor; // #85b8cb
-  static const Color inputBorder = AppColors.lightColor; // #85b8cb
   static const Color inputFocusBorder = AppColors.primaryColor; // #a7c6a5
 
-  // Couleurs pour les indicateurs de progression
-  static const Color progressBackground = AppColors.lightColor; // #85b8cb
   static const Color progressFill = AppColors.primaryColor; // #a7c6a5
 
   // Couleurs pour les badges
@@ -85,9 +63,7 @@ class ComponentColors {
   static const Color badgeText = AppColors.darkColor; // #1f4843
 
   // Couleurs pour les onglets
-  static const Color tabBackground = AppColors.lightColor; // #85b8cb
   static const Color tabActive = AppColors.primaryColor; // #a7c6a5
-  static const Color tabInactive = AppColors.lightColor; // #85b8cb
   static const Color tabText = AppColors.darkColor; // #1f4843
 }
 
