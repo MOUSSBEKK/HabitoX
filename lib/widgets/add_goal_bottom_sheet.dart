@@ -51,6 +51,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   DateTime? _startDate;
   DateTime? _endDate;
   int _calculatedDays = 30;
+  int _selectedPriority = 1;
 
   @override
   void initState() {
@@ -61,6 +62,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       _selectedIcon = widget.goal!.icon;
       _selectedColor = widget.goal!.color;
       _calculatedDays = widget.goal!.targetDays;
+      _selectedPriority = widget.goal!.priority;
       // TODO: Ajouter les champs startDate et endDate au modèle Goal
       _startDate = widget.goal!.createdAt; // Temporaire
       _endDate = widget.goal!.createdAt.add(
@@ -227,6 +229,10 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   const SizedBox(height: 16),
 
+                  _buildPrioritySelector(),
+
+                  const SizedBox(height: 16),
+
                   _buildDateFields(),
 
                   const SizedBox(height: 32),
@@ -357,6 +363,88 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildPrioritySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Priorité',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildPriorityOption(1, 'Haute', Colors.red, Icons.keyboard_arrow_up),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _buildPriorityOption(2, 'Moyenne', Colors.orange, Icons.remove),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _buildPriorityOption(3, 'Basse', Colors.blue, Icons.keyboard_arrow_down),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriorityOption(int priority, String label, Color color, IconData icon) {
+    final isSelected = _selectedPriority == priority;
+    
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedPriority = priority;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? color.withValues(alpha: 0.2)
+              : Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? color : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? color : Theme.of(context).iconTheme.color,
+              size: 20,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? color : Theme.of(context).textTheme.bodyMedium?.color,
+              ),
+            ),
+            Text(
+              '$priority',
+              style: TextStyle(
+                fontSize: 10,
+                color: isSelected ? color : Theme.of(context).textTheme.bodyMedium?.color,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1004,6 +1092,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           icon: _selectedIcon,
           color: _selectedColor,
           targetDays: _calculatedDays,
+          priority: _selectedPriority,
           lastUpdated: DateTime.now(),
         );
 
@@ -1023,6 +1112,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           icon: _selectedIcon,
           color: _selectedColor,
           targetDays: _calculatedDays,
+          priority: _selectedPriority,
           createdAt: DateTime.now(),
           lastUpdated: DateTime.now(),
         );

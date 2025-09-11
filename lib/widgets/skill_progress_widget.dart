@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'active_goal_calendar_widget.dart';
+import 'priority_goals_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SkillProgressWidget extends StatelessWidget {
@@ -32,7 +33,7 @@ class SkillProgressWidget extends StatelessWidget {
             child: SafeArea(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(padding),
-                child: ActiveGoalCalendarWidget(onSwitchTab: onSwitchTab),
+                child: PriorityGoalsWidget(onSwitchTab: onSwitchTab),
               ),
             ),
           ),

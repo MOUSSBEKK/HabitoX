@@ -109,7 +109,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           title: AppLocalizations.of(context)!.premium_annual,
           price: _priceAnnual,
           oldPrice: _priceAnnualOld,
-          discountBadge: '-50%',
+          discountBadge: '-60%',
           selected: _selectedPlan == 'Annuel',
           onTap: () => setState(() => _selectedPlan = 'Annuel'),
           card: card,

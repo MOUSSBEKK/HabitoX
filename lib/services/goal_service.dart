@@ -8,12 +8,13 @@ import 'user_profile_service.dart';
 
 class GoalService extends ChangeNotifier {
   static const String _goalsKey = 'goals';
-  static const String _activeGoalKey = 'activeGoal';
+  static const String _activeGoalsKey = 'activeGoals';
   List<Goal> _goals = [];
-  Goal? _activeGoal;
+  List<Goal> _activeGoals = [];
 
   List<Goal> get goals => _goals;
-  Goal? get activeGoal => _activeGoal;
+  List<Goal> get activeGoals => _activeGoals;
+  Goal? get activeGoal => _activeGoals.isNotEmpty ? _activeGoals.first : null;
   List<Goal> get completedGoals =>
       _goals.where((goal) => goal.isCompleted).toList();
   List<Goal> get archivedGoals =>
@@ -47,8 +48,9 @@ class GoalService extends ChangeNotifier {
     await initLocalStorage();
     // 1) Lire depuis localstorage (source de vérité)
     final String? storedGoalsJson = localStorage.getItem(_goalsKey);
+    final String? storedActiveGoalsJson = localStorage.getItem(_activeGoalsKey);
     List<dynamic> rawGoalsList = [];
-    String? activeGoalId = localStorage.getItem(_activeGoalKey);
+    List<dynamic> rawActiveGoalsList = [];
 
     if (storedGoalsJson != null) {
       try {
@@ -59,21 +61,35 @@ class GoalService extends ChangeNotifier {
       } catch (_) {
         rawGoalsList = [];
       }
+    }
+
+    if (storedActiveGoalsJson != null) {
+      try {
+        final decoded = jsonDecode(storedActiveGoalsJson);
+        if (decoded is List) {
+          rawActiveGoalsList = decoded;
+        }
+      } catch (_) {
+        rawActiveGoalsList = [];
+      }
     } else {
       // 2) Migration depuis SharedPreferences (ancienne version)
       try {
         final prefs = await SharedPreferences.getInstance();
         final goalsJsonList = prefs.getStringList(_goalsKey) ?? [];
         rawGoalsList = goalsJsonList.map((json) => jsonDecode(json)).toList();
-        activeGoalId = prefs.getString(_activeGoalKey);
+        final activeGoalId = prefs.getString('activeGoal');
 
         // Sauvegarder dans localstorage au nouveau format (liste de maps)
         localStorage.setItem(_goalsKey, jsonEncode(rawGoalsList));
         if (activeGoalId != null) {
-          localStorage.setItem(_activeGoalKey, activeGoalId);
+          // Migration: créer une liste avec l'ancien objectif actif
+          rawActiveGoalsList = [activeGoalId];
+          localStorage.setItem(_activeGoalsKey, jsonEncode(rawActiveGoalsList));
         }
       } catch (_) {
         rawGoalsList = [];
+        rawActiveGoalsList = [];
       }
     }
 
@@ -87,26 +103,29 @@ class GoalService extends ChangeNotifier {
       return Goal.fromJson(jsonDecode(raw.toString()));
     }).toList();
 
-    if (activeGoalId != null) {
+    // Charger les objectifs actifs par priorité
+    _activeGoals = [];
+    for (final activeGoalId in rawActiveGoalsList) {
       try {
-        _activeGoal = _goals.firstWhere(
-          (goal) =>
-              goal.id == activeGoalId && goal.isActive && !goal.isCompleted,
+        final goal = _goals.firstWhere(
+          (goal) => goal.id == activeGoalId && goal.isActive && !goal.isCompleted,
         );
+        _activeGoals.add(goal);
       } catch (e) {
-        try {
-          _activeGoal = _goals.firstWhere(
-            (goal) => goal.isActive && !goal.isCompleted,
-          );
-        } catch (e) {
-          _activeGoal = _goals.isNotEmpty ? _goals.first : null;
-        }
+        // Objectif introuvable, on l'ignore
       }
-    } else if (_goals.isNotEmpty) {
-      _activeGoal = _goals.firstWhere(
+    }
+
+    // Trier par priorité (1 = plus haute priorité)
+    _activeGoals.sort((a, b) => a.priority.compareTo(b.priority));
+
+    // Si aucun objectif actif mais qu'il y a des objectifs, prendre le premier
+    if (_activeGoals.isEmpty && _goals.isNotEmpty) {
+      final firstActiveGoal = _goals.firstWhere(
         (goal) => goal.isActive && !goal.isCompleted,
         orElse: () => _goals.first,
       );
+      _activeGoals.add(firstActiveGoal);
     }
 
     notifyListeners();
@@ -116,19 +135,20 @@ class GoalService extends ChangeNotifier {
     await initLocalStorage();
     final goalsList = _goals.map((goal) => goal.toJson()).toList();
     localStorage.setItem(_goalsKey, jsonEncode(goalsList));
-    if (_activeGoal != null) {
-      localStorage.setItem(_activeGoalKey, _activeGoal!.id);
-    }
+    
+    final activeGoalsIds = _activeGoals.map((goal) => goal.id).toList();
+    localStorage.setItem(_activeGoalsKey, jsonEncode(activeGoalsIds));
   }
 
   Future<void> addGoal(Goal goal) async {
-    // Si on ajoute un nouvel objectif, on désactive tous les autres
-    if (_activeGoal != null) {
-      await _deactivateAllGoals();
-    }
-
     _goals.add(goal);
-    _activeGoal = goal;
+    
+    // Ajouter l'objectif aux objectifs actifs si on n'a pas encore 3 objectifs actifs
+    if (_activeGoals.length < 3) {
+      _activeGoals.add(goal);
+      _activeGoals.sort((a, b) => a.priority.compareTo(b.priority));
+    }
+    
     await _saveGoals();
     notifyListeners();
   }
@@ -138,9 +158,11 @@ class GoalService extends ChangeNotifier {
     if (index != -1) {
       _goals[index] = goal;
 
-      // Si c'est l'objectif actif, on le met à jour
-      if (_activeGoal?.id == goal.id) {
-        _activeGoal = goal;
+      // Mettre à jour dans les objectifs actifs si présent
+      final activeIndex = _activeGoals.indexWhere((g) => g.id == goal.id);
+      if (activeIndex != -1) {
+        _activeGoals[activeIndex] = goal;
+        _activeGoals.sort((a, b) => a.priority.compareTo(b.priority));
       }
 
       await _saveGoals();
@@ -150,44 +172,32 @@ class GoalService extends ChangeNotifier {
 
   Future<void> deleteGoal(String goalId) async {
     _goals.removeWhere((goal) => goal.id == goalId);
-
-    // Si on supprime l'objectif actif, on en sélectionne un autre
-    if (_activeGoal?.id == goalId) {
-      _activeGoal = _goals.isNotEmpty ? _goals.first : null;
-    }
+    _activeGoals.removeWhere((goal) => goal.id == goalId);
 
     await _saveGoals();
     notifyListeners();
   }
 
   Future<void> activateGoal(String goalId) async {
-    // Désactiver tous les autres objectifs
-    await _deactivateAllGoals();
-
-    // Activer l'objectif sélectionné
     final index = _goals.indexWhere((g) => g.id == goalId);
     if (index != -1) {
-      _goals[index] = _goals[index].copyWith(
+      final goal = _goals[index].copyWith(
         isActive: true,
         lastUpdated: DateTime.now(),
       );
-      _activeGoal = _goals[index];
+      _goals[index] = goal;
+
+      // Ajouter aux objectifs actifs si on n'a pas encore 3 objectifs actifs
+      if (_activeGoals.length < 3 && !_activeGoals.any((g) => g.id == goalId)) {
+        _activeGoals.add(goal);
+        _activeGoals.sort((a, b) => a.priority.compareTo(b.priority));
+      }
+
       await _saveGoals();
       notifyListeners();
     }
   }
 
-  Future<void> _deactivateAllGoals() async {
-    for (int i = 0; i < _goals.length; i++) {
-      if (_goals[i].isActive && !_goals[i].isCompleted) {
-        _goals[i] = _goals[i].copyWith(
-          isActive: false,
-          lastUpdated: DateTime.now(),
-        );
-      }
-    }
-    _activeGoal = null;
-  }
 
   Future<void> completeGoal(
     String goalId, [
@@ -203,15 +213,8 @@ class GoalService extends ChangeNotifier {
         lastUpdated: DateTime.now(),
       );
 
-      // Si c'était l'objectif actif, on le retire
-      if (_activeGoal?.id == goalId) {
-        _activeGoal = null;
-      }
-
-      // Notifier le profil utilisateur qu'un objectif a été terminé
-      // if (profileService != null) {
-      //   await profileService.onGoalCompleted();
-      // }
+      // Retirer des objectifs actifs
+      _activeGoals.removeWhere((g) => g.id == goalId);
 
       await _saveGoals();
       notifyListeners();
@@ -255,9 +258,10 @@ class GoalService extends ChangeNotifier {
           completedSessions: newCompletedSessions,
         );
 
-        // Si c'est l'objectif actif, on met aussi à jour sa référence
-        if (_activeGoal?.id == goal.id) {
-          _activeGoal = _goals[index];
+        // Mettre à jour dans les objectifs actifs si présent
+        final activeIndex = _activeGoals.indexWhere((g) => g.id == goal.id);
+        if (activeIndex != -1) {
+          _activeGoals[activeIndex] = _goals[index];
         }
 
         // Vérifier si l'objectif est complété
@@ -315,10 +319,8 @@ class GoalService extends ChangeNotifier {
         lastUpdated: DateTime.now(),
       );
 
-      // Si c'était l'objectif actif, on le retire
-      if (_activeGoal?.id == goalId) {
-        _activeGoal = null;
-      }
+      // Retirer des objectifs actifs
+      _activeGoals.removeWhere((g) => g.id == goalId);
 
       LevelUpResult? levelUpResult;
       int xpGained = 0;
@@ -351,8 +353,10 @@ class GoalService extends ChangeNotifier {
         lastUpdated: DateTime.now(),
       );
 
-      if (_activeGoal?.id == goalId) {
-        _activeGoal = _goals[index];
+      // Mettre à jour dans les objectifs actifs si présent
+      final activeIndex = _activeGoals.indexWhere((g) => g.id == goalId);
+      if (activeIndex != -1) {
+        _activeGoals[activeIndex] = _goals[index];
       }
 
       await _saveGoals();
@@ -379,5 +383,53 @@ class GoalService extends ChangeNotifier {
       }
     }
     return highest;
+  }
+
+  // Vérifier si tous les objectifs actifs sont terminés
+  bool get allActiveGoalsCompleted => _activeGoals.isEmpty;
+
+  // Mettre à jour la priorité d'un objectif
+  Future<void> updateGoalPriority(String goalId, int newPriority) async {
+    final index = _goals.indexWhere((g) => g.id == goalId);
+    if (index != -1) {
+      _goals[index] = _goals[index].copyWith(
+        priority: newPriority,
+        lastUpdated: DateTime.now(),
+      );
+
+      // Mettre à jour dans les objectifs actifs si présent
+      final activeIndex = _activeGoals.indexWhere((g) => g.id == goalId);
+      if (activeIndex != -1) {
+        _activeGoals[activeIndex] = _goals[index];
+        _activeGoals.sort((a, b) => a.priority.compareTo(b.priority));
+      }
+
+      await _saveGoals();
+      notifyListeners();
+    }
+  }
+
+  // Ajouter un objectif aux objectifs actifs (si possible)
+  Future<void> addToActiveGoals(String goalId) async {
+    if (_activeGoals.length >= 3) return;
+
+    final goal = _goals.firstWhere(
+      (g) => g.id == goalId && g.isActive && !g.isCompleted,
+      orElse: () => throw Exception('Objectif introuvable ou non actif'),
+    );
+
+    if (!_activeGoals.any((g) => g.id == goalId)) {
+      _activeGoals.add(goal);
+      _activeGoals.sort((a, b) => a.priority.compareTo(b.priority));
+      await _saveGoals();
+      notifyListeners();
+    }
+  }
+
+  // Retirer un objectif des objectifs actifs
+  Future<void> removeFromActiveGoals(String goalId) async {
+    _activeGoals.removeWhere((g) => g.id == goalId);
+    await _saveGoals();
+    notifyListeners();
   }
 }

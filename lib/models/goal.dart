@@ -52,6 +52,7 @@ class Goal {
   DateTime? completedAt;
   List<DateTime> completedSessions;
   int maxStreak;
+  int priority; // 1 = priorité la plus haute, 3 = priorité la plus basse
 
   Goal({
     required this.id,
@@ -70,6 +71,7 @@ class Goal {
     this.completedAt,
     List<DateTime>? completedSessions,
     this.maxStreak = 0,
+    this.priority = 1,
   }) : completedSessions = completedSessions ?? [];
 
   GoalGrade get currentGrade => GoalGrade.getGradeForDays(totalDays);
@@ -112,6 +114,7 @@ class Goal {
           .map((d) => d.millisecondsSinceEpoch)
           .toList(),
       'maxStreak': maxStreak,
+      'priority': priority,
     };
   }
 
@@ -145,6 +148,7 @@ class Goal {
               .toList() ??
           [],
       maxStreak: json['maxStreak'] ?? 0,
+      priority: json['priority'] ?? 1,
     );
   }
 
@@ -165,6 +169,7 @@ class Goal {
     DateTime? completedAt,
     List<DateTime>? completedSessions,
     int? maxStreak,
+    int? priority,
   }) {
     return Goal(
       id: id ?? this.id,
@@ -183,6 +188,7 @@ class Goal {
       completedAt: completedAt ?? this.completedAt,
       completedSessions: completedSessions ?? this.completedSessions,
       maxStreak: maxStreak ?? this.maxStreak,
+      priority: priority ?? this.priority,
     );
   }
 }
