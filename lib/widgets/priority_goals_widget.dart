@@ -23,12 +23,11 @@ class PriorityGoalsWidget extends StatefulWidget {
 
 class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
     with TickerProviderStateMixin {
-
   late AnimationController _animationController;
   late Animation<double> _slideAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
-  
+
   String? _completedGoalId;
   bool _isAnimating = false;
   String? _sessionCompletedGoalId; // Pour les sessions normales
@@ -37,36 +36,35 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(
+        milliseconds: 1000,
+      ), // Légèrement plus rapide pour un meilleur feeling
       vsync: this,
     );
 
     // Phase 1: Slide out + fade out (0-0.4s)
-    _slideAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.33, curve: Curves.easeInOut),
-    ));
+    _slideAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.33, curve: Curves.easeInOut),
+      ),
+    );
 
-    _fadeAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.33, curve: Curves.easeInOut),
-    ));
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.33, curve: Curves.easeInOut),
+      ),
+    );
 
     // Phase 2: Cards move up (0.4-0.8s)
     // Phase 3: New card scale up + fade in (0.8-1.2s)
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.66, 1.0, curve: Curves.elasticOut),
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.66, 1.0, curve: Curves.elasticOut),
+      ),
+    );
   }
 
   @override
@@ -84,7 +82,7 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
       }
       _isAnimating = true;
     });
-    
+
     _animationController.forward().then((_) {
       setState(() {
         _isAnimating = false;
@@ -99,9 +97,25 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
   Widget build(BuildContext context) {
     return Consumer2<GoalService, CalendarService>(
       builder: (context, goalService, calendarService, child) {
-        final activeGoals = goalService.activeGoals;
+        final allActiveGoals = goalService.activeGoals;
+
+        // Filtrer les objectifs pour ne montrer que ceux qui n'ont pas été marqués aujourd'hui
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+
+        final activeGoals = allActiveGoals.where((goal) {
+          final alreadyCompletedToday = goal.completedSessions.any(
+            (session) =>
+                DateTime(session.year, session.month, session.day) == today,
+          );
+          return !alreadyCompletedToday; // Ne montrer que les objectifs non marqués aujourd'hui
+        }).toList();
 
         if (activeGoals.isEmpty) {
+          // Si tous les objectifs ont été marqués aujourd'hui, afficher un message spécial
+          if (allActiveGoals.isNotEmpty) {
+            return _buildAllSessionsCompletedToday(context);
+          }
           return _buildNoActiveGoals(context);
         }
 
@@ -115,18 +129,24 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // Afficher les objectifs superposés
-              ...activeGoals.asMap().entries.map((entry) {
-                final index = entry.key;
-                final goal = entry.value;
-                return _buildStackedGoalCard(
-                  context,
-                  goal,
-                  index,
-                  goalService,
-                  calendarService,
-                );
-              }).toList(),
+              // Afficher les objectifs superposés dans l'ordre inverse pour que la priorité 1 soit au-dessus
+              ...activeGoals
+                  .asMap()
+                  .entries
+                  .map((entry) {
+                    final index = entry.key;
+                    final goal = entry.value;
+                    return _buildStackedGoalCard(
+                      context,
+                      goal,
+                      index,
+                      goalService,
+                      calendarService,
+                    );
+                  })
+                  .toList()
+                  .reversed
+                  .toList(),
             ],
           ),
         );
@@ -141,14 +161,25 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
     GoalService goalService,
     CalendarService calendarService,
   ) {
-    // Positionnement selon les spécifications
-    final verticalOffset = stackIndex * 8.0; // Carte 2: 8px, Carte 3: 16px
-    final horizontalOffset = stackIndex * 8.0; // Décalage horizontal
-    
+    // SYSTÈME DE PRIORITÉS :
+    // - Priorité 1 (Haute) = Rouge, position visuelle 0 (tout devant)
+    // - Priorité 2 (Moyenne) = Orange, position visuelle 1 (au milieu)
+    // - Priorité 3 (Basse) = Bleu, position visuelle 2 (à l'arrière)
+    //
+    // Conversion de la priorité en position visuelle
+    final visualIndex = goal.priority - 1; // Priorité 1->0, 2->1, 3->2
+
+    // Positionnement selon la priorité (plus la priorité est haute, plus c'est devant)
+    final verticalOffset =
+        visualIndex * 8.0; // Carte Moyenne: 8px, Carte Basse: 16px
+    final horizontalOffset =
+        visualIndex * 8.0; // Décalage horizontal correspondant
+
     final isCompleted = _completedGoalId == goal.id;
     final isSessionCompleted = _sessionCompletedGoalId == goal.id;
-    final isFirstCard = stackIndex == 0;
-    
+    final isFirstCard =
+        visualIndex == 0; // La carte de priorité 1 (Haute) est la première
+
     return Positioned(
       top: verticalOffset,
       left: horizontalOffset,
@@ -159,41 +190,63 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
           // Phase 1: Slide out + fade out pour la carte complétée ou session marquée
           if ((isCompleted || isSessionCompleted) && isFirstCard) {
             return Transform.translate(
-              offset: Offset(_slideAnimation.value * 300, 0), // Slide vers la droite
+              offset: Offset(
+                _slideAnimation.value * 300,
+                0,
+              ), // Slide vers la droite
               child: Opacity(
                 opacity: _fadeAnimation.value,
-                child: _buildGoalCard(context, goal, goalService, calendarService),
+                child: _buildGoalCard(
+                  context,
+                  goal,
+                  goalService,
+                  calendarService,
+                ),
               ),
             );
           }
-          
-          // Phase 2: Animation des cartes arrière-plan (0.4-0.8s)
+
+          // Phase 2: Animation des cartes arrière-plan (les cartes de priorité inférieure remontent)
           if (_isAnimating && !isFirstCard) {
-            final moveUpAnimation = Tween<double>(
-              begin: 0.0,
-              end: -8.0, // Remonte de 8px
-            ).animate(CurvedAnimation(
-              parent: _animationController,
-              curve: const Interval(0.33, 0.66, curve: Curves.easeInOut),
-            ));
-            
+            final moveUpAnimation =
+                Tween<double>(
+                  begin: 0.0,
+                  end:
+                      -8.0, // Remonte de 8px pour prendre la position de la carte disparue
+                ).animate(
+                  CurvedAnimation(
+                    parent: _animationController,
+                    curve: const Interval(0.33, 0.66, curve: Curves.easeInOut),
+                  ),
+                );
+
             return Transform.translate(
               offset: Offset(0, moveUpAnimation.value),
-              child: _buildGoalCard(context, goal, goalService, calendarService),
-            );
-          }
-          
-          // Phase 3: Nouvelle carte active scale up + fade in (seulement si ce n'est pas la carte complétée)
-          if (_isAnimating && isFirstCard && !isCompleted && !isSessionCompleted) {
-            return Transform.scale(
-              scale: _scaleAnimation.value,
-              child: Opacity(
-                opacity: _scaleAnimation.value,
-                child: _buildGoalCard(context, goal, goalService, calendarService),
+              child: _buildGoalCard(
+                context,
+                goal,
+                goalService,
+                calendarService,
               ),
             );
           }
-          
+
+          // Phase 3: Nouvelle carte active (priorité la plus haute restante) apparaît avec animation
+          if (_isAnimating &&
+              isFirstCard &&
+              !isCompleted &&
+              !isSessionCompleted) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: _buildGoalCard(
+                context,
+                goal,
+                goalService,
+                calendarService,
+              ),
+            );
+          }
+
           // État normal
           return _buildGoalCard(context, goal, goalService, calendarService);
         },
@@ -243,25 +296,21 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
             calendarService.currentShape!,
             context,
           ),
+          _buildMarkSessionButton(context, goalService, goal),
           const SizedBox(height: 24),
-          if (calendarService.currentShape != null)
-            _buildCalendarSection(
-              calendarService.currentShape!,
-              goal,
-              calendarService,
-              context,
-            )
-          else
-            _buildEmptyCalendarCard(context),
+          // if (calendarService.currentShape != null)
+          _buildCalendarSection(
+            calendarService.currentShape!,
+            goal,
+            calendarService,
+            context,
+          ),
+          // else
+          // _buildEmptyCalendarCard(context),
           const SizedBox(height: 20),
           if (calendarService.currentShape != null)
-            _buildProgressInfo(
-              calendarService.currentShape!,
-              goal,
-              context,
-            ),
+            _buildProgressInfo(calendarService.currentShape!, goal, context),
           const SizedBox(height: 24),
-          _buildMarkSessionButton(context, goalService, goal),
         ],
       ),
     );
@@ -303,16 +352,21 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: _getPriorityColor(priority).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _getPriorityColor(priority).withValues(alpha: 0.5),
+                        color: _getPriorityColor(
+                          priority,
+                        ).withValues(alpha: 0.5),
                       ),
                     ),
                     child: Text(
-                      'Priorité $priority',
+                      _getPriorityLabel(priority),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -342,14 +396,27 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
     );
   }
 
+  String _getPriorityLabel(int priority) {
+    switch (priority) {
+      case 1:
+        return 'Haute';
+      case 2:
+        return 'Moyenne';
+      case 3:
+        return 'Basse';
+      default:
+        return 'Priorité $priority';
+    }
+  }
+
   Color _getPriorityColor(int priority) {
     switch (priority) {
       case 1:
-        return Colors.red;
+        return Colors.red; // Haute priorité = Rouge
       case 2:
-        return Colors.orange;
+        return Colors.orange; // Moyenne priorité = Orange
       case 3:
-        return Colors.blue;
+        return Colors.blue; // Basse priorité = Bleu
       default:
         return Colors.grey;
     }
@@ -428,7 +495,7 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
     };
 
     return HeatMapCalendar(
-      size: 39,
+      size: 35,
       fontSize: 14,
       monthFontSize: 16,
       weekFontSize: 14,
@@ -436,7 +503,7 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
       colorMode: ColorMode.color,
       defaultColor: Theme.of(context).colorScheme.primary,
       textColor: Theme.of(context).textTheme.bodyMedium?.color,
-      weekTextColor: Color(0xFFA7C6A5),
+      // weekTextColor: Color(0xFFA7C6A5),
       datasets: datasets,
       colorsets: colorsets,
     );
@@ -533,99 +600,89 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
     GoalService goalService,
     dynamic goal,
   ) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final alreadyCompletedToday = goal.completedSessions.any(
-      (session) => DateTime(session.year, session.month, session.day) == today,
-    );
-
     return SizedBox(
-      width: double.infinity,
+      width: 200,
       child: ElevatedButton.icon(
-        onPressed: alreadyCompletedToday
-            ? () {print("NON Session déjà marquée comme complétée !");}
-            : () async {
-              print("Session marquée comme complétée !");
+        onPressed: () async {
+          final profileService = context.read<UserProfileService>();
+          final int experience = 2;
+          // Utiliser le nouveau système XP
+          await profileService.addExperience(experience);
 
-                final profileService = context.read<UserProfileService>();
-                final int experience = 2;
-                // Utiliser le nouveau système XP
-                await profileService.addExperience(experience);
+          final updateResult = await goalService.updateProgress(
+            goal.id,
+            profileService,
+          );
 
-                final updateResult = await goalService.updateProgress(
-                  goal.id,
-                  profileService,
+          // Démarrer l'animation selon le résultat
+          if (updateResult != null) {
+            if (updateResult['goalCompleted'] == true) {
+              // Objectif terminé complètement - animation de disparition définitive
+              _startAnimation(goal.id, isGoalCompleted: true);
+
+              final xpGained = updateResult['xpGained'] as int? ?? 0;
+              final levelUpResult = updateResult['levelUpResult'];
+
+              toastification.show(
+                context: context,
+                title: const Text('🎉 Objectif terminé !'),
+                description: Text('Félicitations ! +$xpGained XP'),
+                type: ToastificationType.success,
+                style: ToastificationStyle.flatColored,
+                autoCloseDuration: const Duration(seconds: 4),
+              );
+
+              // Si level up, afficher popup
+              if (levelUpResult != null &&
+                  levelUpResult.hasLeveledUp &&
+                  context.mounted) {
+                final badgeAsset =
+                    'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                final badgeName =
+                    profileService.userProfile?.levelName ??
+                    'Niveau ${levelUpResult.newLevel}';
+
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (context) => LevelUpDialog(
+                    levelUpResult: levelUpResult,
+                    badgeAssetPath: badgeAsset,
+                    badgeName: badgeName,
+                    badgeDescription: 'Vous avez atteint un nouveau niveau !',
+                  ),
                 );
+              }
+            } else {
+              // Session normale - animation temporaire
+              _startAnimation(goal.id, isGoalCompleted: false);
 
-                // Démarrer l'animation selon le résultat
-                if (updateResult != null) {
-                  if (updateResult['goalCompleted'] == true) {
-                    // Objectif terminé complètement - animation de disparition définitive
-                    _startAnimation(goal.id, isGoalCompleted: true);
-                    
-                    final xpGained = updateResult['xpGained'] as int? ?? 0;
-                    final levelUpResult = updateResult['levelUpResult'];
+              toastification.show(
+                context: context,
+                title: const Text('Session marquée comme complétée !'),
+                description: Text('+${experience} XP'),
+                type: ToastificationType.success,
+                style: ToastificationStyle.flatColored,
+                autoCloseDuration: const Duration(seconds: 3),
+              );
+            }
+          }
 
-                    toastification.show(
-                      context: context,
-                      title: const Text('🎉 Objectif terminé !'),
-                      description: Text('Félicitations ! +$xpGained XP'),
-                      type: ToastificationType.success,
-                      style: ToastificationStyle.flatColored,
-                      autoCloseDuration: const Duration(seconds: 4),
-                    );
-
-                    // Si level up, afficher popup
-                    if (levelUpResult != null &&
-                        levelUpResult.hasLeveledUp &&
-                        context.mounted) {
-                      final badgeAsset =
-                          'assets/badges/BADGE${levelUpResult.newLevel}.png';
-                      final badgeName =
-                          profileService.userProfile?.levelName ??
-                          'Niveau ${levelUpResult.newLevel}';
-
-                      showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (context) => LevelUpDialog(
-                          levelUpResult: levelUpResult,
-                          badgeAssetPath: badgeAsset,
-                          badgeName: badgeName,
-                          badgeDescription: 'Vous avez atteint un nouveau niveau !',
-                        ),
-                      );
-                    }
-                  } else {
-                    // Session normale - animation temporaire
-                    _startAnimation(goal.id, isGoalCompleted: false);
-                    
-                    toastification.show(
-                      context: context,
-                      title: const Text('Session marquée comme complétée !'),
-                      description: Text('+${experience} XP'),
-                      type: ToastificationType.success,
-                      style: ToastificationStyle.flatColored,
-                      autoCloseDuration: const Duration(seconds: 3),
-                    );
-                  }
-                }
-
-                // Mettre à jour le widget d'accueil après toute progression
-                final calendarService = context.read<CalendarService>();
-                await HomeWidgetService.updateActiveGoalHeatmap(
-                  context,
-                  goalService,
-                  calendarService,
-                );
-              },
+          // Mettre à jour le widget d'accueil après toute progression
+          final calendarService = context.read<CalendarService>();
+          await HomeWidgetService.updateActiveGoalHeatmap(
+            context,
+            goalService,
+            calendarService,
+          );
+        },
         icon: Icon(
           Icons.check,
           size: 20,
           color: Theme.of(context).iconTheme.color,
         ),
         label: Text(
-          AppLocalizations.of(context)!.calendar_mark_session,
+          "Marquer Session",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -690,6 +747,84 @@ class _PriorityGoalsWidgetState extends State<PriorityGoalsWidget>
               height: 1.4,
             ),
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAllSessionsCompletedToday(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Icône de succès quotidien
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: Color(0xFFA7C6A5).withValues(alpha: 0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.calendarCheck,
+                size: 50,
+                color: Color(0xFFA7C6A5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          // Titre de succès
+          Text(
+            '✅ Journée accomplie !',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFA7C6A5),
+              letterSpacing: -0.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+
+          // Message explicatif
+          Text(
+            'Vous avez marqué toutes vos sessions d\'aujourd\'hui !\nVos objectifs réapparaîtront demain.',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: AppColors.textSecondary,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+
+          // Message d'encouragement
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Color(0xFFA7C6A5).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Color(0xFFA7C6A5).withValues(alpha: 0.3),
+              ),
+            ),
+            child: Text(
+              '🌟 Excellent travail ! Reposez-vous et revenez demain pour continuer votre progression.',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFFA7C6A5),
+                height: 1.3,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),
