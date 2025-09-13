@@ -589,7 +589,7 @@ extension on _ProfileScreenState {
   }
 
   Future<void> _openPrivacyPolicy() async {
-    final Uri termsUri = Uri.parse('https://habitox.app/terms');
+    final Uri termsUri = Uri.parse('https://habitox.app/#/privacy');
     try {
       final bool didLaunch = await launchUrl(
         termsUri,
