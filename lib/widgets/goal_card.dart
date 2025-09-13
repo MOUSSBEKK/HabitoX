@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/goal.dart';
+import '../l10n/app_localizations.dart';
 
 // Couleurs du design épuré
 class GoalCardColors {
@@ -77,7 +78,6 @@ class GoalCard extends StatelessWidget {
                             ),
                           ),
                           // Badge de statut
-                          _buildStatusBadge(),
                         ],
                       ),
                       const SizedBox(height: 6),
@@ -178,59 +178,9 @@ class GoalCard extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Statistiques
-            _buildStatsSection(),
-
-            // Actions rapides (seulement pour les objectifs actifs)
-            // if (goal.isActive && onTap != null) ...[
-            //   const SizedBox(height: 20),
-            //   _buildQuickActions(context),
-            // ],
+            _buildStatsSection(context),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatusBadge() {
-    Color badgeColor;
-    String badgeText;
-    IconData badgeIcon;
-
-    if (goal.isCompleted) {
-      badgeColor = Colors.green;
-      badgeText = 'Complété';
-      badgeIcon = Icons.check_circle;
-    } else if (goal.isActive) {
-      badgeColor = Colors.blue;
-      badgeText = 'Actif';
-      badgeIcon = Icons.play_circle;
-    } else {
-      badgeColor = Colors.grey;
-      badgeText = 'Archivé';
-      badgeIcon = Icons.archive;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: badgeColor.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(badgeIcon, size: 16, color: badgeColor),
-          const SizedBox(width: 4),
-          Text(
-            badgeText,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: badgeColor,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -280,12 +230,12 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsSection() {
+  Widget _buildStatsSection(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: _buildStatItem(
-            'Série',
+            AppLocalizations.of(context)!.objectives_informations,
             '${goal.currentStreak}',
             Icons.local_fire_department,
             Colors.orange,
@@ -294,7 +244,7 @@ class GoalCard extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: _buildStatItem(
-            'Best',
+            AppLocalizations.of(context)!.objectives_informations2,
             '${goal.maxStreak}',
             Icons.emoji_events,
             Colors.amber,
@@ -314,7 +264,7 @@ class GoalCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
