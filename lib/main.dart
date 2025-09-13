@@ -9,7 +9,7 @@ import 'screens/onboarding_screen.dart';
 import 'screens/premium_unlock_screen.dart';
 import 'screens/settings/app_appearance_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
-import 'screens/settings/data_analytics_screen.dart';
+import 'screens/data_analytics_screen.dart';
 import 'screens/startup_screen.dart';
 import 'services/calendar_service.dart';
 import 'services/goal_service.dart';
