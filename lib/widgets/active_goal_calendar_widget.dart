@@ -71,13 +71,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               else
                 _buildEmptyCalendarCard(context),
               const SizedBox(height: 20),
-              if (calendarService.currentShape != null)
-                _buildProgressInfo(
-                  calendarService.currentShape!,
-                  activeGoal,
-                  context,
-                ),
-              const SizedBox(height: 24),
               _buildMarkSessionButton(context, goalService, activeGoal),
             ],
           ),
@@ -220,92 +213,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       weekTextColor: Color(0xFFA7C6A5),
       datasets: datasets,
       colorsets: colorsets,
-    );
-  }
-
-  Widget _buildProgressInfo(
-    CalendarShape shape,
-    dynamic activeGoal,
-    BuildContext context,
-  ) {
-    final progress = activeGoal != null ? activeGoal.totalDays : 0;
-    final maxDays = shape.totalDays;
-    final remainingDays = maxDays - progress;
-    final isCompleted = progress >= maxDays;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppLocalizations.of(context)!.calendar_informations,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).textTheme.bodyMedium?.color,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildInfoCard(
-                'Jours restants',
-                remainingDays.toString(),
-                Icons.calendar_today,
-                isCompleted ? Colors.green : Colors.orange,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildInfoCard(
-                'Progression',
-                '${((progress / maxDays) * 100).clamp(0, 100).toInt()}%',
-                Icons.trending_up,
-                shape.color,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInfoCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.25),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            style: TextStyle(fontSize: 10, color: color),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 
