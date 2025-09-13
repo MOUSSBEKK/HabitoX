@@ -14,7 +14,7 @@ class AddGoalBottomSheetColors {
 
   // Palette de couleurs pour les objectifs (inspirée de l'image fournie) - Limitée à 15 couleurs
   static const List<Color> goalColors = [
-    Color(0xFFFFF8B4), // Jaune clair
+    Color.fromARGB(255, 255, 239, 96), // Jaune clair
     Color(0xFFFFB380), // Orange clair
     Color(0xFF8B7B8B), // Violet gris
     Color(0xFFCF9FCA), // Rose violet
@@ -23,12 +23,12 @@ class AddGoalBottomSheetColors {
     Color(0xFFFF69B4), // Rose vif
     Color(0xFF98FB98), // Vert clair
     Color(0xFF9370DB), // Violet moyen
-    Color(0xFFC8A2C8), // Lilas
-    Color(0xFF87CEEB), // Bleu ciel
+    Color.fromARGB(255, 224, 141, 224), // Lilas
+    Color.fromARGB(255, 96, 192, 230), // Bleu ciel
     Color(0xFF5F9EA0), // Cadet bleu
-    Color(0xFFB0E0E6), // Bleu poudre
+    Color.fromARGB(255, 137, 209, 219), // Bleu poudre
     Color(0xFF32CD32), // Vert lime
-    Color(0xFFFFE4B5), // Pêche
+    Color.fromARGB(255, 251, 213, 146), // Pêche
   ];
 }
 
@@ -164,7 +164,10 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       ),
                       prefixIcon: Padding(
                         padding: EdgeInsets.fromLTRB(20, 12, 12, 12),
-                        child: FaIcon(FontAwesomeIcons.fontAwesome),
+                        child: FaIcon(
+                          FontAwesomeIcons.fontAwesome,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -211,7 +214,10 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       ),
                       prefixIcon: Padding(
                         padding: EdgeInsets.fromLTRB(20, 12, 12, 12),
-                        child: FaIcon(FontAwesomeIcons.fileLines),
+                        child: FaIcon(
+                          FontAwesomeIcons.fileLines,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                       ),
                     ),
                     maxLines: 3,
@@ -568,6 +574,19 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   Future<void> _selectStartDate() async {
     final DateTime? picked = await showDatePicker(
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+            primary:
+                Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
+            onPrimary: Colors.black,
+            surface: Theme.of(context).colorScheme.surface,
+            onSurface:
+                Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
+          ),
+        ),
+        child: child!,
+      ),
       context: context,
       initialDate: _startDate ?? DateTime.now(),
       firstDate: DateTime.now().subtract(const Duration(days: 365)),
@@ -586,6 +605,19 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   Future<void> _selectEndDate() async {
     final DateTime? picked = await showDatePicker(
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+            primary:
+                Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
+            onPrimary: Colors.black,
+            surface: Theme.of(context).colorScheme.surface,
+            onSurface:
+                Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
+          ),
+        ),
+        child: child!,
+      ),
       context: context,
       initialDate:
           _endDate ??
