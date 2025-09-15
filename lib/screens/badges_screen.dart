@@ -89,7 +89,6 @@ class _BadgesScreenState extends State<BadgesScreen>
                                 errorBuilder: (context, error, stackTrace) =>
                                     Icon(
                                       Icons.emoji_events_outlined,
-                                      color: Colors.grey[400],
                                       size: imageSize * 0.7,
                                     ),
                               ),
@@ -245,7 +244,7 @@ class _BadgesScreenState extends State<BadgesScreen>
       return _BadgeDisplayData(
         name: AppLocalizations.of(context)!.badge1_title,
         description: AppLocalizations.of(context)!.badge1_desc,
-        color: Colors.grey[600]!,
+        color: const Color(0xFFA7C6A5),
       );
     }
     if (level == 5) {
@@ -363,7 +362,7 @@ class _BadgeProgressTile extends StatelessWidget {
                 widthFactor: progress.clamp(0.0, 1.0),
                 child: Container(
                   height: isTablet ? 110.0 : 92.0,
-                  color: color.withOpacity(isUnlocked ? 0.18 : 0.14),
+                  color: color.withOpacity(isUnlocked ? 0.50 : 0.14),
                 ),
               ),
             ),
@@ -386,15 +385,12 @@ class _BadgeProgressTile extends StatelessWidget {
                       color: Colors.white,
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Image.asset(
-                        assetPath,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stack) => Icon(
-                          Icons.emoji_events_outlined,
-                          color: Colors.grey[400],
-                        ),
+                    child: Image.asset(
+                      assetPath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stack) => Icon(
+                        Icons.emoji_events_outlined,
+                        color: Colors.grey[400],
                       ),
                     ),
                   ),

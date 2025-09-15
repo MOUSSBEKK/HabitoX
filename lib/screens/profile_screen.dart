@@ -339,6 +339,15 @@ extension on _ProfileScreenState {
               title: AppLocalizations.of(context)!.settings_language,
             ),
             _SettingItem(
+              key: SettingKey.notifications,
+              icon: FaIcon(
+                FontAwesomeIcons.bell,
+                size: 20,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: 'Notifications',
+            ),
+            _SettingItem(
               key: SettingKey.dataAnalytics,
               icon: FaIcon(
                 FontAwesomeIcons.chartLine,
@@ -541,6 +550,9 @@ extension on _ProfileScreenState {
       case SettingKey.language:
         Navigator.pushNamed(context, '/language_settings');
         break;
+      case SettingKey.notifications:
+        Navigator.pushNamed(context, '/notification_settings');
+        break;
       case SettingKey.privacyPolicy:
         _openPrivacyPolicy();
         break;
@@ -701,6 +713,7 @@ enum SettingKey {
   appAppearance,
   dataAnalytics,
   language,
+  notifications,
   importData,
   exportData,
   privacyPolicy,

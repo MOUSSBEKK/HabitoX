@@ -81,6 +81,8 @@
   "objectives_completed_empty_subtitle": "Complete your goals to see them here",
   "objectives_archived_empty_title": "No Archived Objectives",
   "objectives_archived_empty_subtitle": "Archive your goals to organize them",
+  "objectives_informations": "Series",
+  "objectives_informations2": "Best",
 
   "badge_earned": "Latest Badge Earned",
   "badge_level": "Level",

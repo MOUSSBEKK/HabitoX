@@ -17,13 +17,20 @@ import 'services/onboarding_service.dart';
 import 'services/theme_service.dart';
 import 'services/language_service.dart';
 import 'services/user_profile_service.dart';
+import 'services/notification_service.dart';
 import 'screens/settings/language_settings_screen.dart';
+import 'screens/settings/notification_settings_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
   final languageService = LanguageService();
   await languageService.load();
+
+  // Initialiser le service de notification
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+
   runApp(HabitoXApp(languageService: languageService));
 }
 
@@ -42,6 +49,7 @@ class HabitoXApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ThemeService()),
         ChangeNotifierProvider(create: (context) => OnboardingService()),
         ChangeNotifierProvider<LanguageService>.value(value: languageService),
+        ChangeNotifierProvider(create: (context) => NotificationService()),
       ],
       child: ToastificationWrapper(
         child: Consumer<ThemeService>(
@@ -182,6 +190,8 @@ class HabitoXApp extends StatelessWidget {
               '/data_analytics': (context) => const DataAnalyticsScreen(),
               '/app_updates': (context) => const AppUpdatesScreen(),
               '/language_settings': (context) => const LanguageSettingsScreen(),
+              '/notification_settings': (context) =>
+                  const NotificationSettingsScreen(),
             },
           ),
         ),

@@ -215,6 +215,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Archiviere deine Ziele, um sie zu organisieren';
 
   @override
+  String get objectives_informations => 'Series';
+
+  @override
+  String get objectives_informations2 => 'Best';
+
+  @override
   String get badge_earned => 'Zuletzt erhaltenes Abzeichen';
 
   @override

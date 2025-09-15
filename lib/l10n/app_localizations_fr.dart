@@ -215,6 +215,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Archivez vos objectifs pour les organiser';
 
   @override
+  String get objectives_informations => 'Series';
+
+  @override
+  String get objectives_informations2 => 'Best';
+
+  @override
   String get badge_earned => 'Dernier badge obtenu';
 
   @override

@@ -492,6 +492,18 @@ abstract class AppLocalizations {
   /// **'Archive your goals to organize them'**
   String get objectives_archived_empty_subtitle;
 
+  /// No description provided for @objectives_informations.
+  ///
+  /// In en, this message translates to:
+  /// **'Series'**
+  String get objectives_informations;
+
+  /// No description provided for @objectives_informations2.
+  ///
+  /// In en, this message translates to:
+  /// **'Best'**
+  String get objectives_informations2;
+
   /// No description provided for @badge_earned.
   ///
   /// In en, this message translates to:

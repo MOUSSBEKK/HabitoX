@@ -25,6 +25,7 @@
   "home": "Accueil",
   "nav_objectives": "Objectifs",
   "nav_badges": "Badges",
+  "nav_analytics": "Analytics",
   "nav_profile": "Profil",
 
   "bottom_modal_title": "Nouvel objectif",
@@ -90,6 +91,7 @@
 
   "settings_appearance": "Apparence de l'application",
   "settings_data_analytics": "Données & Analyses",
+  "analytics": "Analytics",
   "settings_language": "Langue",
   "settings_import": "Importer",
   "settings_export": "Exporter",
