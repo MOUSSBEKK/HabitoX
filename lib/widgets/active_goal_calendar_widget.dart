@@ -173,32 +173,52 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  // Construit la heatmap type GitHub à partir des sessions réalisées
+  // Construit la heatmap type GitHub à partir des sessions réalisées et des jours futurs à compléter
   Widget _buildHeatMap(
     BuildContext context,
     CalendarShape shape,
     dynamic activeGoal,
   ) {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     final start = now.subtract(const Duration(days: 90));
 
-    // Pour chaque jour complété, appliquer directement l'intensité maximale (couleur la plus foncée)
     final Map<DateTime, int> datasets = {};
+    
+    // Ajouter les jours complétés (intensité maximale)
     for (final session in activeGoal.completedSessions) {
       final day = DateTime(session.year, session.month, session.day);
       if (day.isBefore(start) || day.isAfter(now)) continue;
       datasets[day] = 7; // niveau d'intensité max correspondant à colorsets
     }
 
+    // Calculer les jours restants à compléter
+    final completedDays = activeGoal.completedSessions.length;
+    final remainingDays = activeGoal.targetDays - completedDays;
+    
+    // Ajouter les jours futurs à compléter (intensité faible)
+    if (remainingDays > 0) {
+      for (int i = 0; i < remainingDays; i++) {
+        final futureDay = today.add(Duration(days: i + 1));
+        // Vérifier que le jour futur n'est pas déjà complété
+        final isAlreadyCompleted = activeGoal.completedSessions.any(
+          (session) => DateTime(session.year, session.month, session.day) == futureDay,
+        );
+        if (!isAlreadyCompleted) {
+          datasets[futureDay] = 1; // niveau d'intensité faible pour les jours futurs
+        }
+      }
+    }
+
     final base = shape.color;
     final colorsets = <int, Color>{
-      1: base.withValues(alpha: 0.25),
+      1: base.withValues(alpha: 0.15), // Opacité très faible pour les jours futurs
       2: base.withValues(alpha: 0.35),
       3: base.withValues(alpha: 0.45),
       4: base.withValues(alpha: 0.60),
       5: base.withValues(alpha: 0.70),
       6: base.withValues(alpha: 0.85),
-      7: base,
+      7: base, // Intensité maximale pour les jours complétés
     };
 
     return HeatMapCalendar(
