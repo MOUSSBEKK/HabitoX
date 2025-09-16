@@ -350,7 +350,7 @@ extension on _ProfileScreenState {
             _SettingItem(
               key: SettingKey.dataAnalytics,
               icon: FaIcon(
-                FontAwesomeIcons.chartLine,
+                FontAwesomeIcons.chartBar,
                 size: 20,
                 color: Theme.of(context).iconTheme.color,
               ),
@@ -389,7 +389,7 @@ extension on _ProfileScreenState {
             _SettingItem(
               key: SettingKey.privacyPolicy,
               icon: FaIcon(
-                FontAwesomeIcons.lock,
+                FontAwesomeIcons.shieldHalved,
                 size: 20,
                 color: Theme.of(context).iconTheme.color,
               ),
@@ -398,7 +398,7 @@ extension on _ProfileScreenState {
             _SettingItem(
               key: SettingKey.appUpdates,
               icon: FaIcon(
-                FontAwesomeIcons.circleArrowUp,
+                FontAwesomeIcons.circleUp,
                 size: 20,
                 color: Theme.of(context).iconTheme.color,
               ),
