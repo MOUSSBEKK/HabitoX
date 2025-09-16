@@ -234,7 +234,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             ? null
             : () async {
                 final profileService = context.read<UserProfileService>();
-                final int experience = 2;
+                final int experience = 5;
                 // Utiliser le nouveau système XP
                 await profileService.addExperience(experience);
 
