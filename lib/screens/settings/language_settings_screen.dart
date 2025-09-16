@@ -47,8 +47,6 @@ class LanguageSettingsScreen extends StatelessWidget {
                       context.read<LanguageService>().setLanguage(code);
                     },
                   ),
-                  if (i != items.length - 1)
-                    Divider(height: 1, color: theme.dividerColor),
                 ],
               ],
             ),

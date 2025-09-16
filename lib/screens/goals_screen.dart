@@ -240,7 +240,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
       message:
           'Êtes-vous sûr de vouloir supprimer l\'objectif "${goal.title}" ?',
       okLabel: 'Supprimer',
-      cancelLabel: 'Annuler',
+      cancelLabel: AppLocalizations.of(context)!.cancel,
       isDestructiveAction: true,
     );
 

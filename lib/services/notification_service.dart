@@ -83,13 +83,6 @@ class NotificationService extends ChangeNotifier {
     );
   }
 
-  void _onNotificationTapped(NotificationResponse notificationResponse) {
-    // Gérer le clic sur la notification
-    if (kDebugMode) {
-      print('Notification tapped: ${notificationResponse.payload}');
-    }
-  }
-
   Future<bool> requestPermissions() async {
     bool? result;
 

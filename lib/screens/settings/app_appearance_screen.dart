@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../services/theme_service.dart';
+import '../../constants/app_colors.dart';
+
 
 class AppAppearanceScreen extends StatefulWidget {
   const AppAppearanceScreen({super.key});
@@ -25,10 +27,8 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Theme')),
-      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,8 +71,6 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
               children: [
                 for (int i = 0; i < children.length; i++) ...[
                   children[i],
-                  if (i != children.length - 1 && children[i] is! Divider)
-                    Divider(height: 1, color: theme.dividerColor),
                 ],
               ],
             ),
@@ -85,7 +83,7 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
   Widget _buildThemeOption(String title, String value, IconData icon) {
     final isSelected = _selectedTheme == value;
     final theme = Theme.of(context);
-    final selectedColor = Colors.green;
+    final selectedColor = AppColors.primaryColor;
 
     return ListTile(
       leading: Container(

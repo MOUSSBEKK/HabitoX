@@ -315,7 +315,7 @@ extension on _ProfileScreenState {
       children: [
         // Catégorie Préférences
         _buildSettingsCategory(
-          title: 'Préférences',
+          title: AppLocalizations.of(context)!.settings_categorie_prefetence,
           items: [
             _SettingItem(
               key: SettingKey.appAppearance,
@@ -342,7 +342,7 @@ extension on _ProfileScreenState {
                 size: 20,
                 color: Theme.of(context).iconTheme.color,
               ),
-              title: 'Notifications',
+              title: AppLocalizations.of(context)!.settings_notifications,
             ),
             _SettingItem(
               key: SettingKey.dataAnalytics,
@@ -361,7 +361,7 @@ extension on _ProfileScreenState {
 
         // Catégorie Ressources
         _buildSettingsCategory(
-          title: 'Ressources',
+          title: AppLocalizations.of(context)!.settings_categorie_ressources,
           items: [
             _SettingItem(
               key: SettingKey.importData,

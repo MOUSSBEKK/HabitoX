@@ -136,7 +136,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   TextFormField(
                     controller: _titleController,
                     decoration: InputDecoration(
-                      labelText: 'Objective title',
+                      labelText: AppLocalizations.of(context)!.bottom_modal_input_title,
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
@@ -185,7 +185,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: 'Description',
+                      labelText: AppLocalizations.of(context)!.bottom_modal_input_desc,
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
@@ -251,7 +251,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text(widget.goal != null ? 'Edit' : 'Create'),
+                          child: Text(widget.goal != null ? AppLocalizations.of(context)!.bottom_modal_btn2 : AppLocalizations.of(context)!.bottom_modal_btn),
                         ),
                       ),
                     ],
@@ -267,7 +267,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   }
 
   Widget _buildIconSelector() {
-    // Icônes principales à afficher dans la ligne
     final baseIcons = [
       Icons.fitness_center,
       Icons.music_note,
@@ -277,7 +276,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       Icons.brush,
     ];
 
-    // Organiser les icônes pour mettre la sélectionnée en premier
     final mainIcons = <IconData>[];
     if (baseIcons.contains(_selectedIcon)) {
       mainIcons.add(_selectedIcon);
