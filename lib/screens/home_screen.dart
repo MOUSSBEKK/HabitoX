@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 BottomNavigationBarItem(
                   icon: FaIcon(
-                    FontAwesomeIcons.trophy,
+                    FontAwesomeIcons.award,
                     size: isTablet ? 28.0 : 24.0,
                   ),
                   label: AppLocalizations.of(context)!.nav_badges,
