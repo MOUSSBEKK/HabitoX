@@ -46,12 +46,12 @@ class GoalCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: GoalCardColors.primaryColor.withValues(alpha: 0.15),
+                    color: goal.color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     goal.icon,
-                    color: GoalCardColors.primaryColor,
+                    color: goal.color,
                     size: 28,
                   ),
                 ),
@@ -205,7 +205,7 @@ class GoalCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: GoalCardColors.primaryColor,
+                color: goal.color,
               ),
             ),
           ],
@@ -215,7 +215,7 @@ class GoalCard extends StatelessWidget {
           value: goal.progress,
           minHeight: 8,
           backgroundColor: Colors.grey[300],
-          color: GoalCardColors.primaryColor,
+          color: goal.color,
           borderRadius: BorderRadius.circular(4),
         ),
         const SizedBox(height: 4),
@@ -235,7 +235,7 @@ class GoalCard extends StatelessWidget {
       children: [
         Expanded(
           child: _buildStatItem(
-            AppLocalizations.of(context)!.objectives_informations,
+            "Séries",
             '${goal.currentStreak}',
             Icons.local_fire_department,
             Colors.orange,
@@ -244,7 +244,7 @@ class GoalCard extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: _buildStatItem(
-            AppLocalizations.of(context)!.objectives_informations2,
+            "Best",
             '${goal.maxStreak}',
             Icons.emoji_events,
             Colors.amber,
