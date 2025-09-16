@@ -171,11 +171,8 @@ extension on _ProfileScreenState {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: levelColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    width: 52,
+                    height: 52,
                     child: Image.asset(
                       _getBadgeAssetForLevel(level),
                       width: 32,
