@@ -168,6 +168,12 @@ abstract class AppLocalizations {
   /// **'Ok'**
   String get accep;
 
+  /// No description provided for @progression.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progression;
+
   /// No description provided for @onboarding_title.
   ///
   /// In en, this message translates to:
@@ -396,6 +402,12 @@ abstract class AppLocalizations {
   /// **'Create'**
   String get bottom_modal_btn;
 
+  /// No description provided for @bottom_modal_btn2.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get bottom_modal_btn2;
+
   /// No description provided for @calendar_progress.
   ///
   /// In en, this message translates to:
@@ -504,6 +516,30 @@ abstract class AppLocalizations {
   /// **'Best'**
   String get objectives_informations2;
 
+  /// No description provided for @objectives_popup1.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get objectives_popup1;
+
+  /// No description provided for @objectives_popup2.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get objectives_popup2;
+
+  /// No description provided for @objectives_popup3.
+  ///
+  /// In en, this message translates to:
+  /// **'Supprimer'**
+  String get objectives_popup3;
+
+  /// No description provided for @objectives_popup4.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get objectives_popup4;
+
   /// No description provided for @badge_earned.
   ///
   /// In en, this message translates to:
@@ -519,109 +555,109 @@ abstract class AppLocalizations {
   /// No description provided for @badge1_title.
   ///
   /// In en, this message translates to:
-  /// **'Beginner'**
+  /// **'First Seed'**
   String get badge1_title;
 
   /// No description provided for @badge2_title.
   ///
   /// In en, this message translates to:
-  /// **'Determined'**
+  /// **'Growing Roots'**
   String get badge2_title;
 
   /// No description provided for @badge3_title.
   ///
   /// In en, this message translates to:
-  /// **'Elite'**
+  /// **'Strong Foundation'**
   String get badge3_title;
 
   /// No description provided for @badge4_title.
   ///
   /// In en, this message translates to:
-  /// **'Master'**
+  /// **'Routine Master'**
   String get badge4_title;
 
   /// No description provided for @badge5_title.
   ///
   /// In en, this message translates to:
-  /// **'Champion'**
+  /// **'Habit Champion'**
   String get badge5_title;
 
   /// No description provided for @badge6_title.
   ///
   /// In en, this message translates to:
-  /// **'Legend'**
+  /// **'Forest Guardian'**
   String get badge6_title;
 
   /// No description provided for @badge7_title.
   ///
   /// In en, this message translates to:
-  /// **'High Rank'**
+  /// **'Wisdom Tree'**
   String get badge7_title;
 
   /// No description provided for @badge8_title.
   ///
   /// In en, this message translates to:
-  /// **'High Rank'**
+  /// **'Life Transformer'**
   String get badge8_title;
 
   /// No description provided for @badge9_title.
   ///
   /// In en, this message translates to:
-  /// **'Transcendent'**
+  /// **'Habit Sage'**
   String get badge9_title;
 
   /// No description provided for @badge1_desc.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to your HabitoX journey!'**
+  /// **'You\'ve planted your first habit.'**
   String get badge1_desc;
 
   /// No description provided for @badge2_desc.
   ///
   /// In en, this message translates to:
-  /// **'Your determination is beginning to pay off!'**
+  /// **'Your routines are taking shape'**
   String get badge2_desc;
 
   /// No description provided for @badge3_desc.
   ///
   /// In en, this message translates to:
-  /// **'You are one of our elite users!'**
+  /// **'Your habits are well established'**
   String get badge3_desc;
 
   /// No description provided for @badge4_desc.
   ///
   /// In en, this message translates to:
-  /// **'Your command of the subject is exceptional!'**
+  /// **'Your consistency is bearing fruit'**
   String get badge4_desc;
 
   /// No description provided for @badge5_desc.
   ///
   /// In en, this message translates to:
-  /// **'You are a true champion!'**
+  /// **'You inspire others with your dedication'**
   String get badge5_desc;
 
   /// No description provided for @badge6_desc.
   ///
   /// In en, this message translates to:
-  /// **'Your legend inspires others!'**
+  /// **'You protect and nurture multiple habit trees'**
   String get badge6_desc;
 
   /// No description provided for @badge7_desc.
   ///
   /// In en, this message translates to:
-  /// **'Reach level 50 for this badge!'**
+  /// **'Your habits have grown into ancient wisdom'**
   String get badge7_desc;
 
   /// No description provided for @badge8_desc.
   ///
   /// In en, this message translates to:
-  /// **'Reach level 60 for this badge!'**
+  /// **'Your consistency has transformed your entire life'**
   String get badge8_desc;
 
   /// No description provided for @badge9_desc.
   ///
   /// In en, this message translates to:
-  /// **'Reach level 70 for this badge!'**
+  /// **'You\'ve mastered the art of lasting change'**
   String get badge9_desc;
 
   /// No description provided for @upgrade_card_title.
@@ -636,11 +672,29 @@ abstract class AppLocalizations {
   /// **'Enjoy all the benefits and explore more possibilities'**
   String get upgrade_card_subtitle;
 
+  /// No description provided for @settings_categorie_prefetence.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get settings_categorie_prefetence;
+
+  /// No description provided for @settings_categorie_ressources.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources'**
+  String get settings_categorie_ressources;
+
   /// No description provided for @settings_appearance.
   ///
   /// In en, this message translates to:
   /// **'App Appearance'**
   String get settings_appearance;
+
+  /// No description provided for @settings_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settings_notifications;
 
   /// No description provided for @settings_data_analytics.
   ///

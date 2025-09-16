@@ -36,10 +36,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get theme_title => 'Thème';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Annuler';
 
   @override
   String get accep => 'Ok';
+
+  @override
+  String get progression => 'Progress';
 
   @override
   String get onboarding_title =>
@@ -95,31 +98,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get bottom_modal_title => 'Nouvel objectif';
 
   @override
-  String get bottom_modal_title2 => 'Change the objective';
+  String get bottom_modal_title2 => 'Modifier l\'objectif';
 
   @override
   String get bottom_modal_icon => 'Icône';
 
   @override
-  String get bottom_modal_icon_title => 'Choose an Icon';
+  String get bottom_modal_icon_title => 'Choisir une Icône';
 
   @override
-  String get bottom_modal_icon_categorie1 => 'Sports & Fitness';
+  String get bottom_modal_icon_categorie1 => 'Sport & Fitness';
 
   @override
-  String get bottom_modal_icon_categorie3 => 'Arts & Creativity';
+  String get bottom_modal_icon_categorie3 => 'Arts & Créativité';
 
   @override
-  String get bottom_modal_icon_categorie4 => 'Learning & Education';
+  String get bottom_modal_icon_categorie4 => 'Apprentissage & Éducation';
 
   @override
-  String get bottom_modal_icon_categorie5 => 'Technology & Work';
+  String get bottom_modal_icon_categorie5 => 'Technologie & Travail';
 
   @override
   String get bottom_modal_color => 'Couleurs';
 
   @override
-  String get bottom_modal_color_title => 'Choose a Color';
+  String get bottom_modal_color_title => 'Choisir une Couleur';
 
   @override
   String get bottom_modal_view => 'Tout voir';
@@ -128,25 +131,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get bottom_modal_input_title => 'Titre de l\'objectif';
 
   @override
-  String get bottom_modal_placeholder_title => 'Ex: Learn to play the guitar';
+  String get bottom_modal_placeholder_title =>
+      'Ex: Apprendre à jouer de la guitare';
 
   @override
-  String get bottom_modal_error_title => 'Please enter a title';
+  String get bottom_modal_error_title => 'Veuillez entrer un titre';
 
   @override
   String get bottom_modal_input_desc => 'Description';
 
   @override
-  String get bottom_modal_placeholder_desc => 'Describe your goal...';
+  String get bottom_modal_placeholder_desc => 'Décrivez votre objectif...';
 
   @override
-  String get bottom_modal_error_desc => 'Please enter a description';
+  String get bottom_modal_error_desc => 'Veuillez entrer une description';
 
   @override
-  String get bottom_modal_modal_succes => 'Objective successfully modified';
+  String get bottom_modal_modal_succes => 'Objectif modifié avec succès';
 
   @override
-  String get bottom_modal_modal_created => 'Goal successfully created';
+  String get bottom_modal_modal_created => 'Objectif créé avec succès';
 
   @override
   String get bottom_modal_input_start_date => 'Date de début';
@@ -161,6 +165,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get bottom_modal_btn => 'Créer';
+
+  @override
+  String get bottom_modal_btn2 => 'Edit';
 
   @override
   String get calendar_progress => 'Progression du calendrier';
@@ -215,10 +222,22 @@ class AppLocalizationsFr extends AppLocalizations {
       'Archivez vos objectifs pour les organiser';
 
   @override
-  String get objectives_informations => 'Series';
+  String get objectives_informations => 'Séries';
 
   @override
-  String get objectives_informations2 => 'Best';
+  String get objectives_informations2 => 'Meilleur';
+
+  @override
+  String get objectives_popup1 => 'Stop';
+
+  @override
+  String get objectives_popup2 => 'Activate';
+
+  @override
+  String get objectives_popup3 => 'Supprimer';
+
+  @override
+  String get objectives_popup4 => 'Edit';
 
   @override
   String get badge_earned => 'Dernier badge obtenu';
@@ -227,59 +246,59 @@ class AppLocalizationsFr extends AppLocalizations {
   String get badge_level => 'Niveau';
 
   @override
-  String get badge1_title => 'Débutant';
+  String get badge1_title => 'Première Graine';
 
   @override
-  String get badge2_title => 'Déterminé';
+  String get badge2_title => 'Racines Grandissantes';
 
   @override
-  String get badge3_title => 'Élite';
+  String get badge3_title => 'Fondation Solide';
 
   @override
-  String get badge4_title => 'Maître';
+  String get badge4_title => 'Maître de Routine';
 
   @override
-  String get badge5_title => 'Champion';
+  String get badge5_title => 'Champion d\'Habitude';
 
   @override
-  String get badge6_title => 'Légende';
+  String get badge6_title => 'Gardien de Forêt';
 
   @override
-  String get badge7_title => 'Haut rang';
+  String get badge7_title => 'Arbre de Sagesse';
 
   @override
-  String get badge8_title => 'Haut rang';
+  String get badge8_title => 'Transformateur de Vie';
 
   @override
-  String get badge9_title => 'Transcendant';
+  String get badge9_title => 'Sage d\'Habitude';
 
   @override
-  String get badge1_desc => 'Bienvenue dans votre aventure HabitoX !';
+  String get badge1_desc => 'Vous avez planté votre première habitude.';
 
   @override
-  String get badge2_desc =>
-      'Votre détermination commence à porter ses fruits !';
+  String get badge2_desc => 'Vos routines prennent forme';
 
   @override
-  String get badge3_desc => 'Vous faites partie de nos utilisateurs d\'élite !';
+  String get badge3_desc => 'Vos habitudes sont bien établies';
 
   @override
-  String get badge4_desc => 'Votre maîtrise du sujet est exceptionnelle !';
+  String get badge4_desc => 'Votre constance porte ses fruits';
 
   @override
-  String get badge5_desc => 'Vous êtes un véritable champion !';
+  String get badge5_desc => 'Vous inspirez les autres par votre dévouement';
 
   @override
-  String get badge6_desc => 'Votre légende inspire les autres !';
+  String get badge6_desc =>
+      'Vous protégez et nourrissez plusieurs arbres d\'habitudes';
 
   @override
-  String get badge7_desc => 'Atteignez le niveau 50 pour ce badge !';
+  String get badge7_desc => 'Vos habitudes ont grandi en sagesse ancienne';
 
   @override
-  String get badge8_desc => 'Atteignez le niveau 60 pour ce badge !';
+  String get badge8_desc => 'Votre constance a transformé toute votre vie';
 
   @override
-  String get badge9_desc => 'Atteignez le niveau 70 pour ce badge !';
+  String get badge9_desc => 'Vous avez maîtrisé l\'art du changement durable';
 
   @override
   String get upgrade_card_title => 'Passer au plan supérieur';
@@ -289,7 +308,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Profitez de tous les avantages et explorez plus de possibilités';
 
   @override
+  String get settings_categorie_prefetence => 'Preferences';
+
+  @override
+  String get settings_categorie_ressources => 'Resources';
+
+  @override
   String get settings_appearance => 'Apparence de l\'application';
+
+  @override
+  String get settings_notifications => 'Notifications';
 
   @override
   String get settings_data_analytics => 'Données & Analyses';

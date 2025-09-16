@@ -12,6 +12,7 @@
 
   "cancel": "Cancel",
   "accep": "Ok",
+  "progression": "Progress",
 
 
   "onboarding_title": "Transform your daily life by building lasting habits",
@@ -63,6 +64,7 @@
     }
   },
   "bottom_modal_btn": "Create",
+  "bottom_modal_btn2": "Edit",
 
   "calendar_progress": "Calendar progress",
   "calendar_informations": "Information",
@@ -83,32 +85,39 @@
   "objectives_archived_empty_subtitle": "Archive your goals to organize them",
   "objectives_informations": "Series",
   "objectives_informations2": "Best",
+  "objectives_popup1": "Stop",
+  "objectives_popup2": "Activate",
+  "objectives_popup3": "Supprimer",
+  "objectives_popup4": "Edit",
 
   "badge_earned": "Latest Badge Earned",
   "badge_level": "Level",
-  "badge1_title": "Beginner",
-  "badge2_title": "Determined",
-  "badge3_title": "Elite",
-  "badge4_title": "Master",
-  "badge5_title": "Champion",
-  "badge6_title": "Legend",
-  "badge7_title": "High Rank",
-  "badge8_title": "High Rank",
-  "badge9_title": "Transcendent",
-  "badge1_desc": "Welcome to your HabitoX journey!",
-  "badge2_desc": "Your determination is beginning to pay off!",
-  "badge3_desc": "You are one of our elite users!",
-  "badge4_desc": "Your command of the subject is exceptional!",
-  "badge5_desc": "You are a true champion!",
-  "badge6_desc": "Your legend inspires others!",
-  "badge7_desc": "Reach level 50 for this badge!",
-  "badge8_desc": "Reach level 60 for this badge!",
-  "badge9_desc": "Reach level 70 for this badge!",
+  "badge1_title": "First Seed",
+  "badge2_title": "Growing Roots",
+  "badge3_title": "Strong Foundation",
+  "badge4_title": "Routine Master",
+  "badge5_title": "Habit Champion",
+  "badge6_title": "Forest Guardian",
+  "badge7_title": "Wisdom Tree",
+  "badge8_title": "Life Transformer",
+  "badge9_title": "Habit Sage",
+  "badge1_desc": "You've planted your first habit.",
+  "badge2_desc": "Your routines are taking shape",
+  "badge3_desc": "Your habits are well established",
+  "badge4_desc": "Your consistency is bearing fruit",
+  "badge5_desc": "You inspire others with your dedication",
+  "badge6_desc": "You protect and nurture multiple habit trees",
+  "badge7_desc": "Your habits have grown into ancient wisdom",
+  "badge8_desc": "Your consistency has transformed your entire life",
+  "badge9_desc": "You've mastered the art of lasting change",
 
   "upgrade_card_title": "Upgrade Plan Now",
   "upgrade_card_subtitle": "Enjoy all the benefits and explore more possibilities",
 
+  "settings_categorie_prefetence": "Preferences",
+  "settings_categorie_ressources": "Resources",
   "settings_appearance": "App Appearance",
+  "settings_notifications": "Notifications",
   "settings_data_analytics": "Data & Analytics",
   "settings_language": "Language",
   "settings_import": "Import",
@@ -132,6 +141,9 @@
   "premium_feature_title2_desc": "Access your favorite habits from the home screen",
   "premium_feature_title3_desc": "View your trends and consistency",
   "premium_feature_title4_desc": "Unique rewards tailored to your goals",
-  "premium_btn": "Continue"
+  "premium_btn": "Continue",
+
+  "notification": "Daily reminders",
+  "notification": "Do not forget to complete your task."
 }
 

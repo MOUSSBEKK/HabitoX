@@ -42,6 +42,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accep => 'Ok';
 
   @override
+  String get progression => 'Progress';
+
+  @override
   String get onboarding_title =>
       'Transform your daily life by building lasting habits';
 
@@ -162,6 +165,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bottom_modal_btn => 'Create';
 
   @override
+  String get bottom_modal_btn2 => 'Edit';
+
+  @override
   String get calendar_progress => 'Calendar progress';
 
   @override
@@ -220,64 +226,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String get objectives_informations2 => 'Best';
 
   @override
+  String get objectives_popup1 => 'Stop';
+
+  @override
+  String get objectives_popup2 => 'Activate';
+
+  @override
+  String get objectives_popup3 => 'Supprimer';
+
+  @override
+  String get objectives_popup4 => 'Edit';
+
+  @override
   String get badge_earned => 'Latest Badge Earned';
 
   @override
   String get badge_level => 'Level';
 
   @override
-  String get badge1_title => 'Beginner';
+  String get badge1_title => 'First Seed';
 
   @override
-  String get badge2_title => 'Determined';
+  String get badge2_title => 'Growing Roots';
 
   @override
-  String get badge3_title => 'Elite';
+  String get badge3_title => 'Strong Foundation';
 
   @override
-  String get badge4_title => 'Master';
+  String get badge4_title => 'Routine Master';
 
   @override
-  String get badge5_title => 'Champion';
+  String get badge5_title => 'Habit Champion';
 
   @override
-  String get badge6_title => 'Legend';
+  String get badge6_title => 'Forest Guardian';
 
   @override
-  String get badge7_title => 'High Rank';
+  String get badge7_title => 'Wisdom Tree';
 
   @override
-  String get badge8_title => 'High Rank';
+  String get badge8_title => 'Life Transformer';
 
   @override
-  String get badge9_title => 'Transcendent';
+  String get badge9_title => 'Habit Sage';
 
   @override
-  String get badge1_desc => 'Welcome to your HabitoX journey!';
+  String get badge1_desc => 'You\'ve planted your first habit.';
 
   @override
-  String get badge2_desc => 'Your determination is beginning to pay off!';
+  String get badge2_desc => 'Your routines are taking shape';
 
   @override
-  String get badge3_desc => 'You are one of our elite users!';
+  String get badge3_desc => 'Your habits are well established';
 
   @override
-  String get badge4_desc => 'Your command of the subject is exceptional!';
+  String get badge4_desc => 'Your consistency is bearing fruit';
 
   @override
-  String get badge5_desc => 'You are a true champion!';
+  String get badge5_desc => 'You inspire others with your dedication';
 
   @override
-  String get badge6_desc => 'Your legend inspires others!';
+  String get badge6_desc => 'You protect and nurture multiple habit trees';
 
   @override
-  String get badge7_desc => 'Reach level 50 for this badge!';
+  String get badge7_desc => 'Your habits have grown into ancient wisdom';
 
   @override
-  String get badge8_desc => 'Reach level 60 for this badge!';
+  String get badge8_desc => 'Your consistency has transformed your entire life';
 
   @override
-  String get badge9_desc => 'Reach level 70 for this badge!';
+  String get badge9_desc => 'You\'ve mastered the art of lasting change';
 
   @override
   String get upgrade_card_title => 'Upgrade Plan Now';
@@ -287,7 +305,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enjoy all the benefits and explore more possibilities';
 
   @override
+  String get settings_categorie_prefetence => 'Preferences';
+
+  @override
+  String get settings_categorie_ressources => 'Resources';
+
+  @override
   String get settings_appearance => 'App Appearance';
+
+  @override
+  String get settings_notifications => 'Notifications';
 
   @override
   String get settings_data_analytics => 'Data & Analytics';
