@@ -390,4 +390,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get premium_btn => 'Continuar';
+
+  @override
+  String get notification => 'Do not forget to complete your task.';
 }

@@ -57,6 +57,13 @@ class NotificationService extends ChangeNotifier {
     await _loadPreferences();
   }
 
+  void _onNotificationTapped(NotificationResponse notificationResponse) {
+    // Gérer le clic sur la notification
+    if (kDebugMode) {
+      print('Notification tapped: ${notificationResponse.payload}');
+    }
+  }
+
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     _notificationsEnabled = prefs.getBool(_notificationEnabledKey) ?? false;
@@ -177,15 +184,69 @@ class NotificationService extends ChangeNotifier {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
+    try {
+      await _flutterLocalNotificationsPlugin.zonedSchedule(
+        0, // ID de la notification
+        'N\'oubliez pas vos objectifs !',
+        'Il est temps de remplir vos objectifs quotidiens dans HabitoX',
+        tz.TZDateTime.from(scheduledDate, tz.local),
+        platformChannelSpecifics,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents:
+            DateTimeComponents.time, // Répéter quotidiennement
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erreur lors de la programmation de la notification: $e');
+      }
+      // En cas d'erreur, essayer avec une notification simple
+      await _scheduleSimpleNotification();
+    }
+  }
+
+  Future<void> _scheduleSimpleNotification() async {
+    // Solution de repli : programmer une seule notification pour le lendemain
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+          'daily_reminder_channel',
+          'Rappels quotidiens',
+          channelDescription:
+              'Notifications pour rappeler de remplir vos objectifs quotidiens',
+          importance: Importance.high,
+          priority: Priority.high,
+          showWhen: false,
+        );
+
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+        DarwinNotificationDetails(categoryIdentifier: 'daily_reminder');
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    // Calculer la prochaine occurrence
+    final now = DateTime.now();
+    var scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      _notificationHour,
+      _notificationMinute,
+    );
+
+    // Si l'heure est déjà passée aujourd'hui, programmer pour demain
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       0, // ID de la notification
       'N\'oubliez pas vos objectifs !',
       'Il est temps de remplir vos objectifs quotidiens dans HabitoX',
       tz.TZDateTime.from(scheduledDate, tz.local),
       platformChannelSpecifics,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents:
-          DateTimeComponents.time, // Répéter quotidiennement
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
   }
 

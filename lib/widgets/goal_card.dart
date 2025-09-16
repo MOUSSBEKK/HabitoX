@@ -49,11 +49,7 @@ class GoalCard extends StatelessWidget {
                     color: goal.color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(
-                    goal.icon,
-                    color: goal.color,
-                    size: 28,
-                  ),
+                  child: Icon(goal.icon, color: goal.color, size: 28),
                 ),
 
                 const SizedBox(width: 20),
@@ -145,14 +141,20 @@ class GoalCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                goal.isActive ? AppLocalizations.of(context)!.objectives_popup1 : AppLocalizations.of(context)!.objectives_popup2,
+                                goal.isActive
+                                    ? AppLocalizations.of(
+                                        context,
+                                      )!.objectives_popup1
+                                    : AppLocalizations.of(
+                                        context,
+                                      )!.objectives_popup2,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
                         ),
                       if (onDelete != null)
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'delete',
                           child: Row(
                             children: [
