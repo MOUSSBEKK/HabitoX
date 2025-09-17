@@ -117,6 +117,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       ),
                       const Spacer(),
                       IconButton(
+                        style: IconButton.styleFrom(
+                          padding: EdgeInsets.only(top: 16),
+                        ),
                         onPressed: () => Navigator.pop(context),
                         icon: FaIcon(FontAwesomeIcons.close, size: 16),
                       ),
@@ -146,17 +149,17 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                           width: 1,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
                           color: AddGoalBottomSheetColors.primaryColor,
                           width: 1,
@@ -196,17 +199,18 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.outline,
                           width: 1,
                         ),
                       ),
                       focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
                           color: AddGoalBottomSheetColors.primaryColor,
                           width: 1,
@@ -246,9 +250,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                             backgroundColor:
                                 AddGoalBottomSheetColors.primaryColor,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 22),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: Text(widget.goal != null ? AppLocalizations.of(context)!.bottom_modal_btn2 : AppLocalizations.of(context)!.bottom_modal_btn),
@@ -454,120 +458,103 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   Widget _buildDateFields() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Date de début
-        GestureDetector(
-          onTap: () => _selectStartDate(),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.bottom_modal_input_start_date,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _startDate != null
-                          ? '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}'
-                          : 'Select a date',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        // Date de fin
-        GestureDetector(
-          onTap: () => _selectEndDate(),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.event, color: Theme.of(context).iconTheme.color),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.bottom_modal_input_start_end,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _endDate != null
-                          ? '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}'
-                          : 'Select a date',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        // Titre "Date range"
+        Text(
+          'Date range',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         const SizedBox(height: 12),
-        // Affichage du nombre de jours calculé
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AddGoalBottomSheetColors.primaryColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            'Duration: $_calculatedDays days',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AddGoalBottomSheetColors.darkColor,
+        // Sélecteurs de date côte à côte
+        Row(
+          children: [
+            // Date de début
+            Expanded(
+              child: _buildDatePickerField(
+                label: AppLocalizations.of(context)!.bottom_modal_input_start_date,
+                date: _startDate,
+                onTap: () => _selectStartDate(),
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
+            const SizedBox(width: 12),
+            // Date de fin
+            Expanded(
+              child: _buildDatePickerField(
+                label: AppLocalizations.of(context)!.bottom_modal_input_start_end,
+                date: _endDate,
+                onTap: () => _selectEndDate(),
+              ),
+            ),
+          ],
         ),
       ],
     );
+  }
+
+  Widget _buildDatePickerField({
+    required String label,
+    required DateTime? date,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today,
+              size: 18,
+              color: Colors.grey[600],
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    date != null ? _formatDate(date) : 'Select a date',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: date != null ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[500],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down,
+              size: 20,
+              color: Colors.grey[600],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')} - ${date.month.toString().padLeft(2, '0')} - ${date.year}';
   }
 
   Future<void> _selectStartDate() async {

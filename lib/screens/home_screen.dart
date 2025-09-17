@@ -8,6 +8,7 @@ import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 
 // Couleurs du design épuré
 class HomeColors {
@@ -45,11 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isTablet = constraints.maxWidth > 600;
-
-        return Scaffold(
+    return Scaffold(
+          extendBody: true,
           body: IndexedStack(
             index: _currentIndex,
             children: [
@@ -67,75 +65,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Icon(Icons.add),
                 )
               : null,
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.shadow,
-                  blurRadius: 20,
-                  offset: const Offset(0, -5),
-                ),
-              ],
-            ),
-            child: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              type: isTablet
-                  ? BottomNavigationBarType.fixed
-                  : BottomNavigationBarType.fixed,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              selectedItemColor: HomeColors.primaryColor,
-              unselectedItemColor: Theme.of(context).colorScheme.tertiary,
-              selectedLabelStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: isTablet ? 14.0 : 12.0,
-                color: HomeColors.primaryColor,
+          bottomNavigationBar: SizedBox(width: double.infinity, height: 144, child: Padding(padding: const EdgeInsets.fromLTRB(0, 0, 0, 16), child: FloatingNavbar(
+            currentIndex: _currentIndex,
+            onTap: (int val) {
+              setState(() {
+                _currentIndex = val;
+              });
+            },
+            backgroundColor: Colors.white,
+            selectedItemColor: HomeColors.primaryColor,
+            unselectedItemColor: HomeColors.darkColor.withValues(alpha: 0.6),
+            selectedBackgroundColor: HomeColors.primaryColor.withValues(alpha: 0.15),
+            borderRadius: 16,
+            itemBorderRadius: 8,
+            margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+            elevation: 8,
+            width: double.infinity,
+            items: [
+              FloatingNavbarItem(
+                icon: FontAwesomeIcons.house,
+                title: AppLocalizations.of(context)!.home,
               ),
-              unselectedLabelStyle: TextStyle(
-                fontSize: isTablet ? 14.0 : 12.0,
-                color: HomeColors.darkColor.withValues(alpha: 0.5),
+              FloatingNavbarItem(
+                icon: FontAwesomeIcons.bullseye,
+                title: AppLocalizations.of(context)!.nav_objectives,
               ),
-              elevation: 0,
-              items: [
-                BottomNavigationBarItem(
-                  icon: FaIcon(
-                    FontAwesomeIcons.house,
-                    size: isTablet ? 28.0 : 24.0,
-                  ),
-                  label: AppLocalizations.of(context)!.home,
-                ),
-                BottomNavigationBarItem(
-                  icon: FaIcon(
-                    FontAwesomeIcons.bullseye,
-                    size: isTablet ? 28.0 : 24.0,
-                  ),
-                  label: AppLocalizations.of(context)!.nav_objectives,
-                ),
-                BottomNavigationBarItem(
-                  icon: FaIcon(
-                    FontAwesomeIcons.award,
-                    size: isTablet ? 28.0 : 24.0,
-                  ),
-                  label: AppLocalizations.of(context)!.nav_badges,
-                ),
-                BottomNavigationBarItem(
-                  icon: FaIcon(
-                    FontAwesomeIcons.user,
-                    size: isTablet ? 28.0 : 24.0,
-                  ),
-                  label: AppLocalizations.of(context)!.nav_profile,
-                ),
-              ],
-            ),
+              FloatingNavbarItem(
+                icon: FontAwesomeIcons.award,
+                title: AppLocalizations.of(context)!.nav_badges,
+              ),
+              FloatingNavbarItem(
+                icon: FontAwesomeIcons.user,
+                title: AppLocalizations.of(context)!.nav_profile,
+              ),
+            ],
+          ),
+          ),
           ),
           // Bouton de débogage flottant (seulement en mode debug)
         );
-      },
-    );
   }
 }

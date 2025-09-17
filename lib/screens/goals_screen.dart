@@ -52,11 +52,11 @@ class _GoalsScreenState extends State<GoalsScreen> {
                   SizedBox(height: isTablet ? 24.0 : 20.0),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: padding),
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(
-                        isTablet ? 20.0 : 16.0,
+                        isTablet ? 20.0 : 12.0,
                       ),
                     ),
                     child: Row(
@@ -169,7 +169,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
             color: isSelected
                 ? GoalsColors.primaryColor
                 : Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(isTablet ? 14 : 12),
+            borderRadius: BorderRadius.circular(isTablet ? 14 : 8),
           ),
           child: Center(
             child: Text(

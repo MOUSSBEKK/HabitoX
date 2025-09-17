@@ -89,7 +89,7 @@ class HabitoXApp extends StatelessWidget {
                 surface: AppColors.surfaceColor,
 
                 // bordure
-                outline: Color(0xFF282c31),
+                outline: Colors.grey[300]!,
                 outlineVariant: Colors.white,
 
                 // shadow
@@ -108,14 +108,16 @@ class HabitoXApp extends StatelessWidget {
               ),
 
               appBarTheme: AppBarTheme(
+                actionsPadding: EdgeInsets.only(right: 16),
                 elevation: 0,
                 centerTitle: true,
                 backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
                 foregroundColor: const Color.fromARGB(255, 0, 0, 0),
                 titleTextStyle: TextStyle(
-                  color: AppColors.darkColor,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   fontSize: 26,
                   fontWeight: FontWeight.w600,
+                  letterSpacing: 1.5,
                 ),
               ),
 
@@ -164,13 +166,13 @@ class HabitoXApp extends StatelessWidget {
                 color: Color.fromARGB(255, 223, 218, 218),
               ),
 
-              appBarTheme: const AppBarTheme(
+              appBarTheme: AppBarTheme(
                 elevation: 0,
                 centerTitle: true,
                 backgroundColor: Color(0xFF181920),
                 foregroundColor: Colors.white,
                 titleTextStyle: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   fontSize: 26,
                   fontWeight: FontWeight.w600,
                 ),

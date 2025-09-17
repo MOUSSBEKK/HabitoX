@@ -2,16 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/goal.dart';
 import '../l10n/app_localizations.dart';
 
-// Couleurs du design épuré
-class GoalCardColors {
-  static const Color primaryColor = Color(
-    0xFFA7C6A5,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
-  static const Color darkColor = Color(
-    0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
-}
 
 class GoalCard extends StatelessWidget {
   final Goal goal;
@@ -32,7 +22,7 @@ class GoalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
+      elevation: 5,
       color: Theme.of(context).colorScheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -47,7 +37,7 @@ class GoalCard extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: goal.color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(goal.icon, color: goal.color, size: 28),
                 ),
