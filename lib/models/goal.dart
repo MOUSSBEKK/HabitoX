@@ -39,7 +39,9 @@ class Goal {
   final String id;
   String title;
   String description;
-  IconData icon;
+  int iconCodePoint;
+  String? iconFontFamily;
+  String? iconFontPackage;
   Color color;
   double progress;
   int targetDays;
@@ -57,7 +59,9 @@ class Goal {
     required this.id,
     required this.title,
     required this.description,
-    required this.icon,
+    required this.iconCodePoint,
+    this.iconFontFamily,
+    this.iconFontPackage,
     required this.color,
     this.progress = 0.0,
     this.targetDays = 30,
@@ -71,6 +75,36 @@ class Goal {
     List<DateTime>? completedSessions,
     this.maxStreak = 0,
   }) : completedSessions = completedSessions ?? [];
+
+  // Getter pour l'icône qui utilise des constantes pour le tree shaking
+  IconData get icon {
+    // Utilisations d'icônes constantes Material Design les plus courantes
+    switch (iconCodePoint) {
+      case 0xe7fd:
+        return Icons.fitness_center; // fitness_center
+      case 0xe539:
+        return Icons.book; // book
+      case 0xe5d2:
+        return Icons.directions_run; // directions_run
+      case 0xe866:
+        return Icons.work; // work
+      case 0xe8cc:
+        return Icons.school; // school
+      case 0xe3e4:
+        return Icons.favorite; // favorite
+      case 0xe227:
+        return Icons.home; // home
+      case 0xe3a9:
+        return Icons.music_note; // music_note
+      case 0xe3b8:
+        return Icons.restaurant; // restaurant
+      case 0xe8dd:
+        return Icons.local_hospital; // local_hospital
+      default:
+        // Pour les autres cas, utilisation d'une icône par défaut
+        return Icons.star;
+    }
+  }
 
   GoalGrade get currentGrade => GoalGrade.getGradeForDays(totalDays);
   GoalGrade? get nextGrade => currentGrade.nextGrade;
@@ -95,9 +129,9 @@ class Goal {
       'id': id,
       'title': title,
       'description': description,
-      'iconCodePoint': icon.codePoint,
-      'iconFontFamily': icon.fontFamily,
-      'iconFontPackage': icon.fontPackage,
+      'iconCodePoint': iconCodePoint,
+      'iconFontFamily': iconFontFamily,
+      'iconFontPackage': iconFontPackage,
       'color': color.value,
       'progress': progress,
       'targetDays': targetDays,
@@ -120,11 +154,9 @@ class Goal {
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      icon: IconData(
-        json['iconCodePoint'],
-        fontFamily: json['iconFontFamily'],
-        fontPackage: json['iconFontPackage'],
-      ),
+      iconCodePoint: json['iconCodePoint'],
+      iconFontFamily: json['iconFontFamily'],
+      iconFontPackage: json['iconFontPackage'],
       color: Color(json['color']),
       progress: json['progress']?.toDouble() ?? 0.0,
       targetDays: json['targetDays'] ?? 30,
@@ -152,7 +184,9 @@ class Goal {
     String? id,
     String? title,
     String? description,
-    IconData? icon,
+    int? iconCodePoint,
+    String? iconFontFamily,
+    String? iconFontPackage,
     Color? color,
     double? progress,
     int? targetDays,
@@ -170,7 +204,9 @@ class Goal {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
-      icon: icon ?? this.icon,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+      iconFontFamily: iconFontFamily ?? this.iconFontFamily,
+      iconFontPackage: iconFontPackage ?? this.iconFontPackage,
       color: color ?? this.color,
       progress: progress ?? this.progress,
       targetDays: targetDays ?? this.targetDays,

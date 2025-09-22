@@ -139,7 +139,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   TextFormField(
                     controller: _titleController,
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.bottom_modal_input_title,
+                      labelText: AppLocalizations.of(
+                        context,
+                      )!.bottom_modal_input_title,
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
@@ -188,7 +190,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.bottom_modal_input_desc,
+                      labelText: AppLocalizations.of(
+                        context,
+                      )!.bottom_modal_input_desc,
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
@@ -255,7 +259,15 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: Text(widget.goal != null ? AppLocalizations.of(context)!.bottom_modal_btn2 : AppLocalizations.of(context)!.bottom_modal_btn),
+                          child: Text(
+                            widget.goal != null
+                                ? AppLocalizations.of(
+                                    context,
+                                  )!.bottom_modal_btn2
+                                : AppLocalizations.of(
+                                    context,
+                                  )!.bottom_modal_btn,
+                          ),
                         ),
                       ),
                     ],
@@ -476,7 +488,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             // Date de début
             Expanded(
               child: _buildDatePickerField(
-                label: AppLocalizations.of(context)!.bottom_modal_input_start_date,
+                label: AppLocalizations.of(
+                  context,
+                )!.bottom_modal_input_start_date,
                 date: _startDate,
                 onTap: () => _selectStartDate(),
               ),
@@ -485,7 +499,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
             // Date de fin
             Expanded(
               child: _buildDatePickerField(
-                label: AppLocalizations.of(context)!.bottom_modal_input_start_end,
+                label: AppLocalizations.of(
+                  context,
+                )!.bottom_modal_input_start_end,
                 date: _endDate,
                 onTap: () => _selectEndDate(),
               ),
@@ -512,11 +528,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.calendar_today,
-              size: 18,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -536,17 +548,15 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: date != null ? Theme.of(context).textTheme.bodyMedium?.color : Colors.grey[500],
+                      color: date != null
+                          ? Theme.of(context).textTheme.bodyMedium?.color
+                          : Colors.grey[500],
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.keyboard_arrow_down,
-              size: 20,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.grey[600]),
           ],
         ),
       ),
@@ -1018,7 +1028,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         final updatedGoal = widget.goal!.copyWith(
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
-          icon: _selectedIcon,
+          iconCodePoint: _selectedIcon.codePoint,
+          iconFontFamily: _selectedIcon.fontFamily,
+          iconFontPackage: _selectedIcon.fontPackage,
           color: _selectedColor,
           targetDays: _calculatedDays,
           lastUpdated: DateTime.now(),
@@ -1037,7 +1049,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           title: _titleController.text.trim(),
           description: _descriptionController.text.trim(),
-          icon: _selectedIcon,
+          iconCodePoint: _selectedIcon.codePoint,
+          iconFontFamily: _selectedIcon.fontFamily,
+          iconFontPackage: _selectedIcon.fontPackage,
           color: _selectedColor,
           targetDays: _calculatedDays,
           createdAt: DateTime.now(),
