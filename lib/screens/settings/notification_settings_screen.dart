@@ -17,7 +17,9 @@ class _NotificationSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Paramètres de notifications')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings_notifications),
+      ),
       body: SafeArea(
         child: Consumer<NotificationService>(
           builder: (context, notificationService, child) {
@@ -55,7 +57,7 @@ class _NotificationSettingsScreenState
               'Rappels quotidiens',
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
@@ -64,10 +66,26 @@ class _NotificationSettingsScreenState
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Activer les notifications'),
+              activeThumbColor: Colors.green,
+              title: Text(
+                'Activer les notifications',
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
               subtitle: notificationService.notificationsEnabled
-                  ? const Text('Les notifications sont activées')
-                  : const Text('Les notifications sont désactivées'),
+                  ? Text(
+                      'Les notifications sont activées',
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    )
+                  : Text(
+                      'Les notifications sont désactivées',
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
               value: notificationService.notificationsEnabled,
               onChanged: (bool value) async {
                 await notificationService.setNotificationsEnabled(value);
@@ -183,7 +201,7 @@ class _NotificationSettingsScreenState
               '• Vous pouvez modifier l\'heure à tout moment\n'
               '• Les notifications respectent les paramètres système de votre appareil\n'
               '• Sur certains appareils, vous devrez autoriser l\'application à fonctionner en arrière-plan',
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),

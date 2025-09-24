@@ -22,10 +22,10 @@ class SkillProgressWidget extends StatelessWidget {
                 onPressed: () {},
                 icon: FaIcon(FontAwesomeIcons.chartBar, size: 22),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: FaIcon(FontAwesomeIcons.circleUp, size: 22),
-              ),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: FaIcon(FontAwesomeIcons.circleUp, size: 22),
+              // ),
             ],
           ),
           body: Container(

@@ -76,34 +76,14 @@ class Goal {
     this.maxStreak = 0,
   }) : completedSessions = completedSessions ?? [];
 
-  // Getter pour l'icône qui utilise des constantes pour le tree shaking
+  // Getter pour l'icône qui reconstruit l'icône originale
   IconData get icon {
-    // Utilisations d'icônes constantes Material Design les plus courantes
-    switch (iconCodePoint) {
-      case 0xe7fd:
-        return Icons.fitness_center; // fitness_center
-      case 0xe539:
-        return Icons.book; // book
-      case 0xe5d2:
-        return Icons.directions_run; // directions_run
-      case 0xe866:
-        return Icons.work; // work
-      case 0xe8cc:
-        return Icons.school; // school
-      case 0xe3e4:
-        return Icons.favorite; // favorite
-      case 0xe227:
-        return Icons.home; // home
-      case 0xe3a9:
-        return Icons.music_note; // music_note
-      case 0xe3b8:
-        return Icons.restaurant; // restaurant
-      case 0xe8dd:
-        return Icons.local_hospital; // local_hospital
-      default:
-        // Pour les autres cas, utilisation d'une icône par défaut
-        return Icons.star;
-    }
+    // Reconstruire l'icône originale à partir des propriétés sauvegardées
+    return IconData(
+      iconCodePoint,
+      fontFamily: iconFontFamily,
+      fontPackage: iconFontPackage,
+    );
   }
 
   GoalGrade get currentGrade => GoalGrade.getGradeForDays(totalDays);

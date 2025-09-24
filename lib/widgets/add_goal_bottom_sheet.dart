@@ -12,23 +12,23 @@ class AddGoalBottomSheetColors {
   static const Color lightColor = Color(0xFF85B8CB);
   static const Color darkColor = Color(0xFF1F4843);
 
-  // Palette de couleurs pour les objectifs (inspirée de l'image fournie) - Limitée à 15 couleurs
+  // Palette de couleurs pour les objectifs - Couleurs avec bonne lisibilité
   static const List<Color> goalColors = [
-    Color.fromARGB(255, 255, 239, 96), // Jaune clair
-    Color(0xFFFFB380), // Orange clair
+    Color(0xFFFF8C00), // Orange vif
     Color(0xFF8B7B8B), // Violet gris
     Color(0xFFCF9FCA), // Rose violet
     Color(0xFFFF8A9B), // Rose saumon
-    Color(0xFFFFC0CB), // Rose
     Color(0xFFFF69B4), // Rose vif
-    Color(0xFF98FB98), // Vert clair
     Color(0xFF9370DB), // Violet moyen
     Color.fromARGB(255, 224, 141, 224), // Lilas
-    Color.fromARGB(255, 96, 192, 230), // Bleu ciel
+    Color(0xFF4169E1), // Bleu royal
     Color(0xFF5F9EA0), // Cadet bleu
-    Color.fromARGB(255, 137, 209, 219), // Bleu poudre
+    Color(0xFF20B2AA), // Turquoise
     Color(0xFF32CD32), // Vert lime
-    Color.fromARGB(255, 251, 213, 146), // Pêche
+    Color(0xFF228B22), // Vert forêt
+    Color(0xFFDC143C), // Rouge cramoisi
+    Color(0xFF8B0000), // Rouge foncé
+    Color(0xFF4B0082), // Indigo
   ];
 }
 

@@ -80,6 +80,12 @@ class HabitoXApp extends StatelessWidget {
                 primary: Colors.white, // blanc
                 secondary: Color(0xFFA7C6A5),
                 tertiary: Color(0xFF1F4843),
+                primaryFixed: const Color.fromARGB(
+                  255,
+                  106,
+                  106,
+                  106,
+                ).withOpacity(0.6),
 
                 // text
                 tertiaryFixed: Colors.white,
@@ -104,7 +110,8 @@ class HabitoXApp extends StatelessWidget {
                 bodyMedium: TextStyle(
                   color: const Color.fromARGB(179, 0, 0, 0),
                 ),
-                bodySmall: TextStyle(color: const Color.fromARGB(153, 0, 0, 0)),
+
+                bodySmall: TextStyle(color: Colors.black),
               ),
 
               appBarTheme: AppBarTheme(
@@ -114,7 +121,7 @@ class HabitoXApp extends StatelessWidget {
                 backgroundColor: const Color.fromRGBO(226, 239, 243, 1),
                 foregroundColor: const Color.fromARGB(255, 0, 0, 0),
                 titleTextStyle: TextStyle(
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                  color: Colors.black,
                   fontSize: 26,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.5,
@@ -122,10 +129,10 @@ class HabitoXApp extends StatelessWidget {
               ),
 
               // Divider
-              // dividerTheme: DividerThemeData(
-              //   color: AppColors.lightColor.withValues(alpha: 0.5),
-              //   thickness: 1,
-              // ),
+              dividerTheme: DividerThemeData(
+                color: Colors.grey.shade200,
+                thickness: 1,
+              ),
 
               // Icon
               iconTheme: IconThemeData(color: const Color(0xFF191919)),
@@ -139,7 +146,7 @@ class HabitoXApp extends StatelessWidget {
                 primary: Color(0xFF1f222a),
                 secondary: Color(0xFFA7C6A5),
                 tertiary: Color.fromARGB(255, 135, 135, 135),
-
+                primaryFixed: Colors.white,
                 // text
                 tertiaryFixed: Colors.black,
                 tertiaryContainer: Colors.white,
@@ -159,7 +166,7 @@ class HabitoXApp extends StatelessWidget {
                 titleLarge: TextStyle(color: AppColors.darkColor),
                 bodyLarge: TextStyle(color: Colors.white),
                 bodyMedium: TextStyle(color: Colors.white),
-                bodySmall: TextStyle(color: Colors.white60),
+                bodySmall: TextStyle(color: Colors.white),
               ),
 
               iconTheme: IconThemeData(
@@ -172,7 +179,7 @@ class HabitoXApp extends StatelessWidget {
                 backgroundColor: Color(0xFF181920),
                 foregroundColor: Colors.white,
                 titleTextStyle: TextStyle(
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                  color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.w600,
                 ),

@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildUpgradeCard(isTablet),
+                  // _buildUpgradeCard(isTablet),
                   const SizedBox(height: 16),
                   _buildLevelCard(isTablet),
                   const SizedBox(height: 16),
@@ -85,67 +85,67 @@ extension on _ProfileScreenState {
     return 'assets/badges/${assetFiles[badgeIndex]}';
   }
 
-  Widget _buildUpgradeCard(bool isTablet) {
-    return GestureDetector(
-      // Ouvre la page de souscription premium
-      onTap: () => Navigator.pushNamed(context, '/premium_unlock'),
-      child: Container(
-        padding: EdgeInsets.all(isTablet ? 20 : 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              // ! changer pour Theme.of(context).colorScheme.shadow
-              color: const Color(0xFF6db399).withOpacity(0.25),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.auto_awesome, color: Colors.white),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.upgrade_card_title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.upgrade_card_subtitle,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.95),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildUpgradeCard(bool isTablet) {
+  //   return GestureDetector(
+  //     // Ouvre la page de souscription premium
+  //     onTap: () => Navigator.pushNamed(context, '/premium_unlock'),
+  //     child: Container(
+  //       padding: EdgeInsets.all(isTablet ? 20 : 16),
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
+  //         gradient: const LinearGradient(
+  //           colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
+  //           begin: Alignment.topLeft,
+  //           end: Alignment.bottomRight,
+  //         ),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             // ! changer pour Theme.of(context).colorScheme.shadow
+  //             color: const Color(0xFF6db399).withOpacity(0.25),
+  //             blurRadius: 18,
+  //             offset: const Offset(0, 8),
+  //           ),
+  //         ],
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Container(
+  //             padding: const EdgeInsets.all(12),
+  //             decoration: BoxDecoration(
+  //               color: Colors.white.withOpacity(0.2),
+  //               borderRadius: BorderRadius.circular(12),
+  //             ),
+  //             child: const Icon(Icons.auto_awesome, color: Colors.white),
+  //           ),
+  //           const SizedBox(width: 12),
+  //           Expanded(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   AppLocalizations.of(context)!.upgrade_card_title,
+  //                   style: TextStyle(
+  //                     color: Colors.white,
+  //                     fontWeight: FontWeight.w700,
+  //                     fontSize: 16,
+  //                   ),
+  //                 ),
+  //                 Text(
+  //                   AppLocalizations.of(context)!.upgrade_card_subtitle,
+  //                   style: TextStyle(
+  //                     color: Colors.white.withOpacity(0.95),
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w500,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildLevelCard(bool isTablet) {
     return Consumer<UserProfileService>(
@@ -363,26 +363,26 @@ extension on _ProfileScreenState {
         _buildSettingsCategory(
           title: AppLocalizations.of(context)!.settings_categorie_ressources,
           items: [
-            _SettingItem(
-              key: SettingKey.importData,
-              icon: FaIcon(
-                FontAwesomeIcons.fileImport,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              title: AppLocalizations.of(context)!.settings_import,
-              locked: true,
-            ),
-            _SettingItem(
-              key: SettingKey.exportData,
-              icon: FaIcon(
-                FontAwesomeIcons.fileExport,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              title: AppLocalizations.of(context)!.settings_export,
-              locked: true,
-            ),
+            // _SettingItem(
+            //   key: SettingKey.importData,
+            //   icon: FaIcon(
+            //     FontAwesomeIcons.fileImport,
+            //     size: 20,
+            //     color: Theme.of(context).iconTheme.color,
+            //   ),
+            //   title: AppLocalizations.of(context)!.settings_import,
+            //   locked: true,
+            // ),
+            // _SettingItem(
+            //   key: SettingKey.exportData,
+            //   icon: FaIcon(
+            //     FontAwesomeIcons.fileExport,
+            //     size: 20,
+            //     color: Theme.of(context).iconTheme.color,
+            //   ),
+            //   title: AppLocalizations.of(context)!.settings_export,
+            //   locked: true,
+            // ),
             _SettingItem(
               key: SettingKey.privacyPolicy,
               icon: FaIcon(
@@ -492,7 +492,10 @@ extension on _ProfileScreenState {
               for (int i = 0; i < items.length; i++) ...[
                 _buildSettingTile(items[i], isTablet),
                 if (i != items.length - 1)
-                  Divider(height: 1, color: Colors.grey.shade200),
+                  Divider(
+                    height: 1,
+                    color: Theme.of(context).dividerTheme.color,
+                  ),
               ],
             ],
           ),
