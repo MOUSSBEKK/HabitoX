@@ -119,12 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
-
-    // Pour iOS, ajouter un effet de verre avec backdrop filter
-    if (_isIOS()) {
-      return _buildLiquidGlassEffect(content);
-    }
-
     return content;
   }
 
@@ -197,23 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(28),
           onTap: () => _showAddGoalBottomSheet(context),
           child: const Icon(Icons.add, color: Colors.white, size: 28),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLiquidGlassEffect(Widget child) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-          ),
-          child: child,
         ),
       ),
     );

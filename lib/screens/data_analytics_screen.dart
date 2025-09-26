@@ -38,8 +38,6 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
                 const SizedBox(height: 24),
                 _buildDetailedStats(goalService),
                 const SizedBox(height: 24),
-
-                _buildGoalsDistributionChart(goals, completedGoals),
               ],
             ),
           );
@@ -255,95 +253,6 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoalsDistributionChart(
-    List<Goal> goals,
-    List<Goal> completedGoals,
-  ) {
-    final activeGoals = goals.where((g) => g.isActive && !g.isCompleted).length;
-    final completedCount = completedGoals.length;
-    final archivedGoals = goals
-        .where((g) => !g.isActive && !g.isCompleted)
-        .length;
-
-    return _buildChartContainer(
-      'Répartition des Objectifs',
-      PieChart(
-        PieChartData(
-          sectionsSpace: 2,
-          centerSpaceRadius: 40,
-          sections: [
-            PieChartSectionData(
-              color: const Color(0xFF4CAF50),
-              value: completedCount.toDouble(),
-              title: 'Complétés\n$completedCount',
-              radius: 50,
-              titleStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            PieChartSectionData(
-              color: const Color(0xFF2196F3),
-              value: activeGoals.toDouble(),
-              title: 'Actifs\n$activeGoals',
-              radius: 50,
-              titleStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            PieChartSectionData(
-              color: const Color(0xFF9E9E9E),
-              value: archivedGoals.toDouble(),
-              title: 'Archivés\n$archivedGoals',
-              radius: 50,
-              titleStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChartContainer(String title, Widget chart) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(height: 200, child: chart),
         ],
       ),
     );
