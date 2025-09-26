@@ -14,7 +14,12 @@ class NotificationService extends ChangeNotifier {
       FlutterLocalNotificationsPlugin();
 
   bool _notificationsEnabled = false;
+  bool _isInitialized = false;
+  bool _isInitializing = false;
+
   bool get notificationsEnabled => _notificationsEnabled;
+  bool get isInitialized => _isInitialized;
+  bool get isInitializing => _isInitializing;
 
   static const String _notificationEnabledKey = 'notifications_enabled';
   static const String _notificationTimeKey = 'notification_time';
@@ -27,34 +32,51 @@ class NotificationService extends ChangeNotifier {
   int get notificationMinute => _notificationMinute;
 
   Future<void> initialize() async {
-    // Initialiser les données de timezone
-    tz.initializeTimeZones();
+    // Éviter les initialisations multiples
+    if (_isInitialized || _isInitializing) {
+      return;
+    }
 
-    // Configuration pour Android
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    try {
+      _isInitializing = true;
+      notifyListeners();
 
-    // Configuration pour iOS
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        );
+      // Initialiser les données de timezone
+      tz.initializeTimeZones();
 
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS,
-        );
+      // Configuration pour Android
+      const AndroidInitializationSettings initializationSettingsAndroid =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
-    );
+      // Configuration pour iOS
+      const DarwinInitializationSettings initializationSettingsIOS =
+          DarwinInitializationSettings(
+            requestAlertPermission: false,
+            requestBadgePermission: false,
+            requestSoundPermission: false,
+          );
 
-    // Charger les préférences
-    await _loadPreferences();
+      const InitializationSettings initializationSettings =
+          InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsIOS,
+          );
+
+      await _flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        // onDidReceiveNotificationResponse: _onNotificationTapped,
+      );
+
+      // Charger les préférences
+      await _loadPreferences();
+
+      _isInitialized = true;
+    } catch (e) {
+      debugPrint('❌ Erreur lors de l\'initialisation des notifications: $e');
+    } finally {
+      _isInitializing = false;
+      notifyListeners();
+    }
   }
 
   Future<void> _loadPreferences() async {

@@ -387,4 +387,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get premium_btn => 'Continue';
+
+  @override
+  String get notification => 'Do not forget to complete your task.';
 }

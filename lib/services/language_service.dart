@@ -2,14 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Gère la langue de l'application et la persistance du choix utilisateur.
-///
-/// Valeurs possibles pour [selectedLocaleCode]:
-/// - 'system' (par défaut)
-/// - 'en', 'fr', 'de', 'es'
 class LanguageService extends ChangeNotifier {
   static const String _prefsKey = 'app_language_code';
-
   LanguageService();
 
   String _selectedLocaleCode = 'system';

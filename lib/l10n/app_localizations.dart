@@ -833,6 +833,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get premium_btn;
+
+  /// No description provided for @notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not forget to complete your task.'**
+  String get notification;
 }
 
 class _AppLocalizationsDelegate
