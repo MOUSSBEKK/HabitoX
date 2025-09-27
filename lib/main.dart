@@ -27,10 +27,6 @@ Future<void> main() async {
   final languageService = LanguageService();
   await languageService.load();
 
-  // Initialiser le service de notification
-  final notificationService = NotificationService();
-  await notificationService.initialize();
-
   runApp(HabitoXApp(languageService: languageService));
 }
 
@@ -49,7 +45,15 @@ class HabitoXApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ThemeService()),
         ChangeNotifierProvider(create: (context) => OnboardingService()),
         ChangeNotifierProvider<LanguageService>.value(value: languageService),
-        ChangeNotifierProvider(create: (context) => NotificationService()),
+        ChangeNotifierProvider(
+          create: (context) {
+            final notificationService = NotificationService();
+            // Initialiser de manière asynchrone sans bloquer
+            notificationService.initialize();
+            debugPrint("NotificationService");
+            return notificationService;
+          },
+        ),
       ],
       child: ToastificationWrapper(
         child: Consumer<ThemeService>(

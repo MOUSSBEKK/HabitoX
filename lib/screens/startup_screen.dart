@@ -2,12 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/onboarding_service.dart';
 import 'onboarding_screen.dart';
+import '../services/notification_service.dart';
 import 'home_screen.dart';
 
-/// Écran de démarrage qui détermine s'il faut afficher l'onboarding ou l'accueil
-/// Gère la logique de première ouverture de l'application
-class StartupScreen extends StatelessWidget {
+class StartupScreen extends StatefulWidget {
   const StartupScreen({super.key});
+
+  @override
+  State<StartupScreen> createState() => _StartupScreenState();
+}
+
+class _StartupScreenState extends State<StartupScreen> {
+  bool _servicesInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeServices();
+  }
+
+  Future<void> _initializeServices() async {
+    try {
+      final notificationService = context.read<NotificationService>();
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      if (!notificationService.isInitialized &&
+          !notificationService.isInitializing) {
+        await notificationService.initialize();
+      } else {}
+
+      // Marquer les services comme initialisés
+      if (mounted) {
+        setState(() {
+          _servicesInitialized = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _servicesInitialized = true;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +56,10 @@ class StartupScreen extends StatelessWidget {
           return const _LoadingScreen();
         }
 
-        // Affiche l'onboarding si c'est la première fois
         if (onboardingService.isFirstTimeUser) {
           return const OnboardingScreen();
         }
 
-        // Sinon affiche l'écran d'accueil
         return const HomeScreen();
       },
     );
@@ -40,28 +76,13 @@ class _LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<_LoadingScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-    _animation = Tween<double>(
-      begin: 0.8,
-      end: 1.1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-
-    // Animation en boucle
-    _controller.repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -72,48 +93,6 @@ class _LoadingScreenState extends State<_LoadingScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo animé
-            AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _animation.value,
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF6db399).withOpacity(0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'H',
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 24),
-
-            // Nom de l'app
             const Text(
               'HabitoX',
               style: TextStyle(
@@ -122,10 +101,7 @@ class _LoadingScreenState extends State<_LoadingScreen>
                 letterSpacing: 2.0,
               ),
             ),
-
             const SizedBox(height: 32),
-
-            // Indicateur de chargement
             SizedBox(
               width: 40,
               height: 40,

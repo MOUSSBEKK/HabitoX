@@ -14,7 +14,11 @@ class NotificationService extends ChangeNotifier {
       FlutterLocalNotificationsPlugin();
 
   bool _notificationsEnabled = false;
+  bool _isInitialized = false;
+  bool _isInitializing = false;
   bool get notificationsEnabled => _notificationsEnabled;
+  bool get isInitialized => _isInitialized;
+  bool get isInitializing => _isInitializing;
 
   static const String _notificationEnabledKey = 'notifications_enabled';
   static const String _notificationTimeKey = 'notification_time';
@@ -27,40 +31,47 @@ class NotificationService extends ChangeNotifier {
   int get notificationMinute => _notificationMinute;
 
   Future<void> initialize() async {
-    // Initialiser les données de timezone
-    tz.initializeTimeZones();
-
-    // Configuration pour Android
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // Configuration pour iOS
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        );
-
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS,
-        );
-
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
-    );
+    if (_isInitialized || _isInitializing) {
+      return;
+    }
 
     // Charger les préférences
     await _loadPreferences();
-  }
+    try {
+      _isInitializing = true;
+      notifyListeners();
 
-  void _onNotificationTapped(NotificationResponse notificationResponse) {
-    // Gérer le clic sur la notification
-    if (kDebugMode) {
-      print('Notification tapped: ${notificationResponse.payload}');
+      // Initialiser les données de timezone
+      tz.initializeTimeZones();
+
+      // Configuration pour Android
+      const AndroidInitializationSettings initializationSettingsAndroid =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+
+      // Configuration pour iOS
+      const DarwinInitializationSettings initializationSettingsIOS =
+          DarwinInitializationSettings(
+            requestAlertPermission: false,
+            requestBadgePermission: false,
+            requestSoundPermission: false,
+          );
+
+      const InitializationSettings initializationSettings =
+          InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsIOS,
+          );
+
+      await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+      await _loadPreferences();
+
+      _isInitialized = true;
+    } catch (e) {
+      debugPrint('❌ Erreur lors de l\'initialisation des notifications: $e');
+    } finally {
+      _isInitializing = false;
+      notifyListeners();
     }
   }
 
@@ -68,7 +79,6 @@ class NotificationService extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _notificationsEnabled = prefs.getBool(_notificationEnabledKey) ?? false;
 
-    // Charger l'heure de notification
     final timeString = prefs.getString(_notificationTimeKey);
     if (timeString != null) {
       final parts = timeString.split(':');
@@ -272,7 +282,7 @@ class NotificationService extends ChangeNotifier {
     await _flutterLocalNotificationsPlugin.show(
       999, // ID unique pour les notifications de test
       'Test de notification',
-      'Votre système de notifications fonctionne correctement !',
+      'Tout marche bien !',
       platformChannelSpecifics,
     );
   }
