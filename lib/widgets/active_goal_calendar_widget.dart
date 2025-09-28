@@ -184,7 +184,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     final start = now.subtract(const Duration(days: 90));
 
     final Map<DateTime, int> datasets = {};
-    
+
     // Ajouter les jours complétés (intensité maximale)
     for (final session in activeGoal.completedSessions) {
       final day = DateTime(session.year, session.month, session.day);
@@ -195,24 +195,28 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     // Calculer les jours restants à compléter
     final completedDays = activeGoal.completedSessions.length;
     final remainingDays = activeGoal.targetDays - completedDays;
-    
+
     // Ajouter les jours futurs à compléter (intensité faible)
     if (remainingDays > 0) {
       for (int i = 0; i < remainingDays; i++) {
         final futureDay = today.add(Duration(days: i + 1));
         // Vérifier que le jour futur n'est pas déjà complété
         final isAlreadyCompleted = activeGoal.completedSessions.any(
-          (session) => DateTime(session.year, session.month, session.day) == futureDay,
+          (session) =>
+              DateTime(session.year, session.month, session.day) == futureDay,
         );
         if (!isAlreadyCompleted) {
-          datasets[futureDay] = 1; // niveau d'intensité faible pour les jours futurs
+          datasets[futureDay] =
+              1; // niveau d'intensité faible pour les jours futurs
         }
       }
     }
 
     final base = shape.color;
     final colorsets = <int, Color>{
-      1: base.withValues(alpha: 0.15), // Opacité très faible pour les jours futurs
+      1: base.withValues(
+        alpha: 0.15,
+      ), // Opacité très faible pour les jours futurs
       2: base.withValues(alpha: 0.35),
       3: base.withValues(alpha: 0.45),
       4: base.withValues(alpha: 0.60),
@@ -315,11 +319,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                 }
 
                 // Mettre à jour le widget d'accueil après toute progression
-                final calendarService = context.read<CalendarService>();
                 await HomeWidgetService.updateActiveGoalHeatmap(
                   context,
                   goalService,
-                  calendarService,
                 );
               },
         icon: Icon(

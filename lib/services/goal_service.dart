@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/goal.dart';
 import '../models/user_profile.dart';
 import 'user_profile_service.dart';
+import 'home_widget_service.dart';
 
 class GoalService extends ChangeNotifier {
   static const String _goalsKey = 'goals';
@@ -133,7 +134,7 @@ class GoalService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateGoal(Goal goal) async {
+  Future<void> updateGoal(Goal goal, [BuildContext? context]) async {
     final index = _goals.indexWhere((g) => g.id == goal.id);
     if (index != -1) {
       _goals[index] = goal;
@@ -145,10 +146,17 @@ class GoalService extends ChangeNotifier {
 
       await _saveGoals();
       notifyListeners();
+
+      // Mettre à jour le widget si c'est l'objectif actif
+      if (_activeGoal?.id == goal.id && context != null) {
+        await HomeWidgetService.updateActiveGoalHeatmap(context, this);
+      }
     }
   }
 
-  Future<void> deleteGoal(String goalId) async {
+  Future<void> deleteGoal(String goalId, [BuildContext? context]) async {
+    final wasActiveGoal = _activeGoal?.id == goalId;
+
     _goals.removeWhere((goal) => goal.id == goalId);
 
     // Si on supprime l'objectif actif, on en sélectionne un autre
@@ -158,9 +166,14 @@ class GoalService extends ChangeNotifier {
 
     await _saveGoals();
     notifyListeners();
+
+    // Mettre à jour le widget si on a supprimé l'objectif actif
+    if (wasActiveGoal && context != null) {
+      await HomeWidgetService.updateActiveGoalHeatmap(context, this);
+    }
   }
 
-  Future<void> activateGoal(String goalId) async {
+  Future<void> activateGoal(String goalId, [BuildContext? context]) async {
     // Désactiver tous les autres objectifs
     await _deactivateAllGoals();
 
@@ -174,6 +187,11 @@ class GoalService extends ChangeNotifier {
       _activeGoal = _goals[index];
       await _saveGoals();
       notifyListeners();
+
+      // Mettre à jour le widget avec le nouvel objectif actif
+      if (context != null) {
+        await HomeWidgetService.updateActiveGoalHeatmap(context, this);
+      }
     }
   }
 

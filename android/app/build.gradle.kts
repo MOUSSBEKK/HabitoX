@@ -6,6 +6,7 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 val keystoreProperties = Properties()
@@ -19,6 +20,14 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+    buildFeatures {
+        compose = true
+    }
+    
+    composeOptions {
+      kotlinCompilerExtensionVersion = "1.5.15"
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
 
@@ -29,6 +38,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
+
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -63,12 +73,12 @@ android {
 }
 
 dependencies {
-    // For AGP 7.4+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-    // For AGP 7.3
-    // coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.3")
-    // For AGP 4.0 to 7.2
-    // coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.9")
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.compose.ui:ui:1.9.1")
+    implementation("androidx.glance:glance-material3:1.1.1")
+    implementation("androidx.compose.material:material:1.9.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }
 
 flutter {

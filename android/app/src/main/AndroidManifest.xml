@@ -38,8 +38,8 @@
 
         <!-- HomeWidget Provider -->
         <receiver
-            android:name="com.example.habitox.ActiveGoalHeatmapWidgetProvider"
-            android:exported="false"
+            android:name=".ActiveGoalHeatmapWidgetReceiver"
+            android:exported="true"
             android:label="HabitoX Heatmap">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

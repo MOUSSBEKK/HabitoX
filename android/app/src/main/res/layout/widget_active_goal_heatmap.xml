@@ -32,14 +32,6 @@
             android:layout_weight="1"
             android:contentDescription="Heatmap calendrier" />
 
-        <TextView
-            android:id="@+id/widget_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Objectif actif"
-            android:textColor="#B0B0B0"
-            android:textSize="12sp"
-            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 

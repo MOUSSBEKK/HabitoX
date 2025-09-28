@@ -52,7 +52,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
                   SizedBox(height: isTablet ? 24.0 : 20.0),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: padding),
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(
@@ -245,7 +248,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
     );
 
     if (result == OkCancelResult.ok) {
-      context.read<GoalService>().deleteGoal(goal.id);
+      context.read<GoalService>().deleteGoal(goal.id, context);
     }
   }
 
@@ -255,10 +258,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
       final goalService = context.read<GoalService>();
       // Créer une copie de l'objectif sans le statut actif
       final updatedGoal = goal.copyWith(isActive: false);
-      goalService.updateGoal(updatedGoal);
+      goalService.updateGoal(updatedGoal, context);
     } else {
       // Activer l'objectif
-      context.read<GoalService>().activateGoal(goal.id);
+      context.read<GoalService>().activateGoal(goal.id, context);
     }
   }
 }

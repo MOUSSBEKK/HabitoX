@@ -1036,7 +1036,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           lastUpdated: DateTime.now(),
         );
 
-        goalService.updateGoal(updatedGoal);
+        goalService.updateGoal(updatedGoal, context);
         toastification.show(
           context: context,
           title: Text(AppLocalizations.of(context)!.bottom_modal_modal_succes),

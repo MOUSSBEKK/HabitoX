@@ -1,54 +1,133 @@
 package com.example.habitox
 
-import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.Intent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.provideContent
+import androidx.glance.currentState
+import androidx.glance.background
+import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.padding
+import androidx.glance.text.Text
+import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.BitmapImageProvider
 import android.graphics.BitmapFactory
-import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetPlugin
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
+import androidx.glance.layout.width
+import HomeWidgetGlanceState
+import HomeWidgetGlanceStateDefinition
 
-class ActiveGoalHeatmapWidgetProvider : AppWidgetProvider() {
+class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
+    override val stateDefinition = HomeWidgetGlanceStateDefinition()
 
-        for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.widget_active_goal_heatmap)
-
-            // Récupérer les données/bitmap sauvegardés par le plugin côté Flutter
-            val prefs = HomeWidgetPlugin.getData(context)
-            val title = prefs.getString("widget_title", "HabitoX")
-            val subtitle = prefs.getString("widget_subtitle", "Objectif actif")
-            views.setTextViewText(R.id.widget_title, title)
-            views.setTextViewText(R.id.widget_subtitle, subtitle)
-
-            val imagePath = prefs.getString("heatmap_image", null)
-            if (!imagePath.isNullOrEmpty()) {
-                val bitmap = BitmapFactory.decodeFile(imagePath)
-                if (bitmap != null) {
-                    views.setImageViewBitmap(R.id.heatmap_image, bitmap)
-                }
+    companion object {
+        suspend fun updateAll(context: Context) {
+            val manager = GlanceAppWidgetManager(context)
+            val widget = ActiveGoalHeatmapWidgetProvider()
+            val glanceIds = manager.getGlanceIds(widget.javaClass)
+            
+            glanceIds.forEach { glanceId ->
+                widget.update(context, glanceId)
             }
-
-            // Configurer un PendingIntent pour lancer l'app lorsque l'image est cliquée
-            val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
-            val pendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.heatmap_image, pendingIntent)
-
-            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+        
+        fun updateAllSync(context: Context) {
+            // Version synchrone pour être appelée depuis Flutter
+            kotlinx.coroutines.runBlocking {
+                updateAll(context)
+            }
         }
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        // Aucune gestion spécifique nécessaire pour le moment.
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            GlanceContent(context, currentState<HomeWidgetGlanceState>())
+        }
+    }
+
+    @Composable
+    private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
+        val prefs = currentState.preferences
+        val title = prefs.getString("widget_title", "HabitoX") ?: "HabitoX"
+        val heatmapImagePath = prefs.getString("heatmap_image", null)
+
+        Box(
+            modifier = GlanceModifier
+                .background(Color(0xFF1F222A))
+                .padding(8.dp)
+        ) {
+            Column(
+                modifier = GlanceModifier.fillMaxSize(),
+                verticalAlignment = Alignment.Top
+            ) {
+                // Titre de l'objectif
+                Text(
+                    text = title,
+                    style = TextStyle(
+                        color = ColorProvider(Color.White),
+                        fontSize = 16.sp
+                    ),
+                    modifier = GlanceModifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
+                )
+                
+                // Image de la heatmap
+                if (heatmapImagePath != null) {
+                    val imageFile = java.io.File(heatmapImagePath)
+                    if (imageFile.exists()) {
+                        val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                        if (bitmap != null) {
+                            Image(
+                                provider = BitmapImageProvider(bitmap),
+                                contentDescription = "Heatmap de l'objectif",
+                                // modifier = GlanceModifier
+                                //     .fillMaxWidth()
+                                //     .height(60.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Erreur de décodage de l'image",
+                                style = TextStyle(
+                                    color = ColorProvider(Color.Red),
+                                    fontSize = 10.sp
+                                )
+                            )
+                        }
+                    } else {
+                        // Image non trouvée, afficher un message
+                        Text(
+                            text = "Heatmap en cours de génération...",
+                            style = TextStyle(
+                                color = ColorProvider(Color.Gray),
+                                fontSize = 10.sp
+                            )
+                        )
+                    }
+                } else {
+                    // Aucune image disponible
+                    Text(
+                        text = "Aucun objectif actif",
+                        style = TextStyle(
+                            color = ColorProvider(Color.Gray),
+                            fontSize = 10.sp
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 
