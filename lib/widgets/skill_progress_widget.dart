@@ -11,8 +11,23 @@ class SkillProgressWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isTablet = constraints.maxWidth > 600;
-        final padding = isTablet ? 32.0 : 20.0;
+        // Utiliser MediaQuery.sizeOf pour de meilleures performances
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final screenHeight = MediaQuery.sizeOf(context).height;
+
+        // Déterminer le type d'écran basé sur la largeur
+        final isTablet = screenWidth > 600;
+        final isSmallScreen = screenWidth < 360;
+
+        // Calculer le padding adaptatif
+        double padding;
+        if (isSmallScreen) {
+          padding = 16.0;
+        } else if (isTablet) {
+          padding = 32.0;
+        } else {
+          padding = 20.0;
+        }
 
         return Scaffold(
           appBar: AppBar(
@@ -20,18 +35,25 @@ class SkillProgressWidget extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: () {},
-                icon: FaIcon(FontAwesomeIcons.chartBar, size: 22),
+                icon: FaIcon(
+                  FontAwesomeIcons.chartBar,
+                  size: isSmallScreen ? 20 : 22,
+                ),
               ),
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: FaIcon(FontAwesomeIcons.circleUp, size: 22),
-              // ),
             ],
           ),
-          body: Container(
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(padding),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(padding),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  // minHeight:
+                  //     screenHeight -
+                  //     kToolbarHeight -
+                  //     MediaQuery.of(context).padding.top -
+                  //     MediaQuery.of(context).padding.bottom -
+                  //     (padding * 2),
+                ),
                 child: ActiveGoalCalendarWidget(onSwitchTab: onSwitchTab),
               ),
             ),

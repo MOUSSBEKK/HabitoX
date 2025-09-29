@@ -48,9 +48,7 @@ class HabitoXApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             final notificationService = NotificationService();
-            // Initialiser de manière asynchrone sans bloquer
             notificationService.initialize();
-            debugPrint("NotificationService");
             return notificationService;
           },
         ),

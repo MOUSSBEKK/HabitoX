@@ -85,216 +85,287 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final isTablet = screenSize.width > 600;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Utiliser MediaQuery.sizeOf pour de meilleures performances
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final screenHeight = MediaQuery.sizeOf(context).height;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (page) {
-                  setState(() {
-                    _currentPage = page;
-                  });
-                  _fadeController.reset();
-                  _slideController.reset();
-                  _fadeController.forward();
-                  _slideController.forward();
-                },
+        // Déterminer le type d'écran
+        final isTablet = screenWidth > 600;
+        final isSmallScreen = screenWidth < 360;
+        final isVerySmallScreen = screenHeight < 600;
+
+        return Scaffold(
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                      _fadeController.reset();
+                      _slideController.reset();
+                      _fadeController.forward();
+                      _slideController.forward();
+                    },
+                    children: [
+                      _buildWelcomePage(
+                        isTablet,
+                        isSmallScreen,
+                        isVerySmallScreen,
+                      ),
+                      _buildHowItWorksPage(
+                        isTablet,
+                        isSmallScreen,
+                        isVerySmallScreen,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Indicateurs de page et boutons
+                _buildBottomSection(isTablet, isSmallScreen),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildWelcomePage(
+    bool isTablet,
+    bool isSmallScreen,
+    bool isVerySmallScreen,
+  ) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isSmallScreen ? 20.0 : (isTablet ? 48.0 : 32.0),
+              vertical: isVerySmallScreen ? 16.0 : (isTablet ? 32.0 : 24.0),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight:
+                    MediaQuery.sizeOf(context).height -
+                    kToolbarHeight -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom -
+                    (isVerySmallScreen
+                        ? 120
+                        : 160), // Espace pour le bottom section
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildWelcomePage(isTablet, screenSize),
-                  _buildHowItWorksPage(isTablet, screenSize),
+                  Image.asset(
+                    'assets/icon_launcher/logo_launcher_habitox.png',
+                    width: isSmallScreen ? 120 : (isTablet ? 200 : 160),
+                    height: isSmallScreen ? 120 : (isTablet ? 200 : 160),
+                  ),
+                  SizedBox(height: isSmallScreen ? 24 : (isTablet ? 48 : 40)),
+
+                  // Titre principal
+                  Text(
+                    'Welcome to',
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 20 : (isTablet ? 28 : 24),
+                      fontWeight: FontWeight.w300,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      letterSpacing: 1.2,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  SizedBox(height: isSmallScreen ? 8 : (isTablet ? 12 : 8)),
+
+                  // Logo/Nom de l'app avec style
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isSmallScreen ? 16 : (isTablet ? 24 : 20),
+                      vertical: isSmallScreen ? 8 : (isTablet ? 12 : 10),
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF6db399).withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      'HabitoX',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 24 : (isTablet ? 36 : 32),
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: isSmallScreen ? 20 : (isTablet ? 32 : 24)),
+
+                  // Message principal
+                  Text(
+                    AppLocalizations.of(context)!.onboarding_title,
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 16 : (isTablet ? 22 : 18),
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  SizedBox(height: isSmallScreen ? 16 : (isTablet ? 24 : 20)),
+
+                  // Message rassurant
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isSmallScreen ? 12 : (isTablet ? 20 : 16),
+                      vertical: isSmallScreen ? 10 : (isTablet ? 16 : 12),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.access_time_rounded,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: isSmallScreen ? 18 : (isTablet ? 24 : 20),
+                        ),
+                        SizedBox(
+                          width: isSmallScreen ? 6 : (isTablet ? 12 : 8),
+                        ),
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.onboarding_popup,
+                            style: TextStyle(
+                              fontSize: isSmallScreen
+                                  ? 12
+                                  : (isTablet ? 16 : 14),
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.color,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-
-            // Indicateurs de page et boutons
-            _buildBottomSection(isTablet),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWelcomePage(bool isTablet, Size screenSize) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isTablet ? 48.0 : 32.0,
-            vertical: isTablet ? 32.0 : 24.0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/icon_launcher/logo_launcher_habitox.png',
-                width: isTablet ? 200 : 160,
-                height: isTablet ? 200 : 160,
-              ),
-              SizedBox(height: isTablet ? 48 : 40),
-
-              // Titre principal
-              Text(
-                'Welcome to',
-                style: TextStyle(
-                  fontSize: isTablet ? 28 : 24,
-                  fontWeight: FontWeight.w300,
-                  color: Theme.of(context).textTheme.bodyMedium?.color,
-                  letterSpacing: 1.2,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              SizedBox(height: isTablet ? 12 : 8),
-
-              // Logo/Nom de l'app avec style
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTablet ? 24 : 20,
-                  vertical: isTablet ? 12 : 10,
-                ),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF6db399).withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  'HabitoX',
-                  style: TextStyle(
-                    fontSize: isTablet ? 36 : 32,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: isTablet ? 32 : 24),
-
-              // Message principal
-              Text(
-                AppLocalizations.of(context)!.onboarding_title,
-                style: TextStyle(
-                  fontSize: isTablet ? 22 : 18,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                  height: 1.4,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              SizedBox(height: isTablet ? 24 : 20),
-
-              // Message rassurant
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTablet ? 20 : 16,
-                  vertical: isTablet ? 16 : 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.secondary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.access_time_rounded,
-                      color: Theme.of(context).colorScheme.secondary,
-                      size: isTablet ? 24 : 20,
-                    ),
-                    SizedBox(width: isTablet ? 12 : 8),
-                    Text(
-                      AppLocalizations.of(context)!.onboarding_popup,
-                      style: TextStyle(
-                        fontSize: isTablet ? 16 : 14,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildHowItWorksPage(bool isTablet, Size screenSize) {
+  Widget _buildHowItWorksPage(
+    bool isTablet,
+    bool isSmallScreen,
+    bool isVerySmallScreen,
+  ) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isTablet ? 48.0 : 32.0,
-            vertical: isTablet ? 32.0 : 24.0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Titre
-              Text(
-                AppLocalizations.of(context)!.onboarding2_title,
-                style: TextStyle(
-                  fontSize: isTablet ? 32 : 28,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                ),
-                textAlign: TextAlign.center,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isSmallScreen ? 20.0 : (isTablet ? 48.0 : 32.0),
+              vertical: isVerySmallScreen ? 16.0 : (isTablet ? 32.0 : 24.0),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight:
+                    MediaQuery.sizeOf(context).height -
+                    kToolbarHeight -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom -
+                    (isVerySmallScreen
+                        ? 120
+                        : 160), // Espace pour le bottom section
               ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Titre
+                  Text(
+                    AppLocalizations.of(context)!.onboarding2_title,
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 24 : (isTablet ? 32 : 28),
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
 
-              SizedBox(height: isTablet ? 48 : 40),
+                  SizedBox(height: isSmallScreen ? 24 : (isTablet ? 48 : 40)),
 
-              // Étapes
-              _buildStep(
-                isTablet,
-                FontAwesomeIcons.bullseye,
-                AppLocalizations.of(context)!.onboarding_title_card1,
-                AppLocalizations.of(context)!.onboarding_subtitles_card1,
-                const Color(0xFF6db399),
+                  // Étapes
+                  _buildStep(
+                    isTablet,
+                    isSmallScreen,
+                    FontAwesomeIcons.bullseye,
+                    AppLocalizations.of(context)!.onboarding_title_card1,
+                    AppLocalizations.of(context)!.onboarding_subtitles_card1,
+                    const Color(0xFF6db399),
+                  ),
+
+                  SizedBox(height: isSmallScreen ? 16 : (isTablet ? 32 : 24)),
+
+                  _buildStep(
+                    isTablet,
+                    isSmallScreen,
+                    FontAwesomeIcons.chartLine,
+                    AppLocalizations.of(context)!.onboarding_title_card2,
+                    AppLocalizations.of(context)!.onboarding_subtitles_card2,
+                    const Color(0xFFa9c4a5),
+                  ),
+
+                  SizedBox(height: isSmallScreen ? 16 : (isTablet ? 32 : 24)),
+
+                  _buildStep(
+                    isTablet,
+                    isSmallScreen,
+                    FontAwesomeIcons.trophy,
+                    AppLocalizations.of(context)!.onboarding_title_card3,
+                    AppLocalizations.of(context)!.onboarding_subtitles_card3,
+                    const Color(0xFF85b8cb),
+                  ),
+                ],
               ),
-
-              SizedBox(height: isTablet ? 32 : 24),
-
-              _buildStep(
-                isTablet,
-                FontAwesomeIcons.chartLine,
-                AppLocalizations.of(context)!.onboarding_title_card2,
-                AppLocalizations.of(context)!.onboarding_subtitles_card2,
-                const Color(0xFFa9c4a5),
-              ),
-
-              SizedBox(height: isTablet ? 32 : 24),
-
-              _buildStep(
-                isTablet,
-                FontAwesomeIcons.trophy,
-                AppLocalizations.of(context)!.onboarding_title_card3,
-                AppLocalizations.of(context)!.onboarding_subtitles_card3,
-                const Color(0xFF85b8cb),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -303,13 +374,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   Widget _buildStep(
     bool isTablet,
+    bool isSmallScreen,
     IconData icon,
     String title,
     String description,
     Color color,
   ) {
     return Container(
-      padding: EdgeInsets.all(isTablet ? 20 : 16),
+      padding: EdgeInsets.all(isSmallScreen ? 12 : (isTablet ? 20 : 16)),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(16),
@@ -325,15 +397,19 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         children: [
           // Icône
           Container(
-            padding: EdgeInsets.all(isTablet ? 16 : 12),
+            padding: EdgeInsets.all(isSmallScreen ? 8 : (isTablet ? 16 : 12)),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: FaIcon(icon, size: isTablet ? 28 : 24, color: color),
+            child: FaIcon(
+              icon,
+              size: isSmallScreen ? 20 : (isTablet ? 28 : 24),
+              color: color,
+            ),
           ),
 
-          SizedBox(width: isTablet ? 20 : 16),
+          SizedBox(width: isSmallScreen ? 12 : (isTablet ? 20 : 16)),
 
           // Texte
           Expanded(
@@ -343,20 +419,24 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: isTablet ? 18 : 16,
+                    fontSize: isSmallScreen ? 14 : (isTablet ? 18 : 16),
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: isTablet ? 8 : 4),
+                SizedBox(height: isSmallScreen ? 4 : (isTablet ? 8 : 4)),
                 Text(
                   description,
                   style: TextStyle(
-                    fontSize: isTablet ? 14 : 12,
+                    fontSize: isSmallScreen ? 10 : (isTablet ? 14 : 12),
                     fontWeight: FontWeight.w500,
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                     height: 1.3,
                   ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -366,9 +446,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     );
   }
 
-  Widget _buildBottomSection(bool isTablet) {
+  Widget _buildBottomSection(bool isTablet, bool isSmallScreen) {
     return Padding(
-      padding: EdgeInsets.all(isTablet ? 32.0 : 24.0),
+      padding: EdgeInsets.all(isSmallScreen ? 16.0 : (isTablet ? 32.0 : 24.0)),
       child: Column(
         children: [
           // Indicateurs de page
@@ -378,8 +458,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               for (int i = 0; i < 2; i++)
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == i ? 24 : 8,
-                  height: 8,
+                  width: _currentPage == i
+                      ? (isSmallScreen ? 20 : 24)
+                      : (isSmallScreen ? 6 : 8),
+                  height: isSmallScreen ? 6 : 8,
                   decoration: BoxDecoration(
                     color: _currentPage == i
                         ? const Color(0xFF6db399)
@@ -390,7 +472,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             ],
           ),
 
-          SizedBox(height: isTablet ? 32 : 24),
+          SizedBox(height: isSmallScreen ? 20 : (isTablet ? 32 : 24)),
 
           // Bouton principal
           SizedBox(
@@ -400,7 +482,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6db399),
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: isTablet ? 18 : 16),
+                padding: EdgeInsets.symmetric(
+                  vertical: isSmallScreen ? 14 : (isTablet ? 18 : 16),
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -412,7 +496,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     ? AppLocalizations.of(context)!.onboarding2_btn
                     : AppLocalizations.of(context)!.onboarding_btn,
                 style: TextStyle(
-                  fontSize: isTablet ? 18 : 16,
+                  fontSize: isSmallScreen ? 14 : (isTablet ? 18 : 16),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                 ),

@@ -11,7 +11,6 @@ import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 
 // Couleurs du design épuré
 class HomeColors {
@@ -76,56 +75,105 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildNavBarContent() {
-    Widget content = Container(
-      height: 80,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 4,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavItem(
-                  icon: FontAwesomeIcons.home,
-                  label: AppLocalizations.of(context)!.home,
-                  index: 0,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final isSmallScreen = screenWidth < 400;
+
+        return Container(
+          height: 80,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Row(
+            children: [
+              // Navigation items - s'adapte à la taille de l'écran
+              if (isSmallScreen) ...[
+                // Pour les petits écrans, utiliser un layout plus compact
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.home,
+                        label: AppLocalizations.of(context)!.home,
+                        index: 0,
+                        isCompact: true,
+                      ),
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.listCheck,
+                        label: AppLocalizations.of(context)!.nav_objectives,
+                        index: 1,
+                        isCompact: true,
+                      ),
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.trophy,
+                        label: AppLocalizations.of(context)!.nav_badges,
+                        index: 2,
+                        isCompact: true,
+                      ),
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.user,
+                        label: AppLocalizations.of(context)!.nav_profile,
+                        index: 3,
+                        isCompact: true,
+                      ),
+                    ],
+                  ),
                 ),
-                _buildNavItem(
-                  icon: FontAwesomeIcons.listCheck,
-                  label: AppLocalizations.of(context)!.nav_objectives,
-                  index: 1,
+                // Bouton d'ajout plus petit sur les petits écrans
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
+                  child: _buildAddButton(isCompact: true),
                 ),
-                _buildNavItem(
-                  icon: FontAwesomeIcons.trophy,
-                  label: AppLocalizations.of(context)!.nav_badges,
-                  index: 2,
+              ] else ...[
+                // Pour les écrans plus grands, utiliser le layout original
+                Expanded(
+                  flex: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.home,
+                        label: AppLocalizations.of(context)!.home,
+                        index: 0,
+                      ),
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.listCheck,
+                        label: AppLocalizations.of(context)!.nav_objectives,
+                        index: 1,
+                      ),
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.trophy,
+                        label: AppLocalizations.of(context)!.nav_badges,
+                        index: 2,
+                      ),
+                      _buildNavItem(
+                        icon: FontAwesomeIcons.user,
+                        label: AppLocalizations.of(context)!.nav_profile,
+                        index: 3,
+                      ),
+                    ],
+                  ),
                 ),
-                _buildNavItem(
-                  icon: FontAwesomeIcons.user,
-                  label: AppLocalizations.of(context)!.nav_profile,
-                  index: 3,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+                  child: _buildAddButton(),
                 ),
               ],
-            ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
-            child: _buildAddButton(),
-          ),
-        ],
-      ),
+        );
+      },
     );
-    return content;
   }
 
   Widget _buildNavItem({
     required IconData icon,
     required String label,
     required int index,
+    bool isCompact = false,
   }) {
     final isSelected = _currentIndex == index;
 
@@ -136,13 +184,10 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        // decoration: BoxDecoration(
-        //   color: isSelected
-        //       ? const Color.fromARGB(255, 48, 48, 48).withOpacity(0.2)
-        //       : Colors.transparent,
-        //   borderRadius: BorderRadius.circular(20),
-        // ),
+        padding: EdgeInsets.symmetric(
+          horizontal: isCompact ? 8 : 16,
+          vertical: isCompact ? 4 : 8,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -151,18 +196,20 @@ class _HomeScreenState extends State<HomeScreen> {
               color: isSelected
                   ? Theme.of(context).colorScheme.secondary
                   : Theme.of(context).colorScheme.primaryFixed,
-              size: 20,
+              size: isCompact ? 18 : 20,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: isCompact ? 2 : 4),
             Text(
               label,
               style: TextStyle(
                 color: isSelected
                     ? Theme.of(context).colorScheme.secondary
                     : Theme.of(context).colorScheme.primaryFixed,
-                fontSize: 11,
+                fontSize: isCompact ? 9 : 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -170,33 +217,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAddButton() {
+  Widget _buildAddButton({bool isCompact = false}) {
+    final size = isCompact ? 48.0 : 56.0;
+    final iconSize = isCompact ? 24.0 : 28.0;
+
     return Container(
-      width: 56,
-      height: 56,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: HomeColors.primaryColor,
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
             color: HomeColors.primaryColor.withOpacity(0.4),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            blurRadius: isCompact ? 6 : 8,
+            offset: Offset(0, isCompact ? 3 : 4),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(size / 2),
           onTap: () => _showAddGoalBottomSheet(context),
-          child: const Icon(Icons.add, color: Colors.white, size: 28),
+          child: Icon(Icons.add, color: Colors.white, size: iconSize),
         ),
       ),
     );
-  }
-
-  bool _isIOS() {
-    return !kIsWeb && Platform.isIOS;
   }
 }

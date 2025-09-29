@@ -41,39 +41,51 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           );
         }
 
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(
-                activeGoal.icon,
-                activeGoal.title,
-                activeGoal.description,
-                calendarService.currentShape!,
-                context,
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = MediaQuery.sizeOf(context).width;
+            final isSmallScreen = screenWidth < 360;
+            final isTablet = screenWidth > 600;
+
+            // Padding adaptatif
+            final padding = isSmallScreen ? 16.0 : (isTablet ? 32.0 : 24.0);
+
+            return Container(
+              padding: EdgeInsets.all(padding),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
               ),
-              const SizedBox(height: 24),
-              if (calendarService.currentShape != null)
-                _buildCalendarSection(
-                  calendarService.currentShape!,
-                  activeGoal,
-                  calendarService,
-                  context,
-                )
-              else
-                _buildEmptyCalendarCard(context),
-              const SizedBox(height: 20),
-              _buildMarkSessionButton(context, goalService, activeGoal),
-            ],
-          ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(
+                    activeGoal.icon,
+                    activeGoal.title,
+                    activeGoal.description,
+                    calendarService.currentShape!,
+                    context,
+                    isSmallScreen: isSmallScreen,
+                  ),
+                  SizedBox(height: isSmallScreen ? 16 : 24),
+                  if (calendarService.currentShape != null)
+                    _buildCalendarSection(
+                      calendarService.currentShape!,
+                      activeGoal,
+                      calendarService,
+                      context,
+                    )
+                  else
+                    _buildEmptyCalendarCard(context),
+                  SizedBox(height: isSmallScreen ? 16 : 20),
+                  _buildMarkSessionButton(context, goalService, activeGoal),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -84,19 +96,20 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     String title,
     String description,
     CalendarShape shape,
-    BuildContext context,
-  ) {
+    BuildContext context, {
+    bool isSmallScreen = false,
+  }) {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
           decoration: BoxDecoration(
             color: shape.color.withValues(alpha: 0.25),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 28, color: shape.color),
+          child: Icon(icon, size: isSmallScreen ? 24 : 28, color: shape.color),
         ),
-        const SizedBox(width: 20),
+        SizedBox(width: isSmallScreen ? 16 : 20),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,16 +117,18 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: isSmallScreen ? 18 : 22,
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).textTheme.titleLarge?.color,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: isSmallScreen ? 2 : 4),
               Text(
                 description,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: isSmallScreen ? 13 : 15,
                   color: Theme.of(
                     context,
                   ).textTheme.titleLarge?.color?.withValues(alpha: 0.8),
@@ -179,64 +194,111 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     CalendarShape shape,
     dynamic activeGoal,
   ) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final start = now.subtract(const Duration(days: 90));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculer la taille adaptative du calendrier
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final availableWidth = constraints.maxWidth;
 
-    final Map<DateTime, int> datasets = {};
+        // Déterminer la taille des cellules en fonction de l'espace disponible
+        double cellSize;
+        double fontSize;
+        double monthFontSize;
+        double weekFontSize;
 
-    // Ajouter les jours complétés (intensité maximale)
-    for (final session in activeGoal.completedSessions) {
-      final day = DateTime(session.year, session.month, session.day);
-      if (day.isBefore(start) || day.isAfter(now)) continue;
-      datasets[day] = 7; // niveau d'intensité max correspondant à colorsets
-    }
-
-    // Calculer les jours restants à compléter
-    final completedDays = activeGoal.completedSessions.length;
-    final remainingDays = activeGoal.targetDays - completedDays;
-
-    // Ajouter les jours futurs à compléter (intensité faible)
-    if (remainingDays > 0) {
-      for (int i = 0; i < remainingDays; i++) {
-        final futureDay = today.add(Duration(days: i + 1));
-        // Vérifier que le jour futur n'est pas déjà complété
-        final isAlreadyCompleted = activeGoal.completedSessions.any(
-          (session) =>
-              DateTime(session.year, session.month, session.day) == futureDay,
-        );
-        if (!isAlreadyCompleted) {
-          datasets[futureDay] =
-              1; // niveau d'intensité faible pour les jours futurs
+        if (screenWidth < 360) {
+          // Très petits écrans (comme l'iPhone SE)
+          cellSize = 28;
+          fontSize = 10;
+          monthFontSize = 12;
+          weekFontSize = 10;
+        } else if (screenWidth < 400) {
+          // Petits écrans
+          cellSize = 32;
+          fontSize = 11;
+          monthFontSize = 14;
+          weekFontSize = 11;
+        } else if (screenWidth < 600) {
+          // Écrans moyens
+          cellSize = 36;
+          fontSize = 12;
+          monthFontSize = 15;
+          weekFontSize = 12;
+        } else {
+          // Grands écrans et tablettes
+          cellSize = 39;
+          fontSize = 14;
+          monthFontSize = 16;
+          weekFontSize = 14;
         }
-      }
-    }
 
-    final base = shape.color;
-    final colorsets = <int, Color>{
-      1: base.withValues(
-        alpha: 0.15,
-      ), // Opacité très faible pour les jours futurs
-      2: base.withValues(alpha: 0.35),
-      3: base.withValues(alpha: 0.45),
-      4: base.withValues(alpha: 0.60),
-      5: base.withValues(alpha: 0.70),
-      6: base.withValues(alpha: 0.85),
-      7: base, // Intensité maximale pour les jours complétés
-    };
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final start = now.subtract(const Duration(days: 90));
 
-    return HeatMapCalendar(
-      size: 39,
-      fontSize: 14,
-      monthFontSize: 16,
-      weekFontSize: 14,
-      showColorTip: false,
-      colorMode: ColorMode.color,
-      defaultColor: Theme.of(context).colorScheme.primary,
-      textColor: Theme.of(context).textTheme.bodyMedium?.color,
-      weekTextColor: Color(0xFFA7C6A5),
-      datasets: datasets,
-      colorsets: colorsets,
+        final Map<DateTime, int> datasets = {};
+
+        // Ajouter les jours complétés (intensité maximale)
+        for (final session in activeGoal.completedSessions) {
+          final day = DateTime(session.year, session.month, session.day);
+          if (day.isBefore(start) || day.isAfter(now)) continue;
+          datasets[day] = 7; // niveau d'intensité max correspondant à colorsets
+        }
+
+        // Calculer les jours restants à compléter
+        final completedDays = activeGoal.completedSessions.length;
+        final remainingDays = activeGoal.targetDays - completedDays;
+
+        // Ajouter les jours futurs à compléter (intensité faible)
+        if (remainingDays > 0) {
+          for (int i = 0; i < remainingDays; i++) {
+            final futureDay = today.add(Duration(days: i + 1));
+            // Vérifier que le jour futur n'est pas déjà complété
+            final isAlreadyCompleted = activeGoal.completedSessions.any(
+              (session) =>
+                  DateTime(session.year, session.month, session.day) ==
+                  futureDay,
+            );
+            if (!isAlreadyCompleted) {
+              datasets[futureDay] =
+                  1; // niveau d'intensité faible pour les jours futurs
+            }
+          }
+        }
+
+        final base = shape.color;
+        final colorsets = <int, Color>{
+          1: base.withValues(
+            alpha: 0.15,
+          ), // Opacité très faible pour les jours futurs
+          2: base.withValues(alpha: 0.35),
+          3: base.withValues(alpha: 0.45),
+          4: base.withValues(alpha: 0.60),
+          5: base.withValues(alpha: 0.70),
+          6: base.withValues(alpha: 0.85),
+          7: base, // Intensité maximale pour les jours complétés
+        };
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: availableWidth),
+            child: HeatMapCalendar(
+              size: cellSize,
+              fontSize: fontSize,
+              monthFontSize: monthFontSize,
+              weekFontSize: weekFontSize,
+              showColorTip: false,
+              colorMode: ColorMode.color,
+              defaultColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).textTheme.bodyMedium?.color,
+              weekTextColor: Color(0xFFA7C6A5),
+              datasets: datasets,
+              colorsets: colorsets,
+            ),
+          ),
+        );
+      },
     );
   }
 

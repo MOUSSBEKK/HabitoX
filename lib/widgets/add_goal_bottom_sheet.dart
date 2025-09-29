@@ -8,7 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
 
 class AddGoalBottomSheetColors {
-  static const Color primaryColor = Color(0xFFA7C6A5);
+  static const Color primaryColor = Color(
+    0xFF2E7D32,
+  ); // Vert plus foncé et visible
   static const Color lightColor = Color(0xFF85B8CB);
   static const Color darkColor = Color(0xFF1F4843);
 
@@ -163,7 +165,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
-                          color: AddGoalBottomSheetColors.primaryColor,
+                          color: Theme.of(context).colorScheme.secondary,
                           width: 1,
                         ),
                       ),
@@ -199,7 +201,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       hintText: AppLocalizations.of(
                         context,
                       )!.bottom_modal_placeholder_desc,
-                      focusColor: AddGoalBottomSheetColors.primaryColor,
+                      focusColor: Theme.of(context).colorScheme.secondary,
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
@@ -213,10 +215,10 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           width: 1,
                         ),
                       ),
-                      focusedBorder: const OutlineInputBorder(
+                      focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         borderSide: BorderSide(
-                          color: AddGoalBottomSheetColors.primaryColor,
+                          color: Theme.of(context).colorScheme.secondary,
                           width: 1,
                         ),
                       ),
@@ -251,8 +253,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         child: ElevatedButton(
                           onPressed: _saveGoal,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                AddGoalBottomSheetColors.primaryColor,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.secondary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 22),
                             shape: RoundedRectangleBorder(
@@ -350,13 +353,14 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         height: 60,
                         decoration: BoxDecoration(
                           color: icon == _selectedIcon
-                              ? AddGoalBottomSheetColors.primaryColor
-                                    .withValues(alpha: 0.2)
+                              ? Theme.of(
+                                  context,
+                                ).colorScheme.secondary.withValues(alpha: 0.2)
                               : Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: icon == _selectedIcon
-                                ? AddGoalBottomSheetColors.primaryColor
+                                ? Theme.of(context).colorScheme.secondary
                                 : Colors.grey[300]!,
                             width: icon == _selectedIcon ? 2 : 1,
                           ),
@@ -364,7 +368,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         child: Icon(
                           icon,
                           color: icon == _selectedIcon
-                              ? AddGoalBottomSheetColors.primaryColor
+                              ? Theme.of(context).colorScheme.secondary
                               : Theme.of(context).iconTheme.color,
                           size: 24,
                         ),
@@ -820,108 +824,130 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   }
 
   Widget _buildAllIconsModal() {
-    return Material(
-      child: SafeArea(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          padding: const EdgeInsets.all(24),
-          child: ListView(
-            controller: ModalScrollController.of(context),
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return StatefulBuilder(
+      builder: (context, setModalState) {
+        return Material(
+          child: SafeArea(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              padding: const EdgeInsets.all(24),
+              child: ListView(
+                controller: ModalScrollController.of(context),
                 children: [
-                  Text(
-                    AppLocalizations.of(context)!.bottom_modal_icon_title,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: FaIcon(FontAwesomeIcons.close),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              ...iconCategories.entries.map((entry) {
-                final String category = entry.key;
-                final List<IconData> icons = entry.value;
-
-                // Organiser les icônes pour mettre la sélectionnée en premier dans la catégorie
-                final List<IconData> ordered = icons.contains(_selectedIcon)
-                    ? [_selectedIcon, ...icons.where((i) => i != _selectedIcon)]
-                    : List<IconData>.from(icons);
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4, bottom: 8),
-                        child: Text(
-                          category,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.color,
-                          ),
+                      Text(
+                        AppLocalizations.of(context)!.bottom_modal_icon_title,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 6,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                            ),
-                        itemCount: ordered.length,
-                        itemBuilder: (context, index) {
-                          final icon = ordered[index];
-                          final isSelected = icon == _selectedIcon;
-
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedIcon = icon;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? AddGoalBottomSheetColors.primaryColor
-                                          .withValues(alpha: 0.2)
-                                    : Theme.of(context).colorScheme.primary,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? AddGoalBottomSheetColors.primaryColor
-                                      : Colors.grey[300]!,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Icon(
-                                icon,
-                                color: isSelected
-                                    ? AddGoalBottomSheetColors.primaryColor
-                                    : Theme.of(context).iconTheme.color,
-                                size: 24,
-                              ),
-                            ),
-                          );
-                        },
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: FaIcon(FontAwesomeIcons.close),
                       ),
                     ],
                   ),
-                );
-              }),
-            ],
+                  const SizedBox(height: 16),
+                  ...iconCategories.entries.map((entry) {
+                    final String category = entry.key;
+                    final List<IconData> icons = entry.value;
+
+                    // Organiser les icônes pour mettre la sélectionnée en premier dans la catégorie
+                    final List<IconData> ordered = icons.contains(_selectedIcon)
+                        ? [
+                            _selectedIcon,
+                            ...icons.where((i) => i != _selectedIcon),
+                          ]
+                        : List<IconData>.from(icons);
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4, bottom: 8),
+                            child: Text(
+                              category,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.color,
+                              ),
+                            ),
+                          ),
+                          GridView.builder(
+                            key: ValueKey(
+                              _selectedIcon,
+                            ), // Force la reconstruction quand l'icône change
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 6,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                ),
+                            itemCount: ordered.length,
+                            itemBuilder: (context, index) {
+                              final icon = ordered[index];
+                              final isSelected = icon == _selectedIcon;
+
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedIcon = icon;
+                                  });
+                                  setModalState(() {
+                                    // Force la reconstruction de la modal
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Theme.of(context)
+                                              .colorScheme
+                                              .secondary
+                                              .withValues(alpha: 0.2)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.secondary
+                                          : Colors.grey[300]!,
+                                      width: isSelected ? 2 : 1,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    icon,
+                                    color: isSelected
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.secondary
+                                        : Theme.of(context).iconTheme.color,
+                                    size: 24,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
