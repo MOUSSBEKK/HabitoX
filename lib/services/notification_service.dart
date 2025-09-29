@@ -46,7 +46,7 @@ class NotificationService extends ChangeNotifier {
 
       // Configuration pour Android
       const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('@mipmap/launcher_icon');
 
       // Configuration pour iOS
       const DarwinInitializationSettings initializationSettingsIOS =
@@ -168,7 +168,10 @@ class NotificationService extends ChangeNotifier {
               'Notifications pour rappeler de remplir vos objectifs quotidiens',
           importance: Importance.high,
           priority: Priority.high,
-          showWhen: false,
+          showWhen: true,
+          enableVibration: true,
+          playSound: true,
+          icon: '@mipmap/launcher_icon',
         );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
@@ -224,7 +227,10 @@ class NotificationService extends ChangeNotifier {
               'Notifications pour rappeler de remplir vos objectifs quotidiens',
           importance: Importance.high,
           priority: Priority.high,
-          showWhen: false,
+          showWhen: true,
+          enableVibration: true,
+          playSound: true,
+          icon: '@mipmap/launcher_icon',
         );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
@@ -268,7 +274,10 @@ class NotificationService extends ChangeNotifier {
           channelDescription: 'Canal pour tester les notifications',
           importance: Importance.high,
           priority: Priority.high,
-          showWhen: false,
+          showWhen: true,
+          enableVibration: true,
+          playSound: true,
+          icon: '@mipmap/launcher_icon',
         );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
