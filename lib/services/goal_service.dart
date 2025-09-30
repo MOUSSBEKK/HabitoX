@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/goal.dart';
@@ -397,5 +398,180 @@ class GoalService extends ChangeNotifier {
       }
     }
     return highest;
+  }
+
+  // Méthodes pour les données d'analytics
+  List<FlSpot> getDailyCompletionsData(int timeRange) {
+    final now = DateTime.now();
+    DateTime startDate;
+
+    switch (timeRange) {
+      case 0: // Week
+        startDate = now.subtract(const Duration(days: 7));
+        break;
+      case 1: // Month
+        startDate = now.subtract(const Duration(days: 30));
+        break;
+      case 2: // Lifetime
+        startDate = DateTime(
+          2020,
+        ); // Date très ancienne pour capturer toutes les données
+        break;
+      default:
+        startDate = now.subtract(const Duration(days: 7));
+    }
+
+    // Récupérer toutes les sessions complétées dans la période
+    final allSessions = <DateTime>[];
+    for (final goal in _goals) {
+      allSessions.addAll(
+        goal.completedSessions.where(
+          (session) =>
+              session.isAfter(startDate) &&
+              session.isBefore(now.add(const Duration(days: 1))),
+        ),
+      );
+    }
+
+    // Grouper par jour
+    final Map<String, int> dailyCompletions = {};
+    for (final session in allSessions) {
+      final dayKey =
+          '${session.year}-${session.month.toString().padLeft(2, '0')}-${session.day.toString().padLeft(2, '0')}';
+      dailyCompletions[dayKey] = (dailyCompletions[dayKey] ?? 0) + 1;
+    }
+
+    // Créer les points pour le graphique
+    final List<FlSpot> spots = [];
+    if (timeRange == 0) {
+      // Pour la semaine, on affiche les 7 derniers jours
+      for (int i = 6; i >= 0; i--) {
+        final date = now.subtract(Duration(days: i));
+        final dayKey =
+            '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+        spots.add(
+          FlSpot(
+            6 - i.toDouble(),
+            ((dailyCompletions[dayKey]) ?? 0).toDouble(),
+          ),
+        );
+      }
+    } else if (timeRange == 1) {
+      // Pour le mois, on groupe par semaine (4 semaines)
+      final Map<int, int> weeklyCompletions = {};
+      for (int i = 0; i < 4; i++) {
+        final weekStart = now.subtract(Duration(days: (i + 1) * 7));
+        final weekEnd = now.subtract(Duration(days: i * 7));
+        weeklyCompletions[i] = 0;
+
+        for (final session in allSessions) {
+          if (session.isAfter(weekStart) && session.isBefore(weekEnd)) {
+            weeklyCompletions[i] = weeklyCompletions[i]! + 1;
+          }
+        }
+      }
+
+      for (int i = 0; i < 4; i++) {
+        spots.add(FlSpot(i.toDouble(), weeklyCompletions[i]!.toDouble()));
+      }
+    } else {
+      // Pour lifetime, on groupe par mois (12 derniers mois)
+      final Map<int, int> monthlyCompletions = {};
+      for (int i = 0; i < 12; i++) {
+        final monthStart = DateTime(now.year, now.month - i, 1);
+        final monthEnd = DateTime(now.year, now.month - i + 1, 1);
+        monthlyCompletions[i] = 0;
+
+        for (final session in allSessions) {
+          if (session.isAfter(monthStart) && session.isBefore(monthEnd)) {
+            monthlyCompletions[i] = monthlyCompletions[i]! + 1;
+          }
+        }
+      }
+
+      for (int i = 0; i < 12; i++) {
+        spots.add(FlSpot(i.toDouble(), monthlyCompletions[i]!.toDouble()));
+      }
+    }
+    debugPrint('spots: $spots');
+    return spots;
+  }
+
+  List<String> getChartLabels(int timeRange) {
+    final now = DateTime.now();
+
+    switch (timeRange) {
+      case 0: // Week
+        return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      case 1: // Month
+        return ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+      case 2: // Lifetime
+        final labels = <String>[];
+        for (int i = 11; i >= 0; i--) {
+          final date = DateTime(now.year, now.month - i, 1);
+          labels.add('${date.month}/${date.year}');
+        }
+        return labels;
+      default:
+        return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    }
+  }
+
+  Map<String, int> getMarkingsVsMissesData(int timeRange) {
+    final now = DateTime.now();
+    DateTime startDate;
+
+    switch (timeRange) {
+      case 0: // Week
+        startDate = now.subtract(const Duration(days: 7));
+        break;
+      case 1: // Month
+        startDate = now.subtract(const Duration(days: 30));
+        break;
+      case 2: // Lifetime
+        startDate = DateTime(2020);
+        break;
+      default:
+        startDate = now.subtract(const Duration(days: 7));
+    }
+
+    int totalMarkings = 0;
+    int totalMisses = 0;
+
+    for (final goal in _goals) {
+      // Compter les marquages dans la période
+      final markingsInPeriod = goal.completedSessions
+          .where(
+            (session) =>
+                session.isAfter(startDate) &&
+                session.isBefore(now.add(const Duration(days: 1))),
+          )
+          .length;
+      totalMarkings += markingsInPeriod;
+
+      // Calculer les oublis (jours où l'objectif était actif mais pas marqué)
+      if (goal.isActive || goal.isCompleted) {
+        final goalStartDate = goal.createdAt.isAfter(startDate)
+            ? goal.createdAt
+            : startDate;
+        final goalEndDate = goal.isCompleted && goal.completedAt != null
+            ? goal.completedAt!.isBefore(now)
+                  ? goal.completedAt!
+                  : now
+            : now;
+
+        final totalDaysInPeriod =
+            goalEndDate.difference(goalStartDate).inDays + 1;
+        final expectedMarkings = totalDaysInPeriod;
+        final actualMisses = expectedMarkings - markingsInPeriod;
+        totalMisses += actualMisses > 0 ? actualMisses : 0;
+      }
+    }
+
+    return {'markings': totalMarkings, 'misses': totalMisses};
+  }
+
+  int getArchivedGoalsCount() {
+    return archivedGoals.length;
   }
 }

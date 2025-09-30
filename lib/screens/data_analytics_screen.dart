@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../services/goal_service.dart';
-import '../models/goal.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DataAnalyticsScreen extends StatefulWidget {
   const DataAnalyticsScreen({super.key});
@@ -12,8 +12,7 @@ class DataAnalyticsScreen extends StatefulWidget {
 }
 
 class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
-  int _selectedTimeRange = 0; // 0: 7 jours, 1: 30 jours, 2: 90 jours
-  String _selectedGoalId = 'all'; // 'all' pour tous les objectifs
+  int _selectedTimeRange = 0; // 0: Week, 1: Month, 2: Lifetime
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +20,25 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
       appBar: AppBar(title: const Text('Analytics')),
       body: Consumer<GoalService>(
         builder: (context, goalService, child) {
-          final goals = goalService.goals;
-          final completedGoals = goalService.completedGoals;
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Filtres
-                _buildFilters(goals),
-                const SizedBox(height: 20),
+                // // Filtres de période
+                // _buildTimeRangeFilters(),
+                // const SizedBox(height: 24),
 
-                // Statistiques générales
-                _buildGeneralStats(goalService),
+                // Cartes de statistiques globales
+                _buildGlobalStatsCards(goalService),
                 const SizedBox(height: 24),
-                _buildDetailedStats(goalService),
+
+                // Graphique des objectifs terminés par jour
+                _buildDailyCompletionsChart(goalService),
+                const SizedBox(height: 24),
+
+                // Graphique marquages vs oublis
+                _buildMarkingsVsMissesChart(goalService),
                 const SizedBox(height: 24),
               ],
             ),
@@ -46,295 +48,407 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
     );
   }
 
-  Widget _buildFilters(List<Goal> goals) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Filtres',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 12),
+  // Widget _buildTimeRangeFilters() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //     children: [
+  //       _buildTimeRangeChip('Week', 0),
+  //       _buildTimeRangeChip('Month', 1),
+  //       _buildTimeRangeChip('Lifetime', 2),
+  //     ],
+  //   );
+  // }
 
-          // Filtre de période
-          Text(
-            'Période',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              _buildTimeRangeChip('7j', 0),
-              const SizedBox(width: 8),
-              _buildTimeRangeChip('30j', 1),
-              const SizedBox(width: 8),
-              _buildTimeRangeChip('90j', 2),
-            ],
-          ),
+  // Widget _buildTimeRangeChip(String label, int index) {
+  //   final isSelected = _selectedTimeRange == index;
+  //   return GestureDetector(
+  //     onTap: () {
+  //       setState(() {
+  //         _selectedTimeRange = index;
+  //       });
+  //     },
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //       decoration: BoxDecoration(
+  //         color: isSelected
+  //             ? Theme.of(context).colorScheme.secondary
+  //             : const Color(0xFF2A2A2A),
+  //         borderRadius: BorderRadius.circular(8),
+  //       ),
+  //       child: Text(
+  //         label,
+  //         style: TextStyle(
+  //           color: isSelected ? Colors.white : Colors.grey[400],
+  //           fontWeight: FontWeight.w600,
+  //           fontSize: 16,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-          const SizedBox(height: 16),
-
-          // Filtre d'objectif
-          Text(
-            'Objectif',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
-            ),
+  Widget _buildGlobalStatsCards(GoalService goalService) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildGlobalStatCard(
+            'Completions',
+            goalService.totalCompletedGoals.toString(),
+            FontAwesomeIcons.circleCheck,
           ),
-          const SizedBox(height: 8),
-          DropdownButton<String>(
-            value: _selectedGoalId,
-            isExpanded: true,
-            style: const TextStyle(color: Colors.black),
-            items: [
-              const DropdownMenuItem(
-                value: 'all',
-                child: Text('Tous les objectifs'),
-              ),
-              ...goals.map(
-                (goal) =>
-                    DropdownMenuItem(value: goal.id, child: Text(goal.title)),
-              ),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _selectedGoalId = value!;
-              });
-            },
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _buildGlobalStatCard(
+            'Archivés',
+            _getArchivedGoalsCount(goalService).toString(),
+            FontAwesomeIcons.archive,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildTimeRangeChip(String label, int index) {
-    final isSelected = _selectedTimeRange == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedTimeRange = index;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFA7C6A5) : Colors.grey[200],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey[700],
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGeneralStats(GoalService goalService) {
+  Widget _buildGlobalStatCard(String title, String value, IconData icon) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Statistiques Générales',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary.withAlpha(70),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Icon(
+              icon,
+              color: Theme.of(context).colorScheme.secondary,
+              size: 16,
             ),
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  'Objectifs Complétés',
-                  goalService.totalCompletedGoals.toString(),
-                  Icons.check_circle,
-                  const Color(0xFF4CAF50),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildStatCard(
-                  'Jours Total',
-                  goalService.totalDaysAcrossAllGoals.toString(),
-                  Icons.calendar_today,
-                  const Color(0xFF2196F3),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  'Meilleur Streak',
-                  goalService.bestStreakEver.toString(),
-                  Icons.local_fire_department,
-                  const Color(0xFFFF9800),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           Text(
             value,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: color,
+              color: Theme.of(context).textTheme.titleLarge?.color,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             title,
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDetailedStats(GoalService goalService) {
-    final goals = _selectedGoalId == 'all'
-        ? goalService.goals
-        : goalService.goals.where((g) => g.id == _selectedGoalId).toList();
+  int _getArchivedGoalsCount(GoalService goalService) {
+    return goalService.getArchivedGoalsCount();
+  }
 
+  Widget _buildDailyCompletionsChart(GoalService goalService) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Statistiques Détaillées',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Completions / Day',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary.withAlpha(70),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Icon(
+                  Icons.show_chart,
+                  color: Theme.of(context).colorScheme.secondary,
+                  size: 16,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 200,
+            child: LineChart(
+              LineChartData(
+                minY: 0,
+                maxY: 10,
+                gridData: FlGridData(
+                  show: true,
+                  horizontalInterval: 1,
+                  verticalInterval: 1,
+                ),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 2,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          value.toInt().toString(),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        final labels = goalService.getChartLabels(
+                          _selectedTimeRange,
+                        );
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < labels.length) {
+                          return Text(
+                            labels[value.toInt()],
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          );
+                        }
+                        return const Text('');
+                      },
+                    ),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: _getDailyCompletionsData(goalService),
+                    isCurved: true,
+                    preventCurveOverShooting: true,
+                    isStrokeCapRound: true,
+                    color: Theme.of(context).colorScheme.secondary,
+                    barWidth: 3,
+                    dotData: FlDotData(show: false),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary.withAlpha(30),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          ...goals.map((goal) => _buildGoalStatItem(goal)),
         ],
       ),
     );
   }
 
-  Widget _buildGoalStatItem(Goal goal) {
+  Widget _buildMarkingsVsMissesChart(GoalService goalService) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[200]!),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(goal.icon, color: goal.color, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  goal.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Marquages vs Oublis',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Streak: ${goal.currentStreak} jours | Total: ${goal.totalDays} jours',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary.withAlpha(70),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                const SizedBox(height: 4),
-                LinearProgressIndicator(
-                  value: goal.progress,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(goal.color),
+                child: Icon(
+                  FontAwesomeIcons.chartPie,
+                  color: Theme.of(context).colorScheme.secondary,
+                  size: 16,
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 200,
+            child: PieChart(
+              PieChartData(
+                sectionsSpace: 2,
+                centerSpaceRadius: 60,
+                sections: _getMarkingsVsMissesPieData(goalService),
+              ),
             ),
           ),
+          const SizedBox(height: 16),
+          _buildPieChartLegend(goalService),
         ],
       ),
+    );
+  }
+
+  List<FlSpot> _getDailyCompletionsData(GoalService goalService) {
+    return goalService.getDailyCompletionsData(_selectedTimeRange);
+  }
+
+  List<PieChartSectionData> _getMarkingsVsMissesPieData(
+    GoalService goalService,
+  ) {
+    // Utiliser les données de la semaine courante (timeRange = 0)
+    final data = goalService.getMarkingsVsMissesData(0);
+    final markings = data['markings'] ?? 0;
+    final misses = data['misses'] ?? 0;
+    final total = markings + misses;
+
+    if (total == 0) {
+      // Si aucune donnée, afficher un cercle vide avec un message
+      return [
+        PieChartSectionData(
+          color: Colors.grey[300]!,
+          value: 100,
+          title: 'Aucune donnée',
+          radius: 50,
+          titleStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+          ),
+        ),
+      ];
+    }
+
+    // Calculer les pourcentages
+    final markingsPercent = (markings / total * 100);
+    final missesPercent = (misses / total * 100);
+
+    return [
+      PieChartSectionData(
+        color: Theme.of(
+          context,
+        ).colorScheme.secondary, // Vert pour les marquages
+        value: markingsPercent,
+        title: '${markingsPercent.toStringAsFixed(0)}%',
+        radius: 50,
+        titleStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      PieChartSectionData(
+        color: const Color.fromARGB(
+          255,
+          234,
+          85,
+          75,
+        ), // Couleur secondaire pour les oublis
+        value: missesPercent,
+        title: '${missesPercent.toStringAsFixed(0)}%',
+        radius: 50,
+        titleStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildPieChartLegend(GoalService goalService) {
+    final data = goalService.getMarkingsVsMissesData(0);
+    final markings = data['markings'] ?? 0;
+    final misses = data['misses'] ?? 0;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildLegendItem(
+          'Marquages',
+          Theme.of(context).colorScheme.secondary,
+          markings,
+        ),
+        _buildLegendItem(
+          'Oublis',
+          const Color.fromARGB(255, 234, 85, 75),
+          misses,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color, int value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).textTheme.bodySmall?.color,
+              ),
+            ),
+            Text(
+              value.toString(),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).textTheme.titleMedium?.color,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

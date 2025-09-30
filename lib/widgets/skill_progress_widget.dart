@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'active_goal_calendar_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../screens/data_analytics_screen.dart';
 
 class SkillProgressWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -34,7 +35,14 @@ class SkillProgressWidget extends StatelessWidget {
             title: Text('HabitoX'),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DataAnalyticsScreen(),
+                    ),
+                  );
+                },
                 icon: FaIcon(
                   FontAwesomeIcons.chartBar,
                   size: isSmallScreen ? 20 : 22,
