@@ -11,6 +11,8 @@ import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 // Couleurs du design épuré
 class HomeColors {
@@ -96,25 +98,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildNavItem(
-                        icon: FontAwesomeIcons.home,
+                        icon: HugeIconsStroke.home03,
+                        iconSelected: HugeIconsSolid.home03,
                         label: AppLocalizations.of(context)!.home,
                         index: 0,
                         isCompact: true,
                       ),
                       _buildNavItem(
-                        icon: FontAwesomeIcons.listCheck,
+                        icon: HugeIconsStroke.task01,
+                        iconSelected: HugeIconsSolid.task01,
                         label: AppLocalizations.of(context)!.nav_objectives,
                         index: 1,
                         isCompact: true,
                       ),
                       _buildNavItem(
-                        icon: FontAwesomeIcons.trophy,
+                        icon: HugeIconsStroke.award01,
+                        iconSelected: HugeIconsSolid.award01,
                         label: AppLocalizations.of(context)!.nav_badges,
                         index: 2,
                         isCompact: true,
                       ),
                       _buildNavItem(
-                        icon: FontAwesomeIcons.user,
+                        icon: HugeIconsStroke.settings02,
+                        iconSelected: HugeIconsSolid.settings02,
                         label: AppLocalizations.of(context)!.nav_profile,
                         index: 3,
                         isCompact: true,
@@ -135,22 +141,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildNavItem(
-                        icon: FontAwesomeIcons.home,
+                        icon: HugeIconsStroke.home03,
+                        iconSelected: HugeIconsSolid.home03,
                         label: AppLocalizations.of(context)!.home,
                         index: 0,
                       ),
                       _buildNavItem(
-                        icon: FontAwesomeIcons.listCheck,
+                        icon: HugeIconsStroke.task01,
+                        iconSelected: HugeIconsSolid.task01,
                         label: AppLocalizations.of(context)!.nav_objectives,
                         index: 1,
                       ),
                       _buildNavItem(
-                        icon: FontAwesomeIcons.trophy,
+                        icon: HugeIconsStroke.award01,
+                        iconSelected: HugeIconsSolid.award01,
                         label: AppLocalizations.of(context)!.nav_badges,
                         index: 2,
                       ),
                       _buildNavItem(
-                        icon: FontAwesomeIcons.user,
+                        icon: HugeIconsStroke.settings02,
+                        iconSelected: HugeIconsSolid.settings02,
                         label: AppLocalizations.of(context)!.nav_profile,
                         index: 3,
                       ),
@@ -171,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildNavItem({
     required IconData icon,
+    required IconData iconSelected,
     required String label,
     required int index,
     bool isCompact = false,
@@ -192,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              icon,
+              isSelected ? iconSelected : icon,
               color: isSelected
                   ? Theme.of(context).colorScheme.secondary
                   : Theme.of(context).colorScheme.primaryFixed,
