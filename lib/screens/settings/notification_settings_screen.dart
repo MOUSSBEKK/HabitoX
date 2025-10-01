@@ -66,7 +66,7 @@ class _NotificationSettingsScreenState
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              activeThumbColor: Colors.green,
+              activeThumbColor: Theme.of(context).colorScheme.secondary,
               title: Text(
                 AppLocalizations.of(context)!.notification_toggle_title,
                 style: TextStyle(
@@ -230,16 +230,16 @@ class _NotificationSettingsScreenState
         hour: notificationService.notificationHour,
         minute: notificationService.notificationMinute,
       ),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: const Color.fromARGB(255, 199, 85, 85),
-            ),
-          ),
-          child: child!,
-        );
-      },
+      // builder: (context, child) {
+      //   return Theme(
+      //     data: Theme.of(context).copyWith(
+      //       colorScheme: ColorScheme.(
+      //         primary: const Color.fromARGB(255, 199, 85, 85),
+      //       ),
+      //     ),
+      //     child: child!,
+      //   );
+      // },
     );
 
     if (selectedTime != null) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/goal.dart';
 import '../l10n/app_localizations.dart';
-
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class GoalCard extends StatelessWidget {
   final Goal goal;
@@ -111,7 +111,7 @@ class GoalCard extends StatelessWidget {
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit, size: 20),
+                              Icon(HugeIconsStroke.pencilEdit02, size: 20),
                               SizedBox(width: 8),
                               Text(
                                 AppLocalizations.of(context)!.objectives_popup4,
@@ -126,7 +126,9 @@ class GoalCard extends StatelessWidget {
                           child: Row(
                             children: [
                               Icon(
-                                goal.isActive ? Icons.pause : Icons.play_arrow,
+                                goal.isActive
+                                    ? HugeIconsStroke.pause
+                                    : HugeIconsStroke.play,
                                 size: 20,
                               ),
                               const SizedBox(width: 8),
@@ -148,7 +150,11 @@ class GoalCard extends StatelessWidget {
                           value: 'delete',
                           child: Row(
                             children: [
-                              Icon(Icons.delete, size: 20, color: Colors.red),
+                              Icon(
+                                HugeIconsStroke.delete02,
+                                size: 20,
+                                color: Colors.red,
+                              ),
                               SizedBox(width: 8),
                               Text(
                                 AppLocalizations.of(context)!.objectives_popup3,
@@ -229,7 +235,7 @@ class GoalCard extends StatelessWidget {
           child: _buildStatItem(
             AppLocalizations.of(context)!.objectives_informations,
             '${goal.currentStreak}',
-            Icons.local_fire_department,
+            HugeIconsStroke.fire,
             Colors.orange,
           ),
         ),
@@ -238,7 +244,7 @@ class GoalCard extends StatelessWidget {
           child: _buildStatItem(
             AppLocalizations.of(context)!.objectives_informations2,
             '${goal.maxStreak}',
-            Icons.emoji_events,
+            HugeIconsStroke.champion,
             Colors.amber,
           ),
         ),

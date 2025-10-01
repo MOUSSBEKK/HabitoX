@@ -75,6 +75,23 @@ class HabitoXApp extends StatelessWidget {
             title: 'HabitoX',
             themeMode: themeService.themeMode,
             theme: ThemeData(
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: Color.fromRGBO(226, 239, 243, 1),
+                hourMinuteColor: Color.fromRGBO(226, 239, 243, 1),
+                dialBackgroundColor: Color.fromRGBO(255, 255, 255, 1),
+                hourMinuteTextColor: Color.fromARGB(255, 0, 0, 0),
+                dialTextColor: const Color.fromARGB(255, 0, 0, 0),
+                dialHandColor: Color(0xFFA7C6A5),
+                entryModeIconColor: Colors.black,
+                cancelButtonStyle: ButtonStyle(
+                  foregroundColor: WidgetStateProperty.all(Color(0xFF1f222a)),
+                  backgroundColor: WidgetStateProperty.all(Color(0xFFFFFFFF)),
+                ),
+                confirmButtonStyle: ButtonStyle(
+                  foregroundColor: WidgetStateProperty.all(Color(0xFF1f222a)),
+                  backgroundColor: WidgetStateProperty.all(Color(0xFFFFFFFF)),
+                ),
+              ),
               useMaterial3: true,
               primaryColor: AppColors.primaryColor,
               scaffoldBackgroundColor: Color.fromRGBO(226, 239, 243, 1),
@@ -143,6 +160,21 @@ class HabitoXApp extends StatelessWidget {
               iconTheme: IconThemeData(color: const Color(0xFF191919)),
             ),
             darkTheme: ThemeData(
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: Color(0xFF1f222a),
+                hourMinuteColor: Color(0xFF1f222a),
+                hourMinuteTextColor: Color.fromARGB(255, 255, 255, 255),
+                dialTextColor: const Color(0xFFFDFDFD),
+                dialHandColor: Color(0xFFA7C6A5),
+                cancelButtonStyle: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Color(0xFF1f222a)),
+                  foregroundColor: WidgetStateProperty.all(Color(0xFFFFFFFF)),
+                ),
+                confirmButtonStyle: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Color(0xFF1f222a)),
+                  foregroundColor: WidgetStateProperty.all(Color(0xFFFFFFFF)),
+                ),
+              ),
               useMaterial3: true,
               brightness: Brightness.dark,
               primaryColor: AppColors.primaryColor,

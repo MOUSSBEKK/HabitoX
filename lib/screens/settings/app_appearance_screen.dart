@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../services/theme_service.dart';
-import '../../constants/app_colors.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class AppAppearanceScreen extends StatefulWidget {
   const AppAppearanceScreen({super.key});
@@ -40,9 +40,9 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
   Widget _buildThemeSection() {
     return _buildSection(
       children: [
-        _buildThemeOption('Automatic', 'system', Icons.brightness_auto),
-        _buildThemeOption('Light', 'light', Icons.light_mode),
-        _buildThemeOption('Dark', 'dark', Icons.dark_mode),
+        _buildThemeOption('Automatic', 'system', HugeIconsStroke.cloud),
+        _buildThemeOption('Light', 'light', HugeIconsStroke.sun01),
+        _buildThemeOption('Dark', 'dark', HugeIconsStroke.moon02),
       ],
     );
   }

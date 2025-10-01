@@ -140,10 +140,14 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   TextFormField(
                     controller: _titleController,
+                    maxLength: 15,
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(
                         context,
                       )!.bottom_modal_input_title,
+                      helperStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
                       labelStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
@@ -169,13 +173,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           width: 1,
                         ),
                       ),
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 12, 12, 12),
-                        child: FaIcon(
-                          FontAwesomeIcons.fontAwesome,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -191,11 +188,15 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   TextFormField(
                     controller: _descriptionController,
+                    maxLength: 30,
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(
                         context,
                       )!.bottom_modal_input_desc,
                       labelStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                      helperStyle: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
                       hintText: AppLocalizations.of(
@@ -220,13 +221,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.secondary,
                           width: 1,
-                        ),
-                      ),
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 12, 12, 12),
-                        child: FaIcon(
-                          FontAwesomeIcons.fileLines,
-                          color: Theme.of(context).iconTheme.color,
                         ),
                       ),
                     ),

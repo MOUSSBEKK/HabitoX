@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -319,38 +320,22 @@ extension on _ProfileScreenState {
           items: [
             _SettingItem(
               key: SettingKey.appAppearance,
-              icon: FaIcon(
-                FontAwesomeIcons.eye,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.eye,
               title: AppLocalizations.of(context)!.settings_appearance,
             ),
             _SettingItem(
               key: SettingKey.dataAnalytics,
-              icon: FaIcon(
-                FontAwesomeIcons.chartBar,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.waterfallUp01,
               title: AppLocalizations.of(context)!.settings_data_analytics,
             ),
             _SettingItem(
               key: SettingKey.notifications,
-              icon: FaIcon(
-                FontAwesomeIcons.bell,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.notification01,
               title: AppLocalizations.of(context)!.settings_notifications,
             ),
             _SettingItem(
               key: SettingKey.language,
-              icon: FaIcon(
-                FontAwesomeIcons.language,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.languageSquare,
               title: AppLocalizations.of(context)!.settings_language,
             ),
           ],
@@ -385,38 +370,22 @@ extension on _ProfileScreenState {
             // ),
             _SettingItem(
               key: SettingKey.privacyPolicy,
-              icon: FaIcon(
-                FontAwesomeIcons.shieldHalved,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.securityCheck,
               title: AppLocalizations.of(context)!.settings_privacy_policy,
             ),
             _SettingItem(
               key: SettingKey.appUpdates,
-              icon: FaIcon(
-                FontAwesomeIcons.circleUp,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.edit01,
               title: AppLocalizations.of(context)!.settings_app_updates,
             ),
             _SettingItem(
               key: SettingKey.rateApp,
-              icon: FaIcon(
-                FontAwesomeIcons.star,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.star,
               title: AppLocalizations.of(context)!.settings_rate_app,
             ),
             _SettingItem(
               key: SettingKey.followInstagram,
-              icon: FaIcon(
-                FontAwesomeIcons.instagram,
-                size: 20,
-                color: Theme.of(context).iconTheme.color,
-              ),
+              icon: HugeIconsStroke.instagram,
               title: AppLocalizations.of(context)!.settings_follow_instagram,
             ),
           ],
@@ -431,11 +400,7 @@ extension on _ProfileScreenState {
             items: [
               _SettingItem(
                 key: SettingKey.resetOnboarding,
-                icon: FaIcon(
-                  FontAwesomeIcons.rotateLeft,
-                  size: 20,
-                  color: Theme.of(context).iconTheme.color,
-                ),
+                icon: HugeIconsStroke.refresh,
                 title: 'Reset Onboarding (Debug)',
               ),
             ],
@@ -511,7 +476,11 @@ extension on _ProfileScreenState {
 
     return ListTile(
       key: Key(item.key.name),
-      leading: item.icon,
+      leading: Icon(
+        item.icon,
+        size: 20,
+        color: Theme.of(context).iconTheme.color,
+      ),
       // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
       trailing: item.locked
@@ -721,7 +690,7 @@ enum SettingKey {
 
 class _SettingItem {
   final SettingKey key;
-  final FaIcon icon;
+  final IconData icon;
   final String title;
   final bool locked;
 

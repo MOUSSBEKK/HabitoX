@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'dart:io';
 import 'dart:ui';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'goals_screen.dart';
@@ -9,9 +7,7 @@ import 'badges_screen.dart';
 import '../widgets/skill_progress_widget.dart';
 import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 
 // Couleurs du design épuré

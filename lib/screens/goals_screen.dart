@@ -8,6 +8,7 @@ import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 // Couleurs du design épuré
 class GoalsColors {
@@ -220,7 +221,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
           .toList(),
       AppLocalizations.of(context)!.objectives_archived_empty_title,
       AppLocalizations.of(context)!.objectives_archived_empty_subtitle,
-      FontAwesomeIcons.folderOpen,
+      HugeIconsStroke.archive03,
       isTablet,
     );
   }

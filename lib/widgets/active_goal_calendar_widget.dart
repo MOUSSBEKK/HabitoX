@@ -220,7 +220,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           weekFontSize = 11;
         } else if (screenWidth < 600) {
           // Écrans moyens
-          cellSize = 36;
+          cellSize = 40;
           fontSize = 12;
           monthFontSize = 15;
           weekFontSize = 12;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'active_goal_calendar_widget.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../screens/data_analytics_screen.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class SkillProgressWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -43,8 +43,8 @@ class SkillProgressWidget extends StatelessWidget {
                     ),
                   );
                 },
-                icon: FaIcon(
-                  FontAwesomeIcons.chartBar,
+                icon: Icon(
+                  HugeIconsStroke.chart01,
                   size: isSmallScreen ? 20 : 22,
                 ),
               ),

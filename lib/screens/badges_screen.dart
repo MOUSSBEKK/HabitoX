@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/user_profile_service.dart';
 import '../models/user_profile.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class BadgesScreen extends StatefulWidget {
   const BadgesScreen({super.key});
@@ -430,7 +431,7 @@ class _BadgeProgressTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Icon(
-                    isUnlocked ? Icons.verified : Icons.lock_outline,
+                    isUnlocked ? Icons.verified : HugeIconsStroke.squareLock01,
                     color: isUnlocked ? color : Colors.grey[400],
                   ),
                 ],

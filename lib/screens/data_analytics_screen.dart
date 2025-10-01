@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../services/goal_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class DataAnalyticsScreen extends StatefulWidget {
   const DataAnalyticsScreen({super.key});
@@ -305,7 +306,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Icon(
-                  FontAwesomeIcons.chartPie,
+                  HugeIconsStroke.pieChart02,
                   color: Theme.of(context).colorScheme.secondary,
                   size: 16,
                 ),
