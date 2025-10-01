@@ -6,22 +6,22 @@ import '../services/goal_service.dart';
 
 class HomeWidgetService {
   static const String androidProvider = 'ActiveGoalHeatmapWidgetReceiver';
-  static const String appGroupId = 'group.com.example.habitox';
-  static const String iOSWidgetName = 'ActiveGoalHeatmapWidget';
-  static const String data_key = 'widget_data';
+  static const String appGroupId = "group.com.example.habitox.ActiveGoalHeatMapWidget";
+  static const String iOSWidgetName = "ActiveGoalHeatmapWidget";
+  static const String data_key = "text";
 
   static const MethodChannel _channel = MethodChannel(
     'com.example.habitox/widget',
   );
 
-  // Initialise l'App Group ID pour iOS
   static Future<void> initialize() async {
     try {
       await HomeWidget.setAppGroupId(appGroupId);
-      debugPrint('✅ App Group ID configuré pour iOS: $appGroupId');
+      debugPrint("test bonjour");
     } catch (e) {
-      debugPrint('❌ Erreur configuration App Group ID: $e');
+      debugPrint("non");
     }
+  
   }
 
   static Future<void> updateActiveGoalHeatmap(
@@ -59,18 +59,14 @@ class HomeWidgetService {
       final String result = await _channel.invokeMethod('updateWidget');
       debugPrint('✅ Widget Glance mis à jour avec succès: $result');
     } catch (e) {
-      debugPrint('❌ Mise à jour widget Android échouée: $e');
+      debugPrint('❌ Mise à jour widget Glance échouée: $e');
     }
 
     try {
-      // Mise à jour pour iOS
-      await HomeWidget.updateWidget(
-        androidName: androidProvider,
-        iOSName: iOSWidgetName,
-      );
-      debugPrint('✅ Widget iOS mis à jour avec succès');
+      await HomeWidget.updateWidget(iOSName: iOSWidgetName);
+      debugPrint("tout fonctionne correctement");
     } catch (e) {
-      debugPrint('❌ Mise à jour widget iOS échouée: $e');
+      debugPrint("non");
     }
   }
 

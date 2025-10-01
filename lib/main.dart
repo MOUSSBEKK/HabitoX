@@ -1,3 +1,5 @@
+import 'package:habitox/services/home_widget_service.dart';
+
 import 'constants/app_colors.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
 
-  // Initialiser l'App Group ID pour iOS
   await HomeWidgetService.initialize();
 
   final languageService = LanguageService();
