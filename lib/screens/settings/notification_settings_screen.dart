@@ -230,16 +230,6 @@ class _NotificationSettingsScreenState
         hour: notificationService.notificationHour,
         minute: notificationService.notificationMinute,
       ),
-      // builder: (context, child) {
-      //   return Theme(
-      //     data: Theme.of(context).copyWith(
-      //       colorScheme: ColorScheme.(
-      //         primary: const Color.fromARGB(255, 199, 85, 85),
-      //       ),
-      //     ),
-      //     child: child!,
-      //   );
-      // },
     );
 
     if (selectedTime != null) {

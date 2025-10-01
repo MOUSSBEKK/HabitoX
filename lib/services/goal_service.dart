@@ -445,15 +445,16 @@ class GoalService extends ChangeNotifier {
     final List<FlSpot> spots = [];
     if (timeRange == 0) {
       // Pour la semaine, on affiche les 7 derniers jours
-      for (int i = 6; i >= 0; i--) {
-        final date = now.subtract(Duration(days: i));
+      // Commencer par le lundi de cette semaine
+      final today = now.weekday; // 1 = lundi, 7 = dimanche
+      final monday = now.subtract(Duration(days: today - 1));
+
+      for (int i = 0; i < 7; i++) {
+        final date = monday.add(Duration(days: i));
         final dayKey =
             '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
         spots.add(
-          FlSpot(
-            6 - i.toDouble(),
-            ((dailyCompletions[dayKey]) ?? 0).toDouble(),
-          ),
+          FlSpot(i.toDouble(), ((dailyCompletions[dayKey]) ?? 0).toDouble()),
         );
       }
     } else if (timeRange == 1) {
@@ -502,7 +503,17 @@ class GoalService extends ChangeNotifier {
 
     switch (timeRange) {
       case 0: // Week
-        return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        // Afficher les vrais jours de la semaine courante
+        final today = now.weekday; // 1 = lundi, 7 = dimanche
+        final monday = now.subtract(Duration(days: today - 1));
+        final labels = <String>[];
+
+        for (int i = 0; i < 7; i++) {
+          final date = monday.add(Duration(days: i));
+          final dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+          labels.add(dayNames[date.weekday - 1]);
+        }
+        return labels;
       case 1: // Month
         return ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
       case 2: // Lifetime
@@ -513,7 +524,7 @@ class GoalService extends ChangeNotifier {
         }
         return labels;
       default:
-        return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        return ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
     }
   }
 
