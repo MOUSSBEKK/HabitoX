@@ -28,7 +28,7 @@ class LanguageSettingsScreen extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: theme.colorScheme.primary,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.04),
@@ -78,7 +78,7 @@ class _LanguageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isSelected = selectedCode == item.code;
-    final selectedColor = Colors.green;
+    final selectedColor = Theme.of(context).colorScheme.secondary;
     return ListTile(
       title: Text(
         item.label,

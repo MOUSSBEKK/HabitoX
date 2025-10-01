@@ -4,8 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/onboarding_service.dart';
 import '../l10n/app_localizations.dart';
 
-/// Page d'onboarding engageante pour les nouveaux utilisateurs de HabitoX
-/// Présente les principes et fonctionnalités de l'application de suivi d'habitudes
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -168,8 +166,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 children: [
                   Image.asset(
                     'assets/icon_launcher/logo_launcher_habitox.png',
-                    width: isSmallScreen ? 120 : (isTablet ? 200 : 160),
-                    height: isSmallScreen ? 120 : (isTablet ? 200 : 160),
+                    width: isSmallScreen ? 120 : (isTablet ? 200 : 180),
+                    height: isSmallScreen ? 120 : (isTablet ? 200 : 180),
                   ),
                   SizedBox(height: isSmallScreen ? 24 : (isTablet ? 48 : 40)),
 
@@ -384,14 +382,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       padding: EdgeInsets.all(isSmallScreen ? 12 : (isTablet ? 20 : 16)),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [

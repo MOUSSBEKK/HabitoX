@@ -12,43 +12,7 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
     with TickerProviderStateMixin {
   late AnimationController _refreshController;
 
-  final List<UpdateItem> _updateHistory = [
-    UpdateItem(
-      version: '2.1.0',
-      date: '15 janvier 2024',
-      description: 'Nouvelle interface utilisateur, amélioration des performances',
-      isInstalled: true,
-      features: [
-        'Interface redesignée',
-        'Performance améliorée de 40%',
-        'Nouveaux badges exclusifs',
-        'Correction de bugs mineurs'
-      ],
-    ),
-    UpdateItem(
-      version: '2.0.5',
-      date: '28 décembre 2023',
-      description: 'Corrections de bugs et optimisations',
-      isInstalled: true,
-      features: [
-        'Correction du crash au démarrage',
-        'Amélioration de la synchronisation',
-        'Optimisation de la batterie'
-      ],
-    ),
-    UpdateItem(
-      version: '2.0.0',
-      date: '10 décembre 2023',
-      description: 'Mise à jour majeure avec de nouvelles fonctionnalités',
-      isInstalled: true,
-      features: [
-        'Système de niveaux et XP',
-        'Calendrier interactif',
-        'Statistiques avancées',
-        'Mode sombre'
-      ],
-    ),
-  ];
+  final List<UpdateItem> _updateHistory = [];
 
   @override
   void initState() {
@@ -68,12 +32,7 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Mises à jour',
-        ),
-      ),
-      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(title: const Text('Mises à jour')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -101,7 +60,7 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'À venir dans v2.2.0',
+                'À venir dans v1.0.1',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -109,19 +68,9 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
                 ),
               ),
               const SizedBox(height: 12),
-              _buildFeatureItem('🔄', 'Synchronisation multi-appareils'),
-              _buildFeatureItem('👥', 'Défis entre amis'),
-              _buildFeatureItem('📊', 'Rapports hebdomadaires détaillés'),
-              _buildFeatureItem('🎨', 'Thèmes personnalisables'),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.shade200),
-                ),
-              ),
+              _buildFeatureItem('Import & Export des données'),
+              _buildFeatureItem('Ajout de phrase de motivation'),
+              _buildFeatureItem('Ajout de widget sur l\'écran d\'accueil'),
             ],
           ),
         ),
@@ -142,7 +91,10 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
     );
   }
 
-  Widget _buildSection({required String title, required List<Widget> children}) {
+  Widget _buildSection({
+    required String title,
+    required List<Widget> children,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -167,28 +119,19 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
               ),
             ],
           ),
-          child: Column(
-            children: children,
-          ),
+          child: Column(children: children),
         ),
       ],
     );
   }
 
-
-  Widget _buildFeatureItem(String emoji, String feature) {
+  Widget _buildFeatureItem(String feature) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 18)),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              feature,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+          Expanded(child: Text(feature, style: const TextStyle(fontSize: 14))),
         ],
       ),
     );
@@ -199,40 +142,33 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: update.isInstalled 
-              ? Colors.green.withOpacity(0.1)
+          color: update.isInstalled
+              ? Theme.of(context).colorScheme.secondary.withOpacity(0.1)
               : Colors.grey.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
           update.isInstalled ? Icons.check_circle : Icons.download,
-          color: update.isInstalled ? Colors.green : Colors.grey,
+          color: update.isInstalled
+              ? Theme.of(context).colorScheme.secondary
+              : Colors.grey,
         ),
       ),
       title: Text(
         'Version ${update.version}',
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             update.date,
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
           ),
           const SizedBox(height: 4),
           Text(
             update.description,
-            style: TextStyle(
-              color: Colors.grey.shade700,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
           ),
         ],
       ),
@@ -244,39 +180,36 @@ class _AppUpdatesScreenState extends State<AppUpdatesScreen>
             children: [
               const Text(
                 'Nouveautés :',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
               const SizedBox(height: 8),
-              ...update.features.map((feature) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.check,
-                      size: 16,
-                      color: AppColors.primaryColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        feature,
-                        style: const TextStyle(fontSize: 13),
+              ...update.features.map(
+                (feature) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.check,
+                        size: 16,
+                        color: AppColors.primaryColor,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          feature,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
             ],
           ),
         ),
       ],
     );
   }
-
-
 }
 
 class UpdateItem {

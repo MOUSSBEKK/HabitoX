@@ -21,33 +21,12 @@ class GoalService extends ChangeNotifier {
   List<Goal> get archivedGoals =>
       _goals.where((goal) => !goal.isActive && !goal.isCompleted).toList();
 
-  // Icônes prédéfinies pour les objectifs
-  // static final List<Map<String, dynamic>> predefinedIcons = [
-  //   {'icon': Icons.fitness_center, 'name': 'Fitness', 'color': Colors.red},
-  //   {'icon': Icons.music_note, 'name': 'Musique', 'color': Colors.purple},
-  //   {'icon': Icons.book, 'name': 'Lecture', 'color': Colors.blue},
-  //   {'icon': Icons.code, 'name': 'Programmation', 'color': Colors.green},
-  //   {'icon': Icons.language, 'name': 'Langues', 'color': Colors.orange},
-  //   {'icon': Icons.brush, 'name': 'Art', 'color': Colors.pink},
-  //   {'icon': Icons.psychology, 'name': 'Méditation', 'color': Colors.indigo},
-  //   {'icon': Icons.sports_soccer, 'name': 'Sport', 'color': Colors.teal},
-  //   {'icon': Icons.restaurant, 'name': 'Cuisine', 'color': Colors.amber},
-  //   {'icon': Icons.work, 'name': 'Travail', 'color': Colors.brown},
-  //   {'icon': Icons.school, 'name': 'Études', 'color': Colors.cyan},
-  //   {
-  //     'icon': Icons.volunteer_activism,
-  //     'name': 'Bénévolat',
-  //     'color': Colors.deepOrange,
-  //   },
-  // ];
-
   GoalService() {
     _loadGoals();
   }
 
   Future<void> _loadGoals() async {
     await initLocalStorage();
-    // 1) Lire depuis localstorage (source de vérité)
     final String? storedGoalsJson = localStorage.getItem(_goalsKey);
     List<dynamic> rawGoalsList = [];
     String? activeGoalId = localStorage.getItem(_activeGoalKey);

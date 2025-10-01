@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import '../../services/notification_service.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -34,9 +35,6 @@ class _NotificationSettingsScreenState
                     _buildTimeSelector(notificationService),
                     const SizedBox(height: 24),
                   ],
-                  _buildTestSection(notificationService),
-                  const SizedBox(height: 24),
-                  _buildInfoSection(),
                 ],
               ),
             );
@@ -95,7 +93,6 @@ class _NotificationSettingsScreenState
                 await notificationService.setNotificationsEnabled(value);
 
                 if (value && !notificationService.notificationsEnabled) {
-                  // Les permissions ont été refusées
                   _showPermissionDeniedDialog();
                 }
               },
@@ -127,7 +124,7 @@ class _NotificationSettingsScreenState
             const SizedBox(height: 16),
             ListTile(
               leading: Icon(
-                Icons.access_time,
+                HugeIconsStroke.clock02,
                 color: Theme.of(context).iconTheme.color,
               ),
               title: Text(
@@ -143,79 +140,6 @@ class _NotificationSettingsScreenState
                 color: Theme.of(context).iconTheme.color,
               ),
               onTap: () => _selectTime(notificationService),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTestSection(NotificationService notificationService) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Test des notifications',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Testez si les notifications fonctionnent correctement sur votre appareil.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _testNotification(notificationService),
-                icon: const Icon(Icons.notifications),
-                label: const Text('Envoyer une notification de test'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Information',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '• Les notifications vous rappellent de remplir vos objectifs quotidiens\n'
-              '• Vous pouvez modifier l\'heure à tout moment\n'
-              '• Les notifications respectent les paramètres système de votre appareil\n'
-              '• Sur certains appareils, vous devrez autoriser l\'application à fonctionner en arrière-plan',
-              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
@@ -248,38 +172,6 @@ class _NotificationSettingsScreenState
           type: ToastificationType.success,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
-        );
-      }
-    }
-  }
-
-  Future<void> _testNotification(
-    NotificationService notificationService,
-  ) async {
-    try {
-      await notificationService.showTestNotification();
-
-      if (mounted) {
-        toastification.show(
-          context: context,
-          title: const Text('Notification envoyée !'),
-          description: const Text(
-            'Si vous ne recevez pas la notification, vérifiez les paramètres de votre appareil.',
-          ),
-          type: ToastificationType.success,
-          style: ToastificationStyle.flatColored,
-          autoCloseDuration: const Duration(seconds: 4),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        toastification.show(
-          context: context,
-          title: const Text('Erreur'),
-          description: Text('Impossible d\'envoyer la notification: $e'),
-          type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
-          autoCloseDuration: const Duration(seconds: 4),
         );
       }
     }
