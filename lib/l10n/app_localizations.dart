@@ -834,11 +834,113 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get premium_btn;
 
+  /// No description provided for @notification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminders'**
+  String get notification_title;
+
   /// No description provided for @notification.
   ///
   /// In en, this message translates to:
   /// **'Do not forget to complete your task.'**
   String get notification;
+
+  /// No description provided for @notification_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a daily notification so you don\'t forget to complete your goals.'**
+  String get notification_subtitle;
+
+  /// No description provided for @notification_toggle_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications'**
+  String get notification_toggle_title;
+
+  /// No description provided for @notification_toggle_on_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are enabled'**
+  String get notification_toggle_on_subtitle;
+
+  /// No description provided for @notification_toggle_off_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are disabled'**
+  String get notification_toggle_off_subtitle;
+
+  /// No description provided for @notification_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification time'**
+  String get notification_time;
+
+  /// No description provided for @notification_choose_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Choisissez à quelle heure vous souhaitez recevoir votre rappel quotidien.'**
+  String get notification_choose_time;
+
+  /// No description provided for @notification_select_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time modified'**
+  String get notification_select_time;
+
+  /// No description provided for @notification_perms.
+  ///
+  /// In en, this message translates to:
+  /// **'Required permissions'**
+  String get notification_perms;
+
+  /// No description provided for @notification_perms_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To receive notifications, you must allow the app to send you notifications in your device settings.'**
+  String get notification_perms_subtitle;
+
+  /// No description provided for @analytics_completions.
+  ///
+  /// In en, this message translates to:
+  /// **'Completions'**
+  String get analytics_completions;
+
+  /// No description provided for @analytics_archives.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get analytics_archives;
+
+  /// No description provided for @analytics_completions_day.
+  ///
+  /// In en, this message translates to:
+  /// **'Completions / Day'**
+  String get analytics_completions_day;
+
+  /// No description provided for @analytics_marking_omissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Markings vs. Omissions'**
+  String get analytics_marking_omissions;
+
+  /// No description provided for @analytics_marking.
+  ///
+  /// In en, this message translates to:
+  /// **'Markings'**
+  String get analytics_marking;
+
+  /// No description provided for @analytics_omissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget'**
+  String get analytics_omissions;
+
+  /// No description provided for @analytics_nodata.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get analytics_nodata;
 }
 
 class _AppLocalizationsDelegate

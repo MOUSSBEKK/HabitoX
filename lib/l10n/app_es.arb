@@ -63,6 +63,8 @@
     }
   },
   "bottom_modal_btn": "Crear",
+  "bottom_modal_btn2": "Editar",
+  "progression": "Progreso",
 
   "calendar_progress": "Progreso del calendario",
   "calendar_informations": "Información",
@@ -83,6 +85,10 @@
   "objectives_archived_empty_subtitle": "Archiva tus objetivos para organizarlos",
   "objectives_informations": "Series",
   "objectives_informations2": "Mejor",
+  "objectives_popup1": "Detener",
+  "objectives_popup2": "Activar",
+  "objectives_popup3": "Eliminar",
+  "objectives_popup4": "Editar",
 
   "badge_earned": "Última insignia obtenida",
   "badge_level": "Nivel",
@@ -109,6 +115,9 @@
   "upgrade_card_subtitle": "Disfruta de todos los beneficios y explora más posibilidades",
 
   "settings_appearance": "Apariencia de la app",
+  "settings_categorie_prefetence": "Preferencias",
+  "settings_categorie_ressources": "Recursos",
+  "settings_notifications": "Notificaciones",
   "settings_data_analytics": "Datos y análisis",
   "settings_language": "Idioma",
   "settings_import": "Importar",
@@ -132,6 +141,25 @@
   "premium_feature_title2_desc": "Accede a tus hábitos favoritos desde la pantalla de inicio",
   "premium_feature_title3_desc": "Visualiza tus tendencias y constancia",
   "premium_feature_title4_desc": "Recompensas únicas adaptadas a tus objetivos",
-  "premium_btn": "Continuar"
+  "premium_btn": "Continuar",
+  "notification_title": "Recordatorios diarios",
+  "notification": "No olvides completar tu tarea.",
+  "notification_subtitle": "Recibe una notificación diaria para no olvidar completar tus objetivos.",
+  "notification_toggle_title": "Activar notificaciones",
+  "notification_toggle_on_subtitle": "Las notificaciones están activadas",
+  "notification_toggle_off_subtitle": "Las notificaciones están desactivadas",
+  "notification_time": "Hora de la notificación",
+  "notification_choose_time": "Elige a qué hora deseas recibir tu recordatorio diario.",
+  "notification_select_time": "Hora modificada",
+  "notification_perms": "Permisos requeridos",
+  "notification_perms_subtitle": "Para recibir notificaciones, debes permitir que la app te envíe notificaciones en los ajustes de tu dispositivo.",
+
+  "analytics_completions": "Completados",
+  "analytics_archives": "Archivados",
+  "analytics_completions_day": "Completados / día",
+  "analytics_marking_omissions": "Marcados vs. Omisiones",
+  "analytics_marking": "Marcados",
+  "analytics_omissions": "Omisiones",
+  "analytics_nodata": "Sin datos"
 
 }

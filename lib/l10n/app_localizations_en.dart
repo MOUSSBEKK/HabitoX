@@ -389,5 +389,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premium_btn => 'Continue';
 
   @override
+  String get notification_title => 'Daily reminders';
+
+  @override
   String get notification => 'Do not forget to complete your task.';
+
+  @override
+  String get notification_subtitle =>
+      'Get a daily notification so you don\'t forget to complete your goals.';
+
+  @override
+  String get notification_toggle_title => 'Turn on notifications';
+
+  @override
+  String get notification_toggle_on_subtitle => 'Notifications are enabled';
+
+  @override
+  String get notification_toggle_off_subtitle => 'Notifications are disabled';
+
+  @override
+  String get notification_time => 'Notification time';
+
+  @override
+  String get notification_choose_time =>
+      'Choisissez à quelle heure vous souhaitez recevoir votre rappel quotidien.';
+
+  @override
+  String get notification_select_time => 'Time modified';
+
+  @override
+  String get notification_perms => 'Required permissions';
+
+  @override
+  String get notification_perms_subtitle =>
+      'To receive notifications, you must allow the app to send you notifications in your device settings.';
+
+  @override
+  String get analytics_completions => 'Completions';
+
+  @override
+  String get analytics_archives => 'Archived';
+
+  @override
+  String get analytics_completions_day => 'Completions / Day';
+
+  @override
+  String get analytics_marking_omissions => 'Markings vs. Omissions';
+
+  @override
+  String get analytics_marking => 'Markings';
+
+  @override
+  String get analytics_omissions => 'Forget';
+
+  @override
+  String get analytics_nodata => 'No data';
 }

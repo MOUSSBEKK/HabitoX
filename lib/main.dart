@@ -132,8 +132,11 @@ class HabitoXApp extends StatelessWidget {
 
               // Divider
               dividerTheme: DividerThemeData(
-                color: Colors.grey.shade200,
-                thickness: 1,
+                radius: BorderRadius.circular(16),
+                indent: 16,
+                endIndent: 16,
+                // thickness: 0.2,
+                color: Colors.grey[600]!,
               ),
 
               // Icon
@@ -176,6 +179,7 @@ class HabitoXApp extends StatelessWidget {
               ),
 
               appBarTheme: AppBarTheme(
+                actionsPadding: EdgeInsets.only(right: 16),
                 elevation: 0,
                 centerTitle: true,
                 backgroundColor: Color(0xFF181920),
@@ -187,8 +191,11 @@ class HabitoXApp extends StatelessWidget {
                 ),
               ),
               dividerTheme: DividerThemeData(
-                color: Colors.white.withOpacity(0.12),
-                thickness: 1,
+                radius: BorderRadius.circular(16),
+                indent: 16,
+                endIndent: 16,
+                // thickness: 0.2,
+                color: Colors.grey[300]!,
               ),
 
               cardColor: const Color(0xFF1F232B),

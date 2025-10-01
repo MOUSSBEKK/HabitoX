@@ -54,34 +54,38 @@ class _NotificationSettingsScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Rappels quotidiens',
+              AppLocalizations.of(context)!.notification_title,
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Recevez une notification chaque jour pour ne pas oublier de remplir vos objectifs.',
+              AppLocalizations.of(context)!.notification_subtitle,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             SwitchListTile(
               activeThumbColor: Colors.green,
               title: Text(
-                'Activer les notifications',
+                AppLocalizations.of(context)!.notification_toggle_title,
                 style: TextStyle(
                   color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
               subtitle: notificationService.notificationsEnabled
                   ? Text(
-                      'Les notifications sont activées',
+                      AppLocalizations.of(
+                        context,
+                      )!.notification_toggle_on_subtitle,
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                     )
                   : Text(
-                      'Les notifications sont désactivées',
+                      AppLocalizations.of(
+                        context,
+                      )!.notification_toggle_off_subtitle,
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
@@ -110,24 +114,34 @@ class _NotificationSettingsScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Heure de notification',
+              AppLocalizations.of(context)!.notification_time,
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Choisissez à quelle heure vous souhaitez recevoir votre rappel quotidien.',
-              style: Theme.of(context).textTheme.bodyMedium,
+              AppLocalizations.of(context)!.notification_choose_time,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.access_time),
-              title: const Text('Heure de notification'),
+              leading: Icon(
+                Icons.access_time,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.notification_time,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               subtitle: Text(
                 '${notificationService.notificationHour.toString().padLeft(2, '0')}:${notificationService.notificationMinute.toString().padLeft(2, '0')}',
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: Icon(
+                Icons.chevron_right,
+                color: Theme.of(context).iconTheme.color,
+              ),
               onTap: () => _selectTime(notificationService),
             ),
           ],
@@ -216,6 +230,16 @@ class _NotificationSettingsScreenState
         hour: notificationService.notificationHour,
         minute: notificationService.notificationMinute,
       ),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: const Color.fromARGB(255, 199, 85, 85),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (selectedTime != null) {
@@ -227,7 +251,7 @@ class _NotificationSettingsScreenState
       if (mounted) {
         toastification.show(
           context: context,
-          title: const Text('Heure modifiée'),
+          title: Text(AppLocalizations.of(context)!.notification_select_time),
           description: Text(
             'Les notifications seront envoyées à ${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}',
           ),
@@ -276,9 +300,9 @@ class _NotificationSettingsScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Permissions requises'),
-          content: const Text(
-            'Pour recevoir des notifications, vous devez autoriser l\'application à vous envoyer des notifications dans les paramètres de votre appareil.',
+          title: Text(AppLocalizations.of(context)!.notification_perms),
+          content: Text(
+            AppLocalizations.of(context)!.notification_perms_subtitle,
           ),
           actions: [
             TextButton(

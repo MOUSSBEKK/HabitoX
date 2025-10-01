@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../services/theme_service.dart';
 import '../../constants/app_colors.dart';
 
-
 class AppAppearanceScreen extends StatefulWidget {
   const AppAppearanceScreen({super.key});
 
@@ -69,9 +68,7 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
             ),
             child: Column(
               children: [
-                for (int i = 0; i < children.length; i++) ...[
-                  children[i],
-                ],
+                for (int i = 0; i < children.length; i++) ...[children[i]],
               ],
             ),
           ),
@@ -83,7 +80,7 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
   Widget _buildThemeOption(String title, String value, IconData icon) {
     final isSelected = _selectedTheme == value;
     final theme = Theme.of(context);
-    final selectedColor = AppColors.primaryColor;
+    final selectedColor = theme.colorScheme.secondary;
 
     return ListTile(
       leading: Container(

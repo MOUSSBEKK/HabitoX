@@ -143,7 +143,25 @@
   "premium_feature_title4_desc": "Unique rewards tailored to your goals",
   "premium_btn": "Continue",
 
-  "notification": "Daily reminders",
-  "notification": "Do not forget to complete your task."
+  "notification_title": "Daily reminders",
+  "notification": "Do not forget to complete your task.",
+
+  "notification_subtitle": "Get a daily notification so you don't forget to complete your goals.",
+  "notification_toggle_title": "Turn on notifications",
+  "notification_toggle_on_subtitle": "Notifications are enabled",
+  "notification_toggle_off_subtitle": "Notifications are disabled",
+  "notification_time": "Notification time",
+  "notification_choose_time": "Choisissez à quelle heure vous souhaitez recevoir votre rappel quotidien.",
+  "notification_select_time": "Time modified",
+  "notification_perms": "Required permissions",
+  "notification_perms_subtitle": "To receive notifications, you must allow the app to send you notifications in your device settings.",
+
+  "analytics_completions": "Completions",
+  "analytics_archives": "Archived",
+  "analytics_completions_day": "Completions / Day",
+  "analytics_marking_omissions": "Markings vs. Omissions",
+  "analytics_marking": "Markings",
+  "analytics_omissions": "Forget",
+  "analytics_nodata": "No data"
 }
 

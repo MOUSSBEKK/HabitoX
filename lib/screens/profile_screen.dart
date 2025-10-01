@@ -327,13 +327,13 @@ extension on _ProfileScreenState {
               title: AppLocalizations.of(context)!.settings_appearance,
             ),
             _SettingItem(
-              key: SettingKey.language,
+              key: SettingKey.dataAnalytics,
               icon: FaIcon(
-                FontAwesomeIcons.language,
+                FontAwesomeIcons.chartBar,
                 size: 20,
                 color: Theme.of(context).iconTheme.color,
               ),
-              title: AppLocalizations.of(context)!.settings_language,
+              title: AppLocalizations.of(context)!.settings_data_analytics,
             ),
             _SettingItem(
               key: SettingKey.notifications,
@@ -345,13 +345,13 @@ extension on _ProfileScreenState {
               title: AppLocalizations.of(context)!.settings_notifications,
             ),
             _SettingItem(
-              key: SettingKey.dataAnalytics,
+              key: SettingKey.language,
               icon: FaIcon(
-                FontAwesomeIcons.chartBar,
+                FontAwesomeIcons.language,
                 size: 20,
                 color: Theme.of(context).iconTheme.color,
               ),
-              title: AppLocalizations.of(context)!.settings_data_analytics,
+              title: AppLocalizations.of(context)!.settings_language,
             ),
           ],
           isTablet: isTablet,
@@ -491,11 +491,7 @@ extension on _ProfileScreenState {
             children: [
               for (int i = 0; i < items.length; i++) ...[
                 _buildSettingTile(items[i], isTablet),
-                if (i != items.length - 1)
-                  Divider(
-                    height: 1,
-                    color: Theme.of(context).dividerTheme.color,
-                  ),
+                if (i != items.length - 1) Divider(height: 0.5),
               ],
             ],
           ),

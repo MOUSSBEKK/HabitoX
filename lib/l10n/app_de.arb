@@ -63,6 +63,8 @@
     }
   },
   "bottom_modal_btn": "Erstellen",
+  "bottom_modal_btn2": "Bearbeiten",
+  "progression": "Fortschritt",
 
   "calendar_progress": "Kalenderfortschritt",
   "calendar_informations": "Informationen",
@@ -83,6 +85,10 @@
   "objectives_archived_empty_subtitle": "Archiviere deine Ziele, um sie zu organisieren",
   "objectives_informations": "Serien",
   "objectives_informations2": "Beste",
+  "objectives_popup1": "Stoppen",
+  "objectives_popup2": "Aktivieren",
+  "objectives_popup3": "Löschen",
+  "objectives_popup4": "Bearbeiten",
 
   "badge_earned": "Zuletzt erhaltenes Abzeichen",
   "badge_level": "Level",
@@ -109,6 +115,9 @@
   "upgrade_card_subtitle": "Genieße alle Vorteile und entdecke mehr Möglichkeiten",
 
   "settings_appearance": "App-Erscheinungsbild",
+  "settings_categorie_prefetence": "Präferenzen",
+  "settings_categorie_ressources": "Ressourcen",
+  "settings_notifications": "Benachrichtigungen",
   "settings_data_analytics": "Daten & Analysen",
   "settings_language": "Sprache",
   "settings_import": "Importieren",
@@ -132,5 +141,24 @@
   "premium_feature_title2_desc": "Greife vom Startbildschirm auf deine Lieblingsgewohnheiten zu",
   "premium_feature_title3_desc": "Sieh dir deine Trends und Beständigkeit an",
   "premium_feature_title4_desc": "Einzigartige Belohnungen, die zu deinen Zielen passen",
-  "premium_btn": "Weiter"
+  "premium_btn": "Weiter",
+  "notification_title": "Tägliche Erinnerungen",
+  "notification": "Vergiss nicht, deine Aufgabe zu erledigen.",
+  "notification_subtitle": "Erhalte täglich eine Benachrichtigung, damit du deine Ziele nicht vergisst.",
+  "notification_toggle_title": "Benachrichtigungen aktivieren",
+  "notification_toggle_on_subtitle": "Benachrichtigungen sind aktiviert",
+  "notification_toggle_off_subtitle": "Benachrichtigungen sind deaktiviert",
+  "notification_time": "Benachrichtigungszeit",
+  "notification_choose_time": "Wähle die Uhrzeit für deine tägliche Erinnerung.",
+  "notification_select_time": "Uhrzeit geändert",
+  "notification_perms": "Erforderliche Berechtigungen",
+  "notification_perms_subtitle": "Um Benachrichtigungen zu erhalten, musst du der App erlauben, Benachrichtigungen in den Geräteeinstellungen zu senden.",
+
+  "analytics_completions": "Abschlüsse",
+  "analytics_archives": "Archiviert",
+  "analytics_completions_day": "Abschlüsse / Tag",
+  "analytics_marking_omissions": "Markierungen vs. Auslassungen",
+  "analytics_marking": "Markierungen",
+  "analytics_omissions": "Auslassungen",
+  "analytics_nodata": "Keine Daten"
 }

@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../services/goal_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../l10n/app_localizations.dart';
 
 class DataAnalyticsScreen extends StatefulWidget {
   const DataAnalyticsScreen({super.key});
@@ -92,7 +93,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
       children: [
         Expanded(
           child: _buildGlobalStatCard(
-            'Completions',
+            AppLocalizations.of(context)!.analytics_completions,
             goalService.totalCompletedGoals.toString(),
             FontAwesomeIcons.circleCheck,
           ),
@@ -100,7 +101,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
         const SizedBox(width: 16),
         Expanded(
           child: _buildGlobalStatCard(
-            'Archivés',
+            AppLocalizations.of(context)!.analytics_archives,
             _getArchivedGoalsCount(goalService).toString(),
             FontAwesomeIcons.archive,
           ),
@@ -173,7 +174,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Completions / Day',
+                AppLocalizations.of(context)!.analytics_completions_day,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -290,7 +291,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Marquages vs Oublis',
+                AppLocalizations.of(context)!.analytics_marking_omissions,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -348,7 +349,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
         PieChartSectionData(
           color: Colors.grey[300]!,
           value: 100,
-          title: 'Aucune donnée',
+          title: AppLocalizations.of(context)!.analytics_nodata,
           radius: 50,
           titleStyle: const TextStyle(
             fontSize: 12,
@@ -405,12 +406,12 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildLegendItem(
-          'Marquages',
+          AppLocalizations.of(context)!.analytics_marking,
           Theme.of(context).colorScheme.secondary,
           markings,
         ),
         _buildLegendItem(
-          'Oublis',
+          AppLocalizations.of(context)!.analytics_omissions,
           const Color.fromARGB(255, 234, 85, 75),
           misses,
         ),

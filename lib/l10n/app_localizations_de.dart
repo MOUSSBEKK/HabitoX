@@ -42,7 +42,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get accep => 'Ok';
 
   @override
-  String get progression => 'Progress';
+  String get progression => 'Fortschritt';
 
   @override
   String get onboarding_title =>
@@ -166,7 +166,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bottom_modal_btn => 'Erstellen';
 
   @override
-  String get bottom_modal_btn2 => 'Edit';
+  String get bottom_modal_btn2 => 'Bearbeiten';
 
   @override
   String get calendar_progress => 'Kalenderfortschritt';
@@ -227,16 +227,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get objectives_informations2 => 'Beste';
 
   @override
-  String get objectives_popup1 => 'Stop';
+  String get objectives_popup1 => 'Stoppen';
 
   @override
-  String get objectives_popup2 => 'Activate';
+  String get objectives_popup2 => 'Aktivieren';
 
   @override
-  String get objectives_popup3 => 'Supprimer';
+  String get objectives_popup3 => 'Löschen';
 
   @override
-  String get objectives_popup4 => 'Edit';
+  String get objectives_popup4 => 'Bearbeiten';
 
   @override
   String get badge_earned => 'Zuletzt erhaltenes Abzeichen';
@@ -309,16 +309,16 @@ class AppLocalizationsDe extends AppLocalizations {
       'Genieße alle Vorteile und entdecke mehr Möglichkeiten';
 
   @override
-  String get settings_categorie_prefetence => 'Preferences';
+  String get settings_categorie_prefetence => 'Präferenzen';
 
   @override
-  String get settings_categorie_ressources => 'Resources';
+  String get settings_categorie_ressources => 'Ressourcen';
 
   @override
   String get settings_appearance => 'App-Erscheinungsbild';
 
   @override
-  String get settings_notifications => 'Notifications';
+  String get settings_notifications => 'Benachrichtigungen';
 
   @override
   String get settings_data_analytics => 'Daten & Analysen';
@@ -396,5 +396,61 @@ class AppLocalizationsDe extends AppLocalizations {
   String get premium_btn => 'Weiter';
 
   @override
-  String get notification => 'Do not forget to complete your task.';
+  String get notification_title => 'Tägliche Erinnerungen';
+
+  @override
+  String get notification => 'Vergiss nicht, deine Aufgabe zu erledigen.';
+
+  @override
+  String get notification_subtitle =>
+      'Erhalte täglich eine Benachrichtigung, damit du deine Ziele nicht vergisst.';
+
+  @override
+  String get notification_toggle_title => 'Benachrichtigungen aktivieren';
+
+  @override
+  String get notification_toggle_on_subtitle =>
+      'Benachrichtigungen sind aktiviert';
+
+  @override
+  String get notification_toggle_off_subtitle =>
+      'Benachrichtigungen sind deaktiviert';
+
+  @override
+  String get notification_time => 'Benachrichtigungszeit';
+
+  @override
+  String get notification_choose_time =>
+      'Wähle die Uhrzeit für deine tägliche Erinnerung.';
+
+  @override
+  String get notification_select_time => 'Uhrzeit geändert';
+
+  @override
+  String get notification_perms => 'Erforderliche Berechtigungen';
+
+  @override
+  String get notification_perms_subtitle =>
+      'Um Benachrichtigungen zu erhalten, musst du der App erlauben, Benachrichtigungen in den Geräteeinstellungen zu senden.';
+
+  @override
+  String get analytics_completions => 'Abschlüsse';
+
+  @override
+  String get analytics_archives => 'Archiviert';
+
+  @override
+  String get analytics_completions_day => 'Abschlüsse / Tag';
+
+  @override
+  String get analytics_marking_omissions => 'Markierungen vs. Auslassungen';
+
+  @override
+  String get analytics_marking => 'Markierungen';
+
+  @override
+  String get analytics_omissions => 'Auslassungen';
+
+  @override
+  String get analytics_nodata => 'Keine Daten';
 }

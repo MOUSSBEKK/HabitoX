@@ -64,6 +64,8 @@
     }
   },
   "bottom_modal_btn": "Créer",
+  "bottom_modal_btn2": "Modifier",
+  "progression": "Progression",
 
   "calendar_progress": "Progression du calendrier",
   "calendar_informations": "Informations",
@@ -84,6 +86,10 @@
   "objectives_archived_empty_subtitle": "Archivez vos objectifs pour les organiser",
   "objectives_informations": "Séries",
   "objectives_informations2": "Meilleur",
+  "objectives_popup1": "Arrêter",
+  "objectives_popup2": "Activer",
+  "objectives_popup3": "Supprimer",
+  "objectives_popup4": "Modifier",
 
   "badge_earned": "Dernier badge obtenu",
   "badge_level": "Niveau",
@@ -110,6 +116,9 @@
   "upgrade_card_subtitle": "Profitez de tous les avantages et explorez plus de possibilités",
 
   "settings_appearance": "Apparence de l'application",
+  "settings_categorie_prefetence": "Préférences",
+  "settings_categorie_ressources": "Ressources",
+  "settings_notifications": "Notifications",
   "settings_data_analytics": "Données & Analyses",
   "analytics": "Analytics",
   "settings_language": "Langue",
@@ -135,4 +144,24 @@
   "premium_feature_title3_desc": "Visualisez vos tendances et votre régularité",
   "premium_feature_title4_desc": "Récompenses uniques adaptées à vos objectifs",
   "premium_btn": "Continuer"
+,
+  "notification_title": "Rappels quotidiens",
+  "notification": "N'oubliez pas de compléter votre tâche.",
+  "notification_subtitle": "Recevez une notification quotidienne pour ne pas oublier de compléter vos objectifs.",
+  "notification_toggle_title": "Activer les notifications",
+  "notification_toggle_on_subtitle": "Les notifications sont activées",
+  "notification_toggle_off_subtitle": "Les notifications sont désactivées",
+  "notification_time": "Heure de notification",
+  "notification_choose_time": "Choisissez à quelle heure vous souhaitez recevoir votre rappel quotidien.",
+  "notification_select_time": "Heure modifiée",
+  "notification_perms": "Autorisations requises",
+  "notification_perms_subtitle": "Pour recevoir des notifications, vous devez autoriser l'application à vous envoyer des notifications dans les réglages de votre appareil.",
+
+  "analytics_completions": "Achèvements",
+  "analytics_archives": "Archivés",
+  "analytics_completions_day": "Achèvements / jour",
+  "analytics_marking_omissions": "Marquages vs. Oublis",
+  "analytics_marking": "Marquages",
+  "analytics_omissions": "Oublis",
+  "analytics_nodata": "Aucune donnée"
 }
