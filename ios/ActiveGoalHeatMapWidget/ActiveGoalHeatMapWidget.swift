@@ -10,50 +10,68 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+        SimpleEntry(date: Date(), title: "HabitoX", heatmapImagePath: nil)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
+        let prefs = UserDefaults(suiteName: "group.com.example.habitox")
+        let title = prefs?.string(forKey: "widget_title") ?? "HabitoX"
+        let heatmapImagePath = prefs?.string(forKey: "heatmap_image")
+        
+        let entry = SimpleEntry(date: Date(), title: title, heatmapImagePath: heatmapImagePath)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
+        getSnapshot(in: context) { (entry) in
+            let timeline = Timeline(entries: [entry], policy: .atEnd)
+            completion(timeline)
         }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
     }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let emoji: String
+    let title: String
+    let heatmapImagePath: String?
 }
 
 struct ActiveGoalHeatMapWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
-
-            Text("Emoji:")
-            Text(entry.emoji)
+        VStack(alignment: .leading, spacing: 8) {
+            // Titre de l'objectif
+            Text(entry.title)
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding(.horizontal, 8)
+                .padding(.top, 8)
+            
+            // Image de la heatmap
+            if let imagePath = entry.heatmapImagePath,
+               let image = UIImage(contentsOfFile: imagePath) {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxHeight: 120)
+                    .padding(.horizontal, 8)
+            } else {
+                // Placeholder si pas d'image
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(height: 120)
+                    .overlay(
+                        Text("Aucun objectif actif")
+                            .foregroundColor(.gray)
+                    )
+                    .padding(.horizontal, 8)
+            }
+            
+            Spacer()
         }
+        .background(Color(red: 0.12, green: 0.13, blue: 0.16)) // #1F222A
+        .cornerRadius(12)
     }
 }
 
@@ -71,14 +89,15 @@ struct ActiveGoalHeatMapWidget: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("HabitoX Heatmap")
+        .description("Affiche la heatmap de votre objectif actif")
+        .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemMedium) {
     ActiveGoalHeatMapWidget()
 } timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+    SimpleEntry(date: .now, title: "Mon Objectif", heatmapImagePath: nil)
+    SimpleEntry(date: .now, title: "HabitoX", heatmapImagePath: nil)
 }

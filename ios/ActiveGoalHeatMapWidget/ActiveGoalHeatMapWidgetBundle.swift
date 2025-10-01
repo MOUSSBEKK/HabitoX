@@ -14,3 +14,4 @@ struct ActiveGoalHeatMapWidgetBundle: WidgetBundle {
         ActiveGoalHeatMapWidget()
     }
 }
+
