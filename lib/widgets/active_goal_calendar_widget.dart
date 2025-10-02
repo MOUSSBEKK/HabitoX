@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
@@ -147,7 +148,11 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     CalendarService calendarService,
     BuildContext context,
   ) {
-    final progress = activeGoal != null ? activeGoal.totalDays : 0;
+    // Données factices pour le progrès
+    final random = Random();
+    final progress =
+        random.nextInt(shape.totalDays ~/ 2) +
+        (shape.totalDays ~/ 3); // Entre 1/3 et 5/6 du total
     final maxDays = shape.totalDays;
 
     return Column(
@@ -230,36 +235,31 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         }
 
         final now = DateTime.now();
-        final today = DateTime(now.year, now.month, now.day);
+        final today = DateTime(now.year, now.month, 1);
         final start = now.subtract(const Duration(days: 90));
 
         final Map<DateTime, int> datasets = {};
 
-        // Ajouter les jours complétés (intensité maximale)
-        for (final session in activeGoal.completedSessions) {
-          final day = DateTime(session.year, session.month, session.day);
-          if (day.isBefore(start) || day.isAfter(now)) continue;
-          datasets[day] = 7; // niveau d'intensité max correspondant à colorsets
+        // Données factices pour la heatmap
+        final random = Random();
+
+        // Générer des données pour les 90 derniers jours (intensité faible à moyenne)
+
+        // Ajouter des jours futurs avec intensité maximale (7)
+        for (int i = 1; i <= 30; i++) {
+          final futureDay = today.add(Duration(days: i));
+          // 40% de chance d'avoir une intensité maximale pour les jours futurs
+          datasets[futureDay] = 1; // intensité maximale pour les jours futurs
         }
 
-        // Calculer les jours restants à compléter
-        final completedDays = activeGoal.completedSessions.length;
-        final remainingDays = activeGoal.targetDays - completedDays;
-
-        // Ajouter les jours futurs à compléter (intensité faible)
-        if (remainingDays > 0) {
-          for (int i = 0; i < remainingDays; i++) {
-            final futureDay = today.add(Duration(days: i + 1));
-            // Vérifier que le jour futur n'est pas déjà complété
-            final isAlreadyCompleted = activeGoal.completedSessions.any(
-              (session) =>
-                  DateTime(session.year, session.month, session.day) ==
-                  futureDay,
-            );
-            if (!isAlreadyCompleted) {
-              datasets[futureDay] =
-                  1; // niveau d'intensité faible pour les jours futurs
-            }
+        for (int i = 0; i < 30; i++) {
+          final day = today.add(Duration(days: i));
+          // if (day.isAfter(now)) continue;
+          debugPrint('day: $day');
+          // 60% de chance d'avoir une activité ce jour-là
+          if (random.nextDouble() < 0.6) {
+            // Niveau d'intensité aléatoire entre 1 et 5 pour les jours passés
+            datasets[day] = 6;
           }
         }
 

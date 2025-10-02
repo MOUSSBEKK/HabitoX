@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +14,6 @@ class DataAnalyticsScreen extends StatefulWidget {
 }
 
 class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
-  int _selectedTimeRange = 0; // 0: Week, 1: Month, 2: Lifetime
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,12 +88,19 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
   // }
 
   Widget _buildGlobalStatsCards(GoalService goalService) {
+    // Données factices pour les statistiques
+    final random = Random();
+    final completedGoals =
+        random.nextInt(50) + 20; // Entre 20 et 70 objectifs complétés
+    final archivedGoals =
+        random.nextInt(15) + 5; // Entre 5 et 20 objectifs archivés
+
     return Row(
       children: [
         Expanded(
           child: _buildGlobalStatCard(
             AppLocalizations.of(context)!.analytics_completions,
-            goalService.totalCompletedGoals.toString(),
+            completedGoals.toString(),
             HugeIconsStroke.checkList,
           ),
         ),
@@ -102,7 +108,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
         Expanded(
           child: _buildGlobalStatCard(
             AppLocalizations.of(context)!.analytics_archives,
-            _getArchivedGoalsCount(goalService).toString(),
+            archivedGoals.toString(),
             HugeIconsStroke.archive,
           ),
         ),
@@ -154,10 +160,6 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
         ],
       ),
     );
-  }
-
-  int _getArchivedGoalsCount(GoalService goalService) {
-    return goalService.getArchivedGoalsCount();
   }
 
   Widget _buildDailyCompletionsChart(GoalService goalService) {
@@ -233,9 +235,16 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        final labels = goalService.getChartLabels(
-                          _selectedTimeRange,
-                        );
+                        // Labels factices pour les 7 derniers jours
+                        final labels = [
+                          'Lun',
+                          'Mar',
+                          'Mer',
+                          'Jeu',
+                          'Ven',
+                          'Sam',
+                          'Dim',
+                        ];
                         if (value.toInt() >= 0 &&
                             value.toInt() < labels.length) {
                           return Text(
@@ -331,16 +340,27 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
   }
 
   List<FlSpot> _getDailyCompletionsData(GoalService goalService) {
-    return goalService.getDailyCompletionsData(_selectedTimeRange);
+    // Données factices pour le graphique des complétions quotidiennes
+    final random = Random();
+    final List<FlSpot> spots = [];
+
+    // Générer des données pour les 7 derniers jours
+    for (int i = 0; i < 7; i++) {
+      final completions =
+          random.nextInt(8) + 1; // Entre 1 et 8 complétions par jour
+      spots.add(FlSpot(i.toDouble(), completions.toDouble()));
+    }
+
+    return spots;
   }
 
   List<PieChartSectionData> _getMarkingsVsMissesPieData(
     GoalService goalService,
   ) {
-    // Utiliser les données de la semaine courante (timeRange = 0)
-    final data = goalService.getMarkingsVsMissesData(0);
-    final markings = data['markings'] ?? 0;
-    final misses = data['misses'] ?? 0;
+    // Données factices pour le graphique en secteurs
+    final random = Random();
+    final markings = random.nextInt(20) + 10; // Entre 10 et 30 marquages
+    final misses = random.nextInt(10) + 5; // Entre 5 et 15 oublis
     final total = markings + misses;
 
     if (total == 0) {
@@ -398,9 +418,10 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
   }
 
   Widget _buildPieChartLegend(GoalService goalService) {
-    final data = goalService.getMarkingsVsMissesData(0);
-    final markings = data['markings'] ?? 0;
-    final misses = data['misses'] ?? 0;
+    // Utiliser les mêmes données factices que le graphique en secteurs
+    final random = Random();
+    final markings = random.nextInt(20) + 10; // Entre 10 et 30 marquages
+    final misses = random.nextInt(10) + 5; // Entre 5 et 15 oublis
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
