@@ -127,8 +127,8 @@
   "settings_privacy_policy": "Politique de confidentialité",
   "settings_app_updates": "Mises à jour de l'app",
   "settings_rate_app": "Noter l'application",
-  "settings_follow_instagram": "Suivre sur Insta"
-,
+  "settings_follow_instagram": "Suivre sur Insta",
+
   "premium_monthly": "Mensuel",
   "premium_annual": "Annuel",
   "premium_life": "À vie",
@@ -143,8 +143,8 @@
   "premium_feature_title2_desc": "Accédez à vos habitudes favorites depuis l’écran d’accueil",
   "premium_feature_title3_desc": "Visualisez vos tendances et votre régularité",
   "premium_feature_title4_desc": "Récompenses uniques adaptées à vos objectifs",
-  "premium_btn": "Continuer"
-,
+  "premium_btn": "Continuer",
+
   "notification_title": "Rappels quotidiens",
   "notification": "N'oubliez pas de compléter votre tâche.",
   "notification_subtitle": "Recevez une notification quotidienne pour ne pas oublier de compléter vos objectifs.",
@@ -157,11 +157,20 @@
   "notification_perms": "Autorisations requises",
   "notification_perms_subtitle": "Pour recevoir des notifications, vous devez autoriser l'application à vous envoyer des notifications dans les réglages de votre appareil.",
 
-  "analytics_completions": "Achèvements",
+  "analytics_completions": "Accomplissements",
   "analytics_archives": "Archivés",
-  "analytics_completions_day": "Achèvements / jour",
+  "analytics_completions_day": "Accomplissements / jour",
   "analytics_marking_omissions": "Marquages vs. Oublis",
   "analytics_marking": "Marquages",
   "analytics_omissions": "Oublis",
-  "analytics_nodata": "Aucune donnée"
+  "analytics_nodata": "Aucune donnée",
+
+  "toastification_privacy_error": "Impossible d'ouvrir la politique de confidentialité",
+  "toastification_insta_error": "Impossible d'ouvrir Instagram",
+  "toastification_review": "Merci pour votre retour.",
+  "toastification_error_title": "Erreur",
+  "toastification_error_desc": "Impossible d'ouvrir l'évaluation. Redirection vers le magasin...",
+  "toastification_error_redirecting_desc": "Impossible d'ouvrir le magasin. Veuillez noter l'application manuellement.",
+  "toastification_session_completed": "Session marquée comme terminée",
+  "toastification_goal_completed": "Objectif Terminé"
 }

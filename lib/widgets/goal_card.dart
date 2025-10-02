@@ -106,7 +106,7 @@ class GoalCard extends StatelessWidget {
                       }
                     },
                     itemBuilder: (context) => [
-                      if (onEdit != null)
+                      if (onEdit != null && !goal.isCompleted)
                         PopupMenuItem(
                           value: 'edit',
                           child: Row(
@@ -120,7 +120,7 @@ class GoalCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                      if (onToggleStatus != null)
+                      if (onToggleStatus != null && !goal.isCompleted)
                         PopupMenuItem(
                           value: 'toggle',
                           child: Row(

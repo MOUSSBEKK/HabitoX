@@ -444,4 +444,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analytics_nodata => 'No data';
+
+  @override
+  String get toastification_privacy_error =>
+      'Unable to open the privacy policy';
+
+  @override
+  String get toastification_insta_error => 'Unable to open Instagram';
+
+  @override
+  String get toastification_review => 'Thank you for your feedback.';
+
+  @override
+  String get toastification_error_title => 'Error';
+
+  @override
+  String get toastification_error_desc =>
+      'Unable to open the rating. Redirecting to the store...';
+
+  @override
+  String get toastification_error_redirecting_desc =>
+      'Unable to open the store. Please note the app manually.';
+
+  @override
+  String get toastification_session_completed => 'Session marked as completed';
+
+  @override
+  String get toastification_goal_completed => 'Goal Completed';
+
+  @override
+  String get modal_delete_confirmation_title => 'Confirm deletion';
+
+  @override
+  String get modal_delete_confirmation_desc => 'Confirm deletion';
+
+  @override
+  String get modal_delete_confirmation_label => 'Delete';
 }

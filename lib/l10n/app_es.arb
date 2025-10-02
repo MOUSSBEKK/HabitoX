@@ -160,6 +160,14 @@
   "analytics_marking_omissions": "Marcados vs. Omisiones",
   "analytics_marking": "Marcados",
   "analytics_omissions": "Omisiones",
-  "analytics_nodata": "Sin datos"
+  "analytics_nodata": "Sin datos",
 
+  "toastification_privacy_error": "No se puede abrir la política de privacidad",
+  "toastification_insta_error": "No se puede abrir Instagram",
+  "toastification_review": "Gracias por tu comentario.",
+  "toastification_error_title": "Error",
+  "toastification_error_desc": "No se puede abrir la valoración. Redirigiendo a la tienda...",
+  "toastification_error_redirecting_desc": "No se puede abrir la tienda. Por favor, valora la app manualmente.",
+  "toastification_session_completed": "Sesión marcada como completada",
+  "toastification_goal_completed": "Objetivo Completado"
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/onboarding_service.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -334,7 +334,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   _buildStep(
                     isTablet,
                     isSmallScreen,
-                    FontAwesomeIcons.bullseye,
+                    HugeIconsStroke.eye,
                     AppLocalizations.of(context)!.onboarding_title_card1,
                     AppLocalizations.of(context)!.onboarding_subtitles_card1,
                     const Color(0xFF6db399),
@@ -345,7 +345,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   _buildStep(
                     isTablet,
                     isSmallScreen,
-                    FontAwesomeIcons.chartLine,
+                    HugeIconsStroke.analytics01,
                     AppLocalizations.of(context)!.onboarding_title_card2,
                     AppLocalizations.of(context)!.onboarding_subtitles_card2,
                     const Color(0xFFa9c4a5),
@@ -356,7 +356,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   _buildStep(
                     isTablet,
                     isSmallScreen,
-                    FontAwesomeIcons.trophy,
+                    HugeIconsStroke.champion,
                     AppLocalizations.of(context)!.onboarding_title_card3,
                     AppLocalizations.of(context)!.onboarding_subtitles_card3,
                     const Color(0xFF85b8cb),
@@ -393,7 +393,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: FaIcon(
+            child: Icon(
               icon,
               size: isSmallScreen ? 20 : (isTablet ? 28 : 24),
               color: color,

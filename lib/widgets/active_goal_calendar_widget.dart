@@ -8,9 +8,9 @@ import '../services/user_profile_service.dart';
 import '../services/home_widget_service.dart';
 import '../constants/app_colors.dart';
 import 'level_up_dialog.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -71,15 +71,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     isSmallScreen: isSmallScreen,
                   ),
                   SizedBox(height: isSmallScreen ? 16 : 24),
-                  if (calendarService.currentShape != null)
-                    _buildCalendarSection(
-                      calendarService.currentShape!,
-                      activeGoal,
-                      calendarService,
-                      context,
-                    )
-                  else
-                    _buildEmptyCalendarCard(context),
+                  _buildCalendarSection(
+                    calendarService.currentShape!,
+                    activeGoal,
+                    calendarService,
+                    context,
+                  ),
                   SizedBox(height: isSmallScreen ? 16 : 20),
                   _buildMarkSessionButton(context, goalService, activeGoal),
                 ],
@@ -328,9 +325,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                   goal.id,
                   profileService,
                 );
-                // BadgeSyncService.checkAndUnlockBadges(context);
-
-                // Afficher le toast approprié selon le résultat
                 if (updateResult != null) {
                   if (updateResult['goalCompleted'] == true) {
                     // Objectif terminé complètement
@@ -339,10 +333,14 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
                     toastification.show(
                       context: context,
-                      title: const Text('🎉 Goal Completed !'),
+                      title: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.toastification_goal_completed,
+                      ),
                       description: Text('Congratulations ! +$xpGained XP'),
                       type: ToastificationType.success,
-                      style: ToastificationStyle.flatColored,
+                      style: ToastificationStyle.flat,
                       autoCloseDuration: const Duration(seconds: 4),
                     );
 
@@ -371,11 +369,16 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     // Session normale
                     toastification.show(
                       context: context,
-                      title: const Text('Session marquée comme complétée !'),
+                      title: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.toastification_session_completed,
+                      ),
                       description: Text('+${experience} XP'),
                       type: ToastificationType.success,
-                      style: ToastificationStyle.flatColored,
+                      style: ToastificationStyle.simple,
                       autoCloseDuration: const Duration(seconds: 3),
+                      closeOnClick: false,
                     );
                   }
                 }
@@ -425,8 +428,8 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: FaIcon(
-                FontAwesomeIcons.flag,
+              child: Icon(
+                HugeIconsStroke.flag02,
                 size: 40,
                 color: Color(0xFFA7C6A5),
               ),
@@ -457,27 +460,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
               height: 1.4,
             ),
             textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyCalendarCard(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.calendar_month, size: 40, color: Colors.grey[400]),
-          const SizedBox(height: 12),
-          Text(
-            AppLocalizations.of(context)!.calendar_loading,
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
       ),

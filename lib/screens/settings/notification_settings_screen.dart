@@ -170,7 +170,7 @@ class _NotificationSettingsScreenState
             'Les notifications seront envoyées à ${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}',
           ),
           type: ToastificationType.success,
-          style: ToastificationStyle.flatColored,
+          style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
       }

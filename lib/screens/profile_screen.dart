@@ -3,9 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import '../services/user_profile_service.dart';
-import '../services/onboarding_service.dart';
 import '../constants/app_colors.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../l10n/app_localizations.dart';
@@ -391,22 +389,6 @@ extension on _ProfileScreenState {
           ],
           isTablet: isTablet,
         ),
-
-        // Catégorie Debug (uniquement en mode debug)
-        if (kDebugMode) ...[
-          const SizedBox(height: 16),
-          _buildSettingsCategory(
-            title: 'Debug',
-            items: [
-              _SettingItem(
-                key: SettingKey.resetOnboarding,
-                icon: HugeIconsStroke.refresh,
-                title: 'Reset Onboarding (Debug)',
-              ),
-            ],
-            isTablet: isTablet,
-          ),
-        ],
       ],
     );
   }
@@ -530,9 +512,9 @@ extension on _ProfileScreenState {
       case SettingKey.appUpdates:
         Navigator.pushNamed(context, '/app_updates');
         break;
-      case SettingKey.resetOnboarding:
-        _resetOnboarding();
-        break;
+      // case SettingKey.resetOnboarding:
+      // _resetOnboarding();
+      // break;
       case SettingKey.importData:
       case SettingKey.exportData:
         toastification.show(
@@ -543,25 +525,6 @@ extension on _ProfileScreenState {
           autoCloseDuration: const Duration(seconds: 3),
         );
         break;
-    }
-  }
-
-  Future<void> _resetOnboarding() async {
-    if (kDebugMode) {
-      final onboardingService = Provider.of<OnboardingService>(
-        context,
-        listen: false,
-      );
-      await onboardingService.resetOnboarding();
-
-      toastification.show(
-        context: context,
-        title: const Text('Onboarding réinitialisé'),
-        description: const Text('Redémarrez l\'app pour voir l\'onboarding'),
-        type: ToastificationType.success,
-        style: ToastificationStyle.flatColored,
-        autoCloseDuration: const Duration(seconds: 4),
-      );
     }
   }
 
@@ -578,9 +541,7 @@ extension on _ProfileScreenState {
     } catch (_) {
       toastification.show(
         context: context,
-        title: const Text(
-          'Impossible d\'ouvrir la politique de confidentialité',
-        ),
+        title: Text(AppLocalizations.of(context)!.toastification_privacy_error),
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
         autoCloseDuration: const Duration(seconds: 3),
@@ -610,7 +571,7 @@ extension on _ProfileScreenState {
       } catch (e) {
         toastification.show(
           context: context,
-          title: const Text('Impossible d\'ouvrir Instagram'),
+          title: Text(AppLocalizations.of(context)!.toastification_insta_error),
           type: ToastificationType.error,
           style: ToastificationStyle.flatColored,
           autoCloseDuration: const Duration(seconds: 3),
@@ -623,36 +584,31 @@ extension on _ProfileScreenState {
     final InAppReview inAppReview = InAppReview.instance;
 
     try {
-      // Vérifier si la fonctionnalité de notation est disponible
       if (await inAppReview.isAvailable()) {
-        // Demander la notation in-app
         await inAppReview.requestReview();
 
-        // Afficher un message de remerciement
+        toastification.dismissAll();
+
         toastification.show(
           context: context,
-          title: const Text('Merci pour votre retour !'),
-          description: const Text(
-            'Votre avis nous aide à améliorer l\'application',
-          ),
+          title: Text(AppLocalizations.of(context)!.toastification_review),
           type: ToastificationType.success,
-          style: ToastificationStyle.flatColored,
+          style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
       } else {
-        // Si la notation in-app n'est pas disponible, ouvrir le store
         await inAppReview.openStoreListing();
       }
     } catch (e) {
       // En cas d'erreur, proposer d'ouvrir le store directement
       toastification.show(
         context: context,
-        title: const Text('Erreur'),
-        description: const Text(
-          'Impossible d\'ouvrir la notation. Redirection vers le store...',
+        title: Text(AppLocalizations.of(context)!.toastification_error_title),
+        description: Text(
+          AppLocalizations.of(context)!.toastification_error_desc,
         ),
         type: ToastificationType.error,
-        style: ToastificationStyle.flatColored,
+        style: ToastificationStyle.flat,
         autoCloseDuration: const Duration(seconds: 3),
       );
 
@@ -661,13 +617,13 @@ extension on _ProfileScreenState {
       } catch (storeError) {
         toastification.show(
           context: context,
-          title: const Text('Erreur'),
-          description: const Text(
-            'Impossible d\'ouvrir le store. Veuillez noter l\'app manuellement.',
+          title: Text(AppLocalizations.of(context)!.toastification_error_title),
+          description: Text(
+            AppLocalizations.of(context)!.toastification_error_redirecting_desc,
           ),
           type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
-          autoCloseDuration: const Duration(seconds: 4),
+          style: ToastificationStyle.flat,
+          autoCloseDuration: const Duration(seconds: 3),
         );
       }
     }
@@ -685,7 +641,6 @@ enum SettingKey {
   appUpdates,
   rateApp,
   followInstagram,
-  resetOnboarding,
 }
 
 class _SettingItem {

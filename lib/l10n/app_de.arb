@@ -160,5 +160,14 @@
   "analytics_marking_omissions": "Markierungen vs. Auslassungen",
   "analytics_marking": "Markierungen",
   "analytics_omissions": "Auslassungen",
-  "analytics_nodata": "Keine Daten"
+  "analytics_nodata": "Keine Daten",
+
+  "toastification_privacy_error": "Datenschutzrichtlinie kann nicht geöffnet werden",
+  "toastification_insta_error": "Instagram kann nicht geöffnet werden",
+  "toastification_review": "Danke für dein Feedback.",
+  "toastification_error_title": "Fehler",
+  "toastification_error_desc": "Bewertung kann nicht geöffnet werden. Weiterleitung zum Store...",
+  "toastification_error_redirecting_desc": "Store kann nicht geöffnet werden. Bitte bewerte die App manuell.",
+  "toastification_session_completed": "Sitzung als abgeschlossen markiert",
+  "toastification_goal_completed": "Ziel Abgeschlossen"
 }

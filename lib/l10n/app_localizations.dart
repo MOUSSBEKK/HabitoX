@@ -941,6 +941,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No data'**
   String get analytics_nodata;
+
+  /// No description provided for @toastification_privacy_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open the privacy policy'**
+  String get toastification_privacy_error;
+
+  /// No description provided for @toastification_insta_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open Instagram'**
+  String get toastification_insta_error;
+
+  /// No description provided for @toastification_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your feedback.'**
+  String get toastification_review;
+
+  /// No description provided for @toastification_error_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get toastification_error_title;
+
+  /// No description provided for @toastification_error_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open the rating. Redirecting to the store...'**
+  String get toastification_error_desc;
+
+  /// No description provided for @toastification_error_redirecting_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open the store. Please note the app manually.'**
+  String get toastification_error_redirecting_desc;
+
+  /// No description provided for @toastification_session_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Session marked as completed'**
+  String get toastification_session_completed;
+
+  /// No description provided for @toastification_goal_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Completed'**
+  String get toastification_goal_completed;
+
+  /// No description provided for @modal_delete_confirmation_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deletion'**
+  String get modal_delete_confirmation_title;
+
+  /// No description provided for @modal_delete_confirmation_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deletion'**
+  String get modal_delete_confirmation_desc;
+
+  /// No description provided for @modal_delete_confirmation_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get modal_delete_confirmation_label;
 }
 
 class _AppLocalizationsDelegate

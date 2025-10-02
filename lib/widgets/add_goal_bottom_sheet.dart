@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
+import 'package:hugeicons_pro/hugeicons.dart';
 
 class AddGoalBottomSheetColors {
   static const Color primaryColor = Color(
@@ -123,7 +123,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           padding: EdgeInsets.only(top: 16),
                         ),
                         onPressed: () => Navigator.pop(context),
-                        icon: FaIcon(FontAwesomeIcons.close, size: 16),
+                        icon: Icon(HugeIconsStroke.cancel01, size: 16),
                       ),
                     ],
                   ),
@@ -140,7 +140,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   TextFormField(
                     controller: _titleController,
-                    maxLength: 15,
+                    maxLength: 25,
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(
                         context,
@@ -154,6 +154,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       hintText: AppLocalizations.of(
                         context,
                       )!.bottom_modal_placeholder_title,
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
                       border: OutlineInputBorder(
@@ -188,7 +191,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
                   TextFormField(
                     controller: _descriptionController,
-                    maxLength: 30,
+                    maxLength: 100,
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(
                         context,
@@ -202,6 +205,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       hintText: AppLocalizations.of(
                         context,
                       )!.bottom_modal_placeholder_desc,
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
                       focusColor: Theme.of(context).colorScheme.secondary,
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.primary,
@@ -322,7 +328,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(width: 4),
-                  FaIcon(FontAwesomeIcons.arrowRight, size: 12),
+                  Icon(HugeIconsStroke.arrowRight01, size: 12),
                 ],
               ),
             ),
@@ -420,7 +426,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(width: 4),
-                  FaIcon(FontAwesomeIcons.arrowRight, size: 12),
+                  Icon(HugeIconsStroke.arrowRight01, size: 12),
                 ],
               ),
             ),
@@ -840,7 +846,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       ),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: FaIcon(FontAwesomeIcons.close),
+                        icon: Icon(HugeIconsStroke.cancel01),
                       ),
                     ],
                   ),
@@ -987,7 +993,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: FaIcon(FontAwesomeIcons.close),
+                    icon: Icon(HugeIconsStroke.cancel01),
                   ),
                 ],
               ),
@@ -1061,7 +1067,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           context: context,
           title: Text(AppLocalizations.of(context)!.bottom_modal_modal_succes),
           type: ToastificationType.success,
-          style: ToastificationStyle.flatColored,
+          style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
       } else {
@@ -1083,7 +1089,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           context: context,
           title: Text(AppLocalizations.of(context)!.bottom_modal_modal_created),
           type: ToastificationType.success,
-          style: ToastificationStyle.flatColored,
+          style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
       }

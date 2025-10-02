@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../services/theme_service.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
@@ -91,7 +90,7 @@ class _AppAppearanceScreenState extends State<AppAppearanceScreen> {
               : theme.colorScheme.surface.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: FaIcon(
+        child: Icon(
           icon,
           color: isSelected ? selectedColor : theme.iconTheme.color,
         ),

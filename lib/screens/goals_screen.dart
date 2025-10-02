@@ -6,7 +6,6 @@ import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 
@@ -45,7 +44,9 @@ class _GoalsScreenState extends State<GoalsScreen> {
         // final headerPadding = isTablet ? 80.0 : 60.0;
 
         return Scaffold(
-          appBar: AppBar(title: Text('Objectifs')),
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.nav_objectives),
+          ),
           body: Container(
             child: SafeArea(
               child: Column(
@@ -113,7 +114,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FaIcon(emptyIcon, size: isTablet ? 100.0 : 80.0),
+                Icon(emptyIcon, size: isTablet ? 100.0 : 80.0),
                 SizedBox(height: isTablet ? 32.0 : 24.0),
                 Text(
                   emptyTitle.toUpperCase(),
@@ -137,12 +138,12 @@ class _GoalsScreenState extends State<GoalsScreen> {
             ),
           );
         }
-
         return ListView.builder(
           padding: EdgeInsets.all(isTablet ? 24.0 : 16.0),
           itemCount: goals.length,
           itemBuilder: (context, index) {
             final goal = goals[index];
+            debugPrint('goal: ${goal.isCompleted}');
             return Padding(
               padding: EdgeInsets.only(bottom: isTablet ? 20.0 : 16.0),
               child: GoalCard(
@@ -200,7 +201,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         (goalService) => goalService.goals.where((g) => g.isActive).toList(),
         AppLocalizations.of(context)!.objectives_actif_empty_title,
         AppLocalizations.of(context)!.objectives_actif_empty_subtitle,
-        FontAwesomeIcons.flag,
+        HugeIconsStroke.flag02,
         isTablet,
       );
     }
@@ -210,7 +211,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         (goalService) => goalService.completedGoals,
         AppLocalizations.of(context)!.objectives_completed_empty_title,
         AppLocalizations.of(context)!.objectives_completed_empty_subtitle,
-        FontAwesomeIcons.checkCircle,
+        HugeIconsStroke.checkmarkCircle02,
         isTablet,
       );
     }
@@ -255,13 +256,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
   void _toggleGoalStatus(Goal goal) {
     if (goal.isActive) {
-      // Désactiver l'objectif en supprimant son statut actif
       final goalService = context.read<GoalService>();
-      // Créer une copie de l'objectif sans le statut actif
       final updatedGoal = goal.copyWith(isActive: false);
       goalService.updateGoal(updatedGoal, context);
     } else {
-      // Activer l'objectif
       context.read<GoalService>().activateGoal(goal.id, context);
     }
   }

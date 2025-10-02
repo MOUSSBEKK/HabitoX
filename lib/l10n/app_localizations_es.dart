@@ -449,4 +449,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get analytics_nodata => 'Sin datos';
+
+  @override
+  String get toastification_privacy_error =>
+      'No se puede abrir la política de privacidad';
+
+  @override
+  String get toastification_insta_error => 'No se puede abrir Instagram';
+
+  @override
+  String get toastification_review => 'Gracias por tu comentario.';
+
+  @override
+  String get toastification_error_title => 'Error';
+
+  @override
+  String get toastification_error_desc =>
+      'No se puede abrir la valoración. Redirigiendo a la tienda...';
+
+  @override
+  String get toastification_error_redirecting_desc =>
+      'No se puede abrir la tienda. Por favor, valora la app manualmente.';
+
+  @override
+  String get toastification_session_completed =>
+      'Sesión marcada como completada';
+
+  @override
+  String get toastification_goal_completed => 'Objetivo Completado';
+
+  @override
+  String get modal_delete_confirmation_title => 'Confirm deletion';
+
+  @override
+  String get modal_delete_confirmation_desc => 'Confirm deletion';
+
+  @override
+  String get modal_delete_confirmation_label => 'Delete';
 }

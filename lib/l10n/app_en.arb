@@ -162,6 +162,19 @@
   "analytics_marking_omissions": "Markings vs. Omissions",
   "analytics_marking": "Markings",
   "analytics_omissions": "Forget",
-  "analytics_nodata": "No data"
+  "analytics_nodata": "No data",
+
+  "toastification_privacy_error": "Unable to open the privacy policy",
+  "toastification_insta_error": "Unable to open Instagram",
+  "toastification_review": "Thank you for your feedback.",
+  "toastification_error_title": "Error",
+  "toastification_error_desc": "Unable to open the rating. Redirecting to the store...",
+  "toastification_error_redirecting_desc": "Unable to open the store. Please note the app manually.",
+  "toastification_session_completed": "Session marked as completed",
+  "toastification_goal_completed": "Goal Completed",
+
+  "modal_delete_confirmation_title": "Confirm deletion",
+  "modal_delete_confirmation_desc": "Confirm deletion",
+  "modal_delete_confirmation_label": "Delete"
 }
 

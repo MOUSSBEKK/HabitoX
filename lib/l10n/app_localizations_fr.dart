@@ -434,13 +434,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pour recevoir des notifications, vous devez autoriser l\'application à vous envoyer des notifications dans les réglages de votre appareil.';
 
   @override
-  String get analytics_completions => 'Achèvements';
+  String get analytics_completions => 'Accomplissements';
 
   @override
   String get analytics_archives => 'Archivés';
 
   @override
-  String get analytics_completions_day => 'Achèvements / jour';
+  String get analytics_completions_day => 'Accomplissements / jour';
 
   @override
   String get analytics_marking_omissions => 'Marquages vs. Oublis';
@@ -453,4 +453,41 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get analytics_nodata => 'Aucune donnée';
+
+  @override
+  String get toastification_privacy_error =>
+      'Impossible d\'ouvrir la politique de confidentialité';
+
+  @override
+  String get toastification_insta_error => 'Impossible d\'ouvrir Instagram';
+
+  @override
+  String get toastification_review => 'Merci pour votre retour.';
+
+  @override
+  String get toastification_error_title => 'Erreur';
+
+  @override
+  String get toastification_error_desc =>
+      'Impossible d\'ouvrir l\'évaluation. Redirection vers le magasin...';
+
+  @override
+  String get toastification_error_redirecting_desc =>
+      'Impossible d\'ouvrir le magasin. Veuillez noter l\'application manuellement.';
+
+  @override
+  String get toastification_session_completed =>
+      'Session marquée comme terminée';
+
+  @override
+  String get toastification_goal_completed => 'Objectif Terminé';
+
+  @override
+  String get modal_delete_confirmation_title => 'Confirm deletion';
+
+  @override
+  String get modal_delete_confirmation_desc => 'Confirm deletion';
+
+  @override
+  String get modal_delete_confirmation_label => 'Delete';
 }

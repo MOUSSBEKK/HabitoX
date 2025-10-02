@@ -43,7 +43,6 @@ class _BadgesScreenState extends State<BadgesScreen>
               child: Column(
                 children: [
                   SizedBox(height: isTablet ? 24.0 : 20.0),
-                  // Dernier badge débloqué (grand)
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: padding),
                     padding: EdgeInsets.all(isTablet ? 20.0 : 16.0),
@@ -150,6 +149,7 @@ class _BadgesScreenState extends State<BadgesScreen>
                               bottom: isTablet ? 24.0 : 12.0,
                             ),
                             itemCount: badgeLevels.length,
+                            cacheExtent: double.maxFinite,
                             separatorBuilder: (_, __) =>
                                 SizedBox(height: isTablet ? 14.0 : 10.0),
                             itemBuilder: (context, index) {
@@ -283,19 +283,31 @@ class _BadgesScreenState extends State<BadgesScreen>
         color: Colors.deepPurple[600]!,
       );
     }
-    if (level >= 50) {
+    if (level == 50) {
       return _BadgeDisplayData(
-        name: level >= 69
-            ? AppLocalizations.of(context)!.badge9_title
-            : AppLocalizations.of(context)!.badge7_title,
-        description: 'Reach level $level for this badge..',
-        color: level >= 69 ? Colors.deepPurple[800]! : Colors.amber[600]!,
+        name: AppLocalizations.of(context)!.badge7_title,
+        description: AppLocalizations.of(context)!.badge7_desc,
+        color: Colors.amber[600]!,
+      );
+    }
+    if (level == 60) {
+      return _BadgeDisplayData(
+        name: AppLocalizations.of(context)!.badge8_title,
+        description: AppLocalizations.of(context)!.badge8_desc,
+        color: Colors.green[600]!,
+      );
+    }
+    if (level == 70) {
+      return _BadgeDisplayData(
+        name: AppLocalizations.of(context)!.badge9_title,
+        description: AppLocalizations.of(context)!.badge9_desc,
+        color: Colors.blue[600]!,
       );
     }
     return _BadgeDisplayData(
       name: '${AppLocalizations.of(context)!.badge_level} $level',
       description: 'Unlock this badge at level $level.',
-      color: Colors.amber[600]!,
+      color: Colors.tealAccent[600]!,
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../services/goal_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 
@@ -96,7 +95,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
           child: _buildGlobalStatCard(
             AppLocalizations.of(context)!.analytics_completions,
             goalService.totalCompletedGoals.toString(),
-            FontAwesomeIcons.circleCheck,
+            HugeIconsStroke.checkList,
           ),
         ),
         const SizedBox(width: 16),
@@ -104,7 +103,7 @@ class _DataAnalyticsScreenState extends State<DataAnalyticsScreen> {
           child: _buildGlobalStatCard(
             AppLocalizations.of(context)!.analytics_archives,
             _getArchivedGoalsCount(goalService).toString(),
-            FontAwesomeIcons.archive,
+            HugeIconsStroke.archive,
           ),
         ),
       ],

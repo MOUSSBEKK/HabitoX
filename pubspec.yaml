@@ -1,4 +1,4 @@
-name: habitox
+name: HabitoX
 description: "HabitoX - Gamify your habits"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+12
+version: 1.0.0+13
 
 environment:
   sdk: ^3.9.0
@@ -39,7 +39,6 @@ dependencies:
   provider: ^6.1.1
   localstorage: 6.0.0
   modal_bottom_sheet: ^3.0.0
-  font_awesome_flutter: ^10.10.0
   toastification: ^3.0.3
   adaptive_dialog: ^2.4.2
   url_launcher: ^6.3.2
@@ -62,8 +61,8 @@ dev_dependencies:
 
 flutter_launcher_icons:
   android: "launcher_icon"
-  # ios: true
-  image_path: "assets/icon_launcher/logo_launcher_habitox.png"
+  ios: true
+  image_path: "assets/icon_launcher/logo_launcher_habitox1.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
