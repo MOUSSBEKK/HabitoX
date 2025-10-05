@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:home_widget/home_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -327,6 +328,11 @@ extension on _ProfileScreenState {
               title: AppLocalizations.of(context)!.settings_data_analytics,
             ),
             _SettingItem(
+              key: SettingKey.widgets,
+              icon: HugeIconsStroke.dashboardSquare03,
+              title: "Widgets",
+            ),
+            _SettingItem(
               key: SettingKey.notifications,
               icon: HugeIconsStroke.notification01,
               title: AppLocalizations.of(context)!.settings_notifications,
@@ -500,6 +506,9 @@ extension on _ProfileScreenState {
       case SettingKey.notifications:
         Navigator.pushNamed(context, '/notification_settings');
         break;
+      case SettingKey.widgets:
+        _requestPinWidget();
+        break;
       case SettingKey.privacyPolicy:
         _openPrivacyPolicy();
         break;
@@ -543,7 +552,43 @@ extension on _ProfileScreenState {
         context: context,
         title: Text(AppLocalizations.of(context)!.toastification_privacy_error),
         type: ToastificationType.error,
-        style: ToastificationStyle.flatColored,
+        style: ToastificationStyle.flat,
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+    }
+  }
+
+  Future<void> _requestPinWidget() async {
+    if (HomeWidget.isRequestPinWidgetSupported() == false) {
+      toastification.show(
+        context: context,
+        title: const Text('Fonctionnalité non supportée'),
+        description: const Text(
+          'Le pin widget n\'est pas supporté sur cet appareil',
+        ),
+        type: ToastificationType.warning,
+        style: ToastificationStyle.flat,
+        autoCloseDuration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
+    try {
+      await HomeWidget.requestPinWidget(
+        name: 'ActiveGoalHeatmapWidget',
+        androidName: 'ActiveGoalHeatmapWidgetReceiver',
+        qualifiedAndroidName:
+            'com.example.habitox.ActiveGoalHeatmapWidgetReceiver',
+      );
+    } catch (e) {
+      toastification.show(
+        context: context,
+        title: const Text('Erreur'),
+        description: const Text(
+          'Impossible d\'ajouter le widget. Veuillez réessayer.',
+        ),
+        type: ToastificationType.error,
+        style: ToastificationStyle.flat,
         autoCloseDuration: const Duration(seconds: 3),
       );
     }
@@ -573,7 +618,7 @@ extension on _ProfileScreenState {
           context: context,
           title: Text(AppLocalizations.of(context)!.toastification_insta_error),
           type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
+          style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
       }
@@ -635,6 +680,7 @@ enum SettingKey {
   dataAnalytics,
   language,
   notifications,
+  widgets,
   importData,
   exportData,
   privacyPolicy,

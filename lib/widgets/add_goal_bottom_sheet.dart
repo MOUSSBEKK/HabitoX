@@ -120,10 +120,19 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       const Spacer(),
                       IconButton(
                         style: IconButton.styleFrom(
-                          padding: EdgeInsets.only(top: 16),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.outline,
+                              width: 1,
+                            ),
+                          ),
                         ),
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(HugeIconsStroke.cancel01, size: 16),
+                        icon: Icon(HugeIconsStroke.cancel01, size: 18),
                       ),
                     ],
                   ),
@@ -361,7 +370,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                           border: Border.all(
                             color: icon == _selectedIcon
                                 ? Theme.of(context).colorScheme.secondary
-                                : Colors.grey[300]!,
+                                : Theme.of(context).colorScheme.outline,
                             width: icon == _selectedIcon ? 2 : 1,
                           ),
                         ),
@@ -527,12 +536,16 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: Theme.of(context).colorScheme.outline),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           children: [
-            Icon(Icons.calendar_today, size: 18, color: Colors.grey[600]),
+            Icon(
+              Icons.calendar_today,
+              size: 18,
+              color: Theme.of(context).colorScheme.outline,
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -845,8 +858,20 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         ),
                       ),
                       IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.outline,
+                              width: 1,
+                            ),
+                          ),
+                        ),
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(HugeIconsStroke.cancel01),
+                        icon: Icon(HugeIconsStroke.cancel01, size: 18),
                       ),
                     ],
                   ),
@@ -921,7 +946,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                                           ? Theme.of(
                                               context,
                                             ).colorScheme.secondary
-                                          : Colors.grey[300]!,
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.outline,
                                       width: isSelected ? 2 : 1,
                                     ),
                                   ),
@@ -992,8 +1019,18 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     ),
                   ),
                   IconButton(
+                    style: IconButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 1,
+                        ),
+                      ),
+                    ),
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(HugeIconsStroke.cancel01),
+                    icon: Icon(HugeIconsStroke.cancel01, size: 18),
                   ),
                 ],
               ),

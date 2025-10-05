@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/onboarding_service.dart';
+import '../services/notification_service.dart';
 import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 
@@ -51,6 +53,34 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     // Démarre les animations
     _fadeController.forward();
     _slideController.forward();
+
+    // Afficher la modal de permission après un délai si les notifications ne sont pas encore configurées
+    Future.delayed(const Duration(milliseconds: 1500), () async {
+      if (mounted) {
+        // Vérifier si l'utilisateur n'a pas encore fait de choix
+        final prefs = await SharedPreferences.getInstance();
+        final hasAskedForPermission =
+            prefs.getBool('has_asked_notification_permission') ?? false;
+
+        if (!hasAskedForPermission) {
+          final notificationService = Provider.of<NotificationService>(
+            context,
+            listen: false,
+          );
+          // Demander directement la permission native du système
+          final permissionGranted = await notificationService
+              .requestPermissions();
+
+          // Si l'utilisateur accepte, activer les notifications
+          if (permissionGranted) {
+            await notificationService.setNotificationsEnabled(true);
+          }
+
+          // Marquer qu'on a demandé la permission
+          await prefs.setBool('has_asked_notification_permission', true);
+        }
+      }
+    });
   }
 
   @override

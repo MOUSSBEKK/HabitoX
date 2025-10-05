@@ -197,7 +197,7 @@ class HabitoXApp extends StatelessWidget {
                 surface: Color(0xFF181920),
 
                 // bordure
-                outline: Color(0xFF282c31),
+                outline: Color.fromARGB(255, 60, 66, 73),
                 outlineVariant: Color(0xFF282c31),
 
                 // shadow
