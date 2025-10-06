@@ -47,12 +47,12 @@ class HomeWidgetService {
 
     await HomeWidget.renderFlutterWidget(
       Container(
-        color: const Color(0xFF1F222A),
+        color: const Color.fromARGB(255, 94, 128, 222),
         alignment: Alignment.center,
         child: SizedBox(width: 400, height: 350, child: heatmapOnly),
       ),
       key: 'heatmap_image',
-      logicalSize: Size(400, 400),
+      logicalSize: Size(400, 350),
     );
 
     try {
@@ -135,7 +135,6 @@ class _CompactHeatMap extends StatelessWidget {
       final day = DateTime(session.year, session.month, session.day);
       datasets[day] = 7;
     }
-    debugPrint('datasets: $datasets');
 
     final colorsets = <int, Color>{
       1: goalColor.withValues(alpha: 0.25),
@@ -147,24 +146,25 @@ class _CompactHeatMap extends StatelessWidget {
       7: goalColor.withValues(alpha: 1),
     };
 
-    // Calculer le début de la semaine actuelle (lundi)
+    // Calculer le début du mois actuel
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    final startOfMonth = DateTime(now.year, now.month, 1);
 
     // Limiter à 60 jours maximum pour garder le widget compact
     final maxDays = 60;
-    final endDate = startOfWeek.add(Duration(days: maxDays));
+    final endDate = startOfMonth.add(Duration(days: maxDays));
 
     return ClipRect(
       child: HeatMap(
-        startDate: startOfWeek,
+        startDate: startOfMonth,
         endDate: endDate,
         datasets: datasets,
-        fontSize: 0,
+        fontSize: 24,
+        textColor: Colors.white,
         borderRadius: 5,
         colorsets: colorsets,
         defaultColor: goalColor.withValues(alpha: 0.25),
-        size: 34,
+        size: 29,
         colorMode: ColorMode.color,
         showColorTip: false,
         margin: EdgeInsets.all(3.5),

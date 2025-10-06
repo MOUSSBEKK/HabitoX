@@ -67,6 +67,7 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
 
         Box(
             modifier = GlanceModifier
+                .height(180.dp)
                 .background(Color(0xFF1F222A))
                 .padding(8.dp)
         ) {
@@ -74,7 +75,6 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
                 modifier = GlanceModifier.fillMaxSize(),
                 verticalAlignment = Alignment.Top
             ) {
-                // Titre de l'objectif
                 Text(
                     text = title,
                     style = TextStyle(
@@ -83,8 +83,6 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
                     ),
                     modifier = GlanceModifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
                 )
-                
-                // Image de la heatmap
                 if (heatmapImagePath != null) {
                     val imageFile = java.io.File(heatmapImagePath)
                     if (imageFile.exists()) {

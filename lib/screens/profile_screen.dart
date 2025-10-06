@@ -550,8 +550,7 @@ extension on _ProfileScreenState {
     }
   }
 
-
-// facto avec _openPrivacyPolicy
+  // facto avec _openPrivacyPolicy
   Future<void> _openHabitox() async {
     final Uri habitoxUri = Uri.parse('https://habitox.app');
     try {

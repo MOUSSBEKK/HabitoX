@@ -54,10 +54,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     isSmallScreen: isSmallScreen,
                   ),
                   SizedBox(height: isSmallScreen ? 16 : 24),
-                  _buildCalendarSection(
-                    activeGoal,
-                    context,
-                  ),
+                  _buildCalendarSection(activeGoal, context),
                   SizedBox(height: isSmallScreen ? 16 : 20),
                   _buildMarkSessionButton(context, goalService, activeGoal),
                 ],
@@ -122,10 +119,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCalendarSection(
-    dynamic activeGoal,
-    BuildContext context,
-  ) {
+  Widget _buildCalendarSection(dynamic activeGoal, BuildContext context) {
     final progress = activeGoal != null ? activeGoal.totalDays : 0;
     final maxDays = activeGoal.targetDays;
 
@@ -164,11 +158,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildHeatMap(
-    BuildContext context,
-    Color color,
-    dynamic activeGoal,
-  ) {
+  Widget _buildHeatMap(BuildContext context, Color color, dynamic activeGoal) {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Calculer la taille adaptative du calendrier
@@ -223,15 +213,12 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         }
 
         // Identifier les jours manqués dans la période de 90 jours
-        // Un jour est manqué s'il est dans la période passée (start à today) 
+        // Un jour est manqué s'il est dans la période passée (start à today)
         // et qu'il n'a pas été complété
         var currentDay = start;
-        debugPrint('currentDay: $currentDay');
         while (currentDay.isBefore(today)) {
-          debugPrint('bonjour');
           if (!completedDaysSet.contains(currentDay)) {
             datasets[currentDay] = 8;
-            debugPrint('bonjour 2');
           }
           currentDay = currentDay.add(const Duration(days: 1));
         }
@@ -263,7 +250,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           5: base.withValues(alpha: 0.70),
           6: base.withValues(alpha: 0.85),
           7: base, // Intensité maximale pour les jours complétés
-          8: Colors.red.withValues(alpha: 0.2), // Rouge avec opacité faible pour les jours manqués
+          8: Colors.red.withValues(
+            alpha: 0.2,
+          ), // Rouge avec opacité faible pour les jours manqués
         };
 
         return SingleChildScrollView(

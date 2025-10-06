@@ -262,51 +262,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-
-                  SizedBox(height: isSmallScreen ? 16 : (isTablet ? 24 : 20)),
-
-                  // Message rassurant
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isSmallScreen ? 12 : (isTablet ? 20 : 16),
-                      vertical: isSmallScreen ? 10 : (isTablet ? 16 : 12),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.access_time_rounded,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: isSmallScreen ? 18 : (isTablet ? 24 : 20),
-                        ),
-                        SizedBox(
-                          width: isSmallScreen ? 6 : (isTablet ? 12 : 8),
-                        ),
-                        Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.onboarding_popup,
-                            style: TextStyle(
-                              fontSize: isSmallScreen
-                                  ? 12
-                                  : (isTablet ? 16 : 14),
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.color,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
