@@ -471,9 +471,7 @@ extension on _ProfileScreenState {
       ),
       // color: item.locked ? Colors.grey : AppColors.darkColor,
       title: Text(item.title, style: titleStyle),
-      trailing: item.locked
-          ? Icon(Icons.lock)
-          : Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color),
+      trailing: _buildTrailingIcon(item),
       onTap: item.locked
           ? () => toastification.show(
               context: context,
@@ -489,6 +487,17 @@ extension on _ProfileScreenState {
         vertical: isTablet ? 6 : 2,
       ),
     );
+  }
+
+  Widget _buildTrailingIcon(_SettingItem item) {
+    if (item.locked) {
+      return const Icon(Icons.lock);
+    }
+    if (item.key == SettingKey.widgets &&
+        defaultTargetPlatform == TargetPlatform.android) {
+      return Icon(Icons.add, color: Theme.of(context).iconTheme.color);
+    }
+    return Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color);
   }
 
   // Navigation basée sur une clé stable (indépendante de la localisation)
@@ -507,7 +516,11 @@ extension on _ProfileScreenState {
         Navigator.pushNamed(context, '/notification_settings');
         break;
       case SettingKey.widgets:
-        _requestPinWidget();
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          _openHabitox();
+        } else {
+          _requestPinWidget();
+        }
         break;
       case SettingKey.privacyPolicy:
         _openPrivacyPolicy();
@@ -534,6 +547,29 @@ extension on _ProfileScreenState {
           autoCloseDuration: const Duration(seconds: 3),
         );
         break;
+    }
+  }
+
+
+// facto avec _openPrivacyPolicy
+  Future<void> _openHabitox() async {
+    final Uri habitoxUri = Uri.parse('https://habitox.app');
+    try {
+      bool opened = await launchUrl(
+        habitoxUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened) {
+        await launchUrl(habitoxUri, mode: LaunchMode.platformDefault);
+      }
+    } catch (_) {
+      toastification.show(
+        context: context,
+        title: const Text('Impossible d\'ouvrir le lien'),
+        type: ToastificationType.error,
+        style: ToastificationStyle.flat,
+        autoCloseDuration: const Duration(seconds: 3),
+      );
     }
   }
 

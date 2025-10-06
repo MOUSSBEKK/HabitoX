@@ -460,15 +460,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       decoration: BoxDecoration(
                         color: color,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: color == _selectedColor
-                              ? AddGoalBottomSheetColors.darkColor
-                              : Colors.grey[300]!,
-                          width: 1,
-                        ),
                       ),
                       child: color == _selectedColor
-                          ? const Icon(Icons.check, size: 16)
+                          ? const Icon(Icons.check, size: 20, color: Colors.white)
                           : null,
                     ),
                   ),
@@ -590,8 +584,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
             primary:
-                Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
-            onPrimary: Colors.black,
+               Theme.of(context).colorScheme.secondary,
+            onPrimary: Theme.of(context).colorScheme.primary,
             surface: Theme.of(context).colorScheme.surface,
             onSurface:
                 Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
@@ -1061,15 +1055,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                       decoration: BoxDecoration(
                         color: color,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isSelected
-                              ? AddGoalBottomSheetColors.darkColor
-                              : Colors.grey[300]!,
-                          width: 1,
-                        ),
                       ),
                       child: isSelected
-                          ? const Icon(Icons.check, size: 25)
+                          ? const Icon(Icons.check, size: 25, color: Colors.white)
                           : null,
                     ),
                   );

@@ -213,11 +213,27 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
         final Map<DateTime, int> datasets = {};
 
-        // Ajouter les jours complétés (intensité maximale)
+        // Créer un Set des jours complétés pour faciliter la recherche
+        final completedDaysSet = <DateTime>{};
         for (final session in activeGoal.completedSessions) {
           final day = DateTime(session.year, session.month, session.day);
           if (day.isBefore(start) || day.isAfter(now)) continue;
+          completedDaysSet.add(day);
           datasets[day] = 7; // niveau d'intensité max correspondant à colorsets
+        }
+
+        // Identifier les jours manqués dans la période de 90 jours
+        // Un jour est manqué s'il est dans la période passée (start à today) 
+        // et qu'il n'a pas été complété
+        var currentDay = start;
+        debugPrint('currentDay: $currentDay');
+        while (currentDay.isBefore(today)) {
+          debugPrint('bonjour');
+          if (!completedDaysSet.contains(currentDay)) {
+            datasets[currentDay] = 8;
+            debugPrint('bonjour 2');
+          }
+          currentDay = currentDay.add(const Duration(days: 1));
         }
 
         // Calculer les jours restants à compléter
@@ -229,12 +245,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           for (int i = 0; i < remainingDays; i++) {
             final futureDay = today.add(Duration(days: i + 1));
             // Vérifier que le jour futur n'est pas déjà complété
-            final isAlreadyCompleted = activeGoal.completedSessions.any(
-              (session) =>
-                  DateTime(session.year, session.month, session.day) ==
-                  futureDay,
-            );
-            if (!isAlreadyCompleted) {
+            if (!completedDaysSet.contains(futureDay)) {
               datasets[futureDay] =
                   1; // niveau d'intensité faible pour les jours futurs
             }
@@ -245,13 +256,14 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         final colorsets = <int, Color>{
           1: base.withValues(
             alpha: 0.15,
-          ),
+          ), // Opacité très faible pour les jours futurs
           2: base.withValues(alpha: 0.35),
           3: base.withValues(alpha: 0.45),
           4: base.withValues(alpha: 0.60),
           5: base.withValues(alpha: 0.70),
           6: base.withValues(alpha: 0.85),
-          7: base,
+          7: base, // Intensité maximale pour les jours complétés
+          8: Colors.red.withValues(alpha: 0.2), // Rouge avec opacité faible pour les jours manqués
         };
 
         return SingleChildScrollView(

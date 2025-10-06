@@ -78,6 +78,13 @@ class HabitoXApp extends StatelessWidget {
             title: 'HabitoX',
             themeMode: themeService.themeMode,
             theme: ThemeData(
+              dialogTheme: DialogThemeData(
+                titleTextStyle: TextStyle(
+                  color: const Color.fromARGB(255, 22, 22, 22),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               timePickerTheme: TimePickerThemeData(
                 backgroundColor: Color.fromRGBO(226, 239, 243, 1),
                 hourMinuteColor: Color.fromRGBO(226, 239, 243, 1),
@@ -163,6 +170,13 @@ class HabitoXApp extends StatelessWidget {
               iconTheme: IconThemeData(color: const Color(0xFF191919)),
             ),
             darkTheme: ThemeData(
+              dialogTheme: DialogThemeData(
+                titleTextStyle: TextStyle(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               timePickerTheme: TimePickerThemeData(
                 backgroundColor: Color(0xFF1f222a),
                 hourMinuteColor: Color(0xFF1f222a),
