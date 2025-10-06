@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import '../models/calendar_shape.dart';
-import '../services/calendar_service.dart';
 import '../services/goal_service.dart';
 import '../services/user_profile_service.dart';
 import '../services/home_widget_service.dart';
@@ -17,28 +15,14 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
 
   const ActiveGoalCalendarWidget({super.key, this.onSwitchTab});
 
-  static const Color primaryColor = Color(0xFFA7C6A5);
-  static const Color lightColor = Color(0xFF85B8CB);
-  static const Color darkColor = Color(0xFF1F4843);
-
   @override
   Widget build(BuildContext context) {
-    return Consumer2<GoalService, CalendarService>(
-      builder: (context, goalService, calendarService, child) {
+    return Consumer<GoalService>(
+      builder: (context, goalService, child) {
         final activeGoal = goalService.activeGoal;
 
         if (activeGoal == null) {
           return _buildNoActiveGoal(context);
-        }
-
-        final currentShape = calendarService.currentShape;
-        if (currentShape == null ||
-            currentShape.totalDays != activeGoal.targetDays ||
-            currentShape.color != activeGoal.color) {
-          calendarService.ensureShapeForTargetDays(
-            activeGoal.targetDays,
-            goalColor: activeGoal.color,
-          );
         }
 
         return LayoutBuilder(
@@ -47,7 +31,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
             final isSmallScreen = screenWidth < 360;
             final isTablet = screenWidth > 600;
 
-            // Padding adaptatif
             final padding = isSmallScreen ? 16.0 : (isTablet ? 32.0 : 24.0);
 
             return Container(
@@ -66,15 +49,13 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                     activeGoal.icon,
                     activeGoal.title,
                     activeGoal.description,
-                    calendarService.currentShape!,
+                    activeGoal.color,
                     context,
                     isSmallScreen: isSmallScreen,
                   ),
                   SizedBox(height: isSmallScreen ? 16 : 24),
                   _buildCalendarSection(
-                    calendarService.currentShape!,
                     activeGoal,
-                    calendarService,
                     context,
                   ),
                   SizedBox(height: isSmallScreen ? 16 : 20),
@@ -92,7 +73,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     IconData icon,
     String title,
     String description,
-    CalendarShape shape,
+    Color color,
     BuildContext context, {
     bool isSmallScreen = false,
   }) {
@@ -101,10 +82,10 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
           decoration: BoxDecoration(
-            color: shape.color.withValues(alpha: 0.25),
+            color: color.withValues(alpha: 0.25),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: isSmallScreen ? 24 : 28, color: shape.color),
+          child: Icon(icon, size: isSmallScreen ? 24 : 28, color: color),
         ),
         SizedBox(width: isSmallScreen ? 16 : 20),
         Expanded(
@@ -142,13 +123,11 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
   }
 
   Widget _buildCalendarSection(
-    CalendarShape shape,
     dynamic activeGoal,
-    CalendarService calendarService,
     BuildContext context,
   ) {
     final progress = activeGoal != null ? activeGoal.totalDays : 0;
-    final maxDays = shape.totalDays;
+    final maxDays = activeGoal.targetDays;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +146,7 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildHeatMap(context, shape, activeGoal),
+              _buildHeatMap(context, activeGoal.color, activeGoal),
               const SizedBox(height: 12),
               Text(
                 '${progress} / ${maxDays} ${AppLocalizations.of(context)!.calendar_completed_days}',
@@ -185,10 +164,9 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
     );
   }
 
-  // Construit la heatmap type GitHub à partir des sessions réalisées et des jours futurs à compléter
   Widget _buildHeatMap(
     BuildContext context,
-    CalendarShape shape,
+    Color color,
     dynamic activeGoal,
   ) {
     return LayoutBuilder(
@@ -263,17 +241,17 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           }
         }
 
-        final base = shape.color;
+        final base = color;
         final colorsets = <int, Color>{
           1: base.withValues(
             alpha: 0.15,
-          ), // Opacité très faible pour les jours futurs
+          ),
           2: base.withValues(alpha: 0.35),
           3: base.withValues(alpha: 0.45),
           4: base.withValues(alpha: 0.60),
           5: base.withValues(alpha: 0.70),
           6: base.withValues(alpha: 0.85),
-          7: base, // Intensité maximale pour les jours complétés
+          7: base,
         };
 
         return SingleChildScrollView(
@@ -437,20 +415,17 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
           ),
           const SizedBox(height: 32),
 
-          // Titre principal
           Text(
             AppLocalizations.of(context)!.calendar_empty_state,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
-              letterSpacing: -0.5,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
 
-          // Sous-titre explicatif
           Text(
             AppLocalizations.of(context)!.calender_empty_state_subtitle,
             style: TextStyle(

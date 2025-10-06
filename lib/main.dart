@@ -11,7 +11,6 @@ import 'screens/settings/app_appearance_screen.dart';
 import 'screens/settings/app_updates_screen.dart';
 import 'screens/data_analytics_screen.dart';
 import 'screens/startup_screen.dart';
-import 'services/calendar_service.dart';
 import 'services/goal_service.dart';
 import 'services/onboarding_service.dart';
 import 'services/theme_service.dart';
@@ -45,7 +44,6 @@ class HabitoXApp extends StatelessWidget {
       // regarder plus en détail les providers
       providers: [
         ChangeNotifierProvider(create: (context) => GoalService()),
-        ChangeNotifierProvider(create: (context) => CalendarService()),
         ChangeNotifierProvider(create: (context) => UserProfileService()),
         ChangeNotifierProvider(create: (context) => ThemeService()),
         ChangeNotifierProvider(create: (context) => OnboardingService()),

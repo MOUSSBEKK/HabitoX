@@ -20,6 +20,7 @@ class GoalService extends ChangeNotifier {
       _goals.where((goal) => goal.isCompleted).toList();
   List<Goal> get archivedGoals =>
       _goals.where((goal) => !goal.isActive && !goal.isCompleted).toList();
+  
 
   GoalService() {
     _loadGoals();

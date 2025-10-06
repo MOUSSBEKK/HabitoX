@@ -58,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: _buildModernBottomNavBar(),
-      // Bouton de débogage flottant (seulement en mode debug)
     );
   }
 
@@ -86,9 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Row(
             children: [
-              // Navigation items - s'adapte à la taille de l'écran
               if (isSmallScreen) ...[
-                // Pour les petits écrans, utiliser un layout plus compact
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -242,14 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(size / 2),
-          onTap: () => _showAddGoalBottomSheet(context),
-          child: Icon(Icons.add, color: Colors.white, size: iconSize),
-        ),
-      ),
+      child:IconButton(onPressed:(){
+        _showAddGoalBottomSheet(context);
+      } , icon: Icon(Icons.add, color: Colors.white, size: iconSize))
     );
   }
 }
