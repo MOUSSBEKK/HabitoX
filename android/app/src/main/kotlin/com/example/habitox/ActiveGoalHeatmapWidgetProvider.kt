@@ -68,6 +68,7 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
         Box(
             modifier = GlanceModifier
                 .height(180.dp)
+                .width(180.dp)
                 .background(Color(0xFF1F222A))
                 .padding(8.dp)
         ) {
