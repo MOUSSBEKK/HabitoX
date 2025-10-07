@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: isSelected
                   ? Theme.of(context).colorScheme.secondary
                   : Theme.of(context).colorScheme.primaryFixed,
-              size: isCompact ? 18 : 20,
+              size: isCompact ? 20 : 22,
             ),
             SizedBox(height: isCompact ? 2 : 4),
             Text(
