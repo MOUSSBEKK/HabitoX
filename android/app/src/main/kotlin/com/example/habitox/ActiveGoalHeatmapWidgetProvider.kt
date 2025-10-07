@@ -13,6 +13,7 @@ import androidx.glance.currentState
 import androidx.glance.background
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
@@ -64,6 +65,7 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
         val prefs = currentState.preferences
         val title = prefs.getString("widget_title", "HabitoX") ?: "HabitoX"
         val heatmapImagePath = prefs.getString("heatmap_image", null)
+        val iconImagePath = prefs.getString("icon_image", null)
 
         Box(
             modifier = GlanceModifier
@@ -76,14 +78,33 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
                 modifier = GlanceModifier.fillMaxSize(),
                 verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = title,
-                    style = TextStyle(
-                        color = ColorProvider(Color.White),
-                        fontSize = 16.sp
-                    ),
-                    modifier = GlanceModifier.padding(start = 8.dp, top = 8.dp, bottom = 4.dp)
-                )
+                Row(
+                    modifier = GlanceModifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ){
+                    if (iconImagePath != null) {
+                        val imageFile = java.io.File(iconImagePath)
+                        if (imageFile.exists()) {
+                            val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                            if (bitmap != null) {
+                                Image(
+                                    provider = BitmapImageProvider(bitmap),
+                                    contentDescription = "Icon de l'objectif",
+                                )
+                            }
+                        }
+                    }
+                    Text(
+                        text = title,
+                        style = TextStyle(
+                            color = ColorProvider(Color.White),
+                            fontSize = 16.sp
+                        ),
+                        modifier = GlanceModifier.padding(start = 8.dp)
+                    )
+                   
+                }
                 if (heatmapImagePath != null) {
                     val imageFile = java.io.File(heatmapImagePath)
                     if (imageFile.exists()) {
@@ -92,9 +113,9 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
                             Image(
                                 provider = BitmapImageProvider(bitmap),
                                 contentDescription = "Heatmap de l'objectif",
-                                // modifier = GlanceModifier
-                                //     .fillMaxWidth()
-                                //     .height(60.dp)
+                                modifier = GlanceModifier
+                                    .fillMaxWidth()
+                                    .height(110.dp)
                             )
                         } else {
                             Text(

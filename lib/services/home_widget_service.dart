@@ -31,12 +31,12 @@ class HomeWidgetService {
     final goal = goalService.activeGoal;
 
     final String title = goal != null ? goal.title : 'HabitoX';
-    final String iconData =
-        goal?.icon.codePoint.toString() ??
-        'fitness_center'; // Code point de l'icône
-
+    final IconData iconData = goal?.icon ?? Icons.fitness_center;
     await HomeWidget.saveWidgetData<String>('widget_title', title);
-    await HomeWidget.saveWidgetData<String>('widget_icon', iconData);
+    await HomeWidget.saveWidgetData<String>(
+      'widget_icon',
+      iconData.codePoint.toString(),
+    );
 
     final heatmapOnly = _HeatmapRender(goalService: goalService);
 
@@ -47,12 +47,24 @@ class HomeWidgetService {
 
     await HomeWidget.renderFlutterWidget(
       Container(
-        color: const Color.fromARGB(255, 94, 128, 222),
+        width: 25,
+        height: 25,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        color: goalService.activeGoal?.color.withValues(alpha: 0.25),
         alignment: Alignment.center,
-        child: SizedBox(width: 400, height: 350, child: heatmapOnly),
+        child: Icon(iconData, color: Colors.white, size: 20),
+      ),
+      key: 'icon_image',
+      logicalSize: Size(25, 25),
+    );
+
+    await HomeWidget.renderFlutterWidget(
+      Container(
+        alignment: Alignment.center,
+        child: SizedBox(width: 420, height: 350, child: heatmapOnly),
       ),
       key: 'heatmap_image',
-      logicalSize: Size(400, 350),
+      logicalSize: Size(420, 350),
     );
 
     try {
