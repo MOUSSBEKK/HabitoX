@@ -50,6 +50,7 @@
   "bottom_modal_input_desc": "Description",
   "bottom_modal_placeholder_desc": "Décrivez votre objectif...",
   "bottom_modal_error_desc": "Veuillez entrer une description",
+  "bottom_modal_error_duration": "La durée minimum est de 5 jours",
   "bottom_modal_modal_succes": "Objectif modifié avec succès",
   "bottom_modal_modal_created": "Objectif créé avec succès",
   "bottom_modal_input_start_date": "Date de début",

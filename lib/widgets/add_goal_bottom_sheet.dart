@@ -8,13 +8,8 @@ import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 
 class AddGoalBottomSheetColors {
-  static const Color primaryColor = Color(
-    0xFF2E7D32,
-  ); // Vert plus foncé et visible
-  static const Color lightColor = Color(0xFF85B8CB);
   static const Color darkColor = Color(0xFF1F4843);
 
-  // Palette de couleurs pour les objectifs - Couleurs avec bonne lisibilité
   static const List<Color> goalColors = [
     Color(0xFFFF8C00), // Orange vif
     Color(0xFF8B7B8B), // Violet gris

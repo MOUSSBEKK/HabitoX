@@ -366,6 +366,12 @@ abstract class AppLocalizations {
   /// **'Please enter a description'**
   String get bottom_modal_error_desc;
 
+  /// No description provided for @bottom_modal_error_duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum duration is 5 days'**
+  String get bottom_modal_error_duration;
+
   /// No description provided for @bottom_modal_modal_succes.
   ///
   /// In en, this message translates to:

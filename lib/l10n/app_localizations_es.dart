@@ -145,6 +145,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bottom_modal_error_desc => 'Por favor ingresa una descripción';
 
   @override
+  String get bottom_modal_error_duration => 'La duración mínima es de 5 días';
+
+  @override
   String get bottom_modal_modal_succes => 'Objetivo modificado exitosamente';
 
   @override

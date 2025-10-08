@@ -49,6 +49,7 @@
   "bottom_modal_input_desc": "Beschreibung",
   "bottom_modal_placeholder_desc": "Beschreibe dein Ziel...",
   "bottom_modal_error_desc": "Bitte gib eine Beschreibung ein",
+  "bottom_modal_error_duration": "Mindestdauer beträgt 5 Tage",
   "bottom_modal_modal_succes": "Ziel erfolgreich geändert",
   "bottom_modal_modal_created": "Ziel erfolgreich erstellt",
   "bottom_modal_input_start_date": "Startdatum",

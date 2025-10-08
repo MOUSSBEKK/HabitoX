@@ -50,6 +50,7 @@
   "bottom_modal_input_desc": "Description",
   "bottom_modal_placeholder_desc": "Describe your goal...",
   "bottom_modal_error_desc": "Please enter a description",
+  "bottom_modal_error_duration": "Minimum duration is 5 days",
   "bottom_modal_modal_succes": "Objective successfully modified",
   "bottom_modal_modal_created": "Goal successfully created",
   "bottom_modal_input_start_date": "Start date",
