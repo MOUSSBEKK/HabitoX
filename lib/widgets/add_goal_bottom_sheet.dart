@@ -457,7 +457,11 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         shape: BoxShape.circle,
                       ),
                       child: color == _selectedColor
-                          ? const Icon(Icons.check, size: 20, color: Colors.white)
+                          ? const Icon(
+                              Icons.check,
+                              size: 20,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                   ),
@@ -578,8 +582,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
-            primary:
-               Theme.of(context).colorScheme.secondary,
+            primary: Theme.of(context).colorScheme.secondary,
             onPrimary: Theme.of(context).colorScheme.primary,
             surface: Theme.of(context).colorScheme.surface,
             onSurface:
@@ -602,7 +605,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           // Vérifier si la durée est encore valide après le changement de date de début
           final difference = _endDate!.difference(picked).inDays + 1;
           if (difference < 5) {
-            _endDate = picked.add(const Duration(days: 4)); // Ajuster pour 5 jours minimum
+            _endDate = picked.add(
+              const Duration(days: 4),
+            ); // Ajuster pour 5 jours minimum
           }
         }
         _calculateDays();
@@ -615,9 +620,8 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
-            primary:
-                Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
-            onPrimary: Colors.black,
+            primary: Theme.of(context).colorScheme.secondary,
+            onPrimary: Theme.of(context).colorScheme.primary,
             surface: Theme.of(context).colorScheme.surface,
             onSurface:
                 Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black,
@@ -630,7 +634,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           _endDate ??
           (_startDate?.add(const Duration(days: 30)) ??
               DateTime.now().add(const Duration(days: 30))),
-      firstDate: _startDate != null 
+      firstDate: _startDate != null
           ? _startDate!.add(const Duration(days: 4)) // Minimum 5 jours
           : DateTime.now().add(const Duration(days: 4)),
       lastDate: DateTime.now().add(const Duration(days: 365)),
@@ -653,7 +657,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
         if (_calculatedDays < 5) {
           _calculatedDays = 5;
           // Ajuster automatiquement la date de fin si nécessaire
-          _endDate = _startDate!.add(const Duration(days: 4)); // 4 jours + 1 = 5 jours total
+          _endDate = _startDate!.add(
+            const Duration(days: 4),
+          ); // 4 jours + 1 = 5 jours total
         }
       });
     }
@@ -1066,7 +1072,11 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                         shape: BoxShape.circle,
                       ),
                       child: isSelected
-                          ? const Icon(Icons.check, size: 25, color: Colors.white)
+                          ? const Icon(
+                              Icons.check,
+                              size: 25,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                   );
@@ -1086,14 +1096,16 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       if (_calculatedDays < 5) {
         toastification.show(
           context: context,
-          title: Text(AppLocalizations.of(context)!.bottom_modal_error_duration),
+          title: Text(
+            AppLocalizations.of(context)!.bottom_modal_error_duration,
+          ),
           type: ToastificationType.error,
           style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
         return;
       }
-      
+
       final goalService = context.read<GoalService>();
 
       if (widget.goal != null) {

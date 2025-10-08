@@ -4,6 +4,8 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter/services.dart';
 import '../services/goal_service.dart';
 
+enum WidgetSize { small, large }
+
 class HomeWidgetService {
   static const String androidProvider = 'ActiveGoalHeatmapWidgetReceiver';
   static const String appGroupId = 'group.com.example.habitox';
@@ -38,36 +40,9 @@ class HomeWidgetService {
       iconData.codePoint.toString(),
     );
 
-    final heatmapOnly = _HeatmapRender(goalService: goalService);
-
-    // Calculer la taille du widget en fonction de la durée de l'objectif
-    final targetDays = goal?.targetDays ?? 30;
-    final (widgetWidth, widgetHeight, logicalWidth, logicalHeight) =
-        _calculateWidgetSize(targetDays);
-
-    await HomeWidget.renderFlutterWidget(
-      Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: goalService.activeGoal?.color.withValues(alpha: 0.25),
-        ),
-        alignment: Alignment.center,
-        child: Padding(padding: EdgeInsets.all(4), child: Icon(iconData, color: Colors.white, size: 18)),
-      ),
-      key: 'icon_image',
-      logicalSize: Size(30, 30),
-    );
-
-    await HomeWidget.renderFlutterWidget(
-      Container(
-        alignment: Alignment.center,
-        child: SizedBox(width: 380, height: 350, child: heatmapOnly),
-      ),
-      key: 'heatmap_image',
-      logicalSize: Size(380, 350),
-    );
+    // Générer les heatmaps pour les deux tailles de widgets
+    await _generateHeatmapForWidget(goalService, WidgetSize.small);
+    await _generateHeatmapForWidget(goalService, WidgetSize.large);
 
     try {
       // Mise à jour pour Android (Glance)
@@ -89,15 +64,70 @@ class HomeWidgetService {
     }
   }
 
-  // Taille fixe du widget (60 jours maximum affichés)
-  static (double, double, double, double) _calculateWidgetSize(int targetDays) {
-    // Taille fixe car nous affichons toujours 60 jours maximum
-    const double widgetWidth = 420;
-    const double widgetHeight = 200;
-    const double logicalWidth = 440;
-    const double logicalHeight = 220;
+  static Future<void> _generateHeatmapForWidget(
+    GoalService goalService,
+    WidgetSize widgetSize,
+  ) async {
+    final heatmapOnly = _HeatmapRender(
+      goalService: goalService,
+      widgetSize: widgetSize,
+    );
 
-    return (widgetWidth, widgetHeight, logicalWidth, logicalHeight);
+    final (width, height) = _getWidgetDimensions(widgetSize);
+    final keySuffix = widgetSize == WidgetSize.small ? '' : '_large';
+
+    await HomeWidget.renderFlutterWidget(
+      Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: goalService.activeGoal?.color.withValues(alpha: 0.25),
+        ),
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.all(4),
+          child: Icon(
+            goalService.activeGoal?.icon ?? Icons.fitness_center,
+            color: Colors.white,
+            size: 18,
+          ),
+        ),
+      ),
+      key: 'icon_image$keySuffix',
+      logicalSize: Size(30, 30),
+    );
+
+    await HomeWidget.renderFlutterWidget(
+      Container(
+        alignment: Alignment.center,
+        child: SizedBox(width: width, height: height, child: heatmapOnly),
+      ),
+      key: 'heatmap_image$keySuffix',
+      logicalSize: Size(width, height),
+    );
+  }
+
+  // Dimensions des widgets selon leur taille
+  static (double, double) _getWidgetDimensions(WidgetSize widgetSize) {
+    switch (widgetSize) {
+      case WidgetSize.small:
+        return (300, 200);
+      case WidgetSize.large:
+        return (400.0, 220);
+    }
+  }
+
+  // Calcul du nombre de jours à afficher selon la taille du widget
+  static int _getMaxDaysForWidget(WidgetSize widgetSize) {
+    switch (widgetSize) {
+      case WidgetSize.small:
+        // Widget carré : afficher 30 jours (5 semaines)
+        return 60;
+      case WidgetSize.large:
+        // Widget rectangulaire : afficher 60 jours (8-9 semaines)
+        return 90;
+    }
   }
 
   // Méthode pour forcer la mise à jour du widget (debug)
@@ -113,8 +143,9 @@ class HomeWidgetService {
 
 class _HeatmapRender extends StatelessWidget {
   final GoalService goalService;
+  final WidgetSize widgetSize;
 
-  const _HeatmapRender({required this.goalService});
+  const _HeatmapRender({required this.goalService, required this.widgetSize});
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +161,7 @@ class _HeatmapRender extends StatelessWidget {
       child: _CompactHeatMap(
         activeGoal: activeGoal,
         goalColor: activeGoal.color,
+        widgetSize: widgetSize,
       ),
     );
   }
@@ -138,8 +170,13 @@ class _HeatmapRender extends StatelessWidget {
 class _CompactHeatMap extends StatelessWidget {
   final dynamic activeGoal;
   final Color goalColor;
+  final WidgetSize widgetSize;
 
-  const _CompactHeatMap({required this.activeGoal, required this.goalColor});
+  const _CompactHeatMap({
+    required this.activeGoal,
+    required this.goalColor,
+    required this.widgetSize,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -164,25 +201,40 @@ class _CompactHeatMap extends StatelessWidget {
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
 
-    // Limiter à 60 jours maximum pour garder le widget compact
-    final maxDays = 60;
+    // Calculer le nombre de jours selon la taille du widget
+    final maxDays = HomeWidgetService._getMaxDaysForWidget(widgetSize);
     final endDate = startOfMonth.add(Duration(days: maxDays));
+
+    // Ajuster la taille des éléments selon le widget
+    final (cellSize, fontSize, margin) = _getHeatmapDimensions(widgetSize);
 
     return ClipRect(
       child: HeatMap(
         startDate: startOfMonth,
         endDate: endDate,
         datasets: datasets,
-        fontSize: 24,
+        fontSize: fontSize,
         textColor: Colors.white,
         borderRadius: 5,
         colorsets: colorsets,
         defaultColor: goalColor.withValues(alpha: 0.25),
-        size: 29,
+        size: cellSize,
         colorMode: ColorMode.color,
         showColorTip: false,
-        margin: EdgeInsets.all(3.5),
+        margin: EdgeInsets.all(margin),
       ),
     );
+  }
+
+  // Dimensions des éléments du heatmap selon la taille du widget
+  (double, double, double) _getHeatmapDimensions(WidgetSize widgetSize) {
+    switch (widgetSize) {
+      case WidgetSize.small:
+        // Widget carré : éléments plus petits
+        return (20.0, 16.0, 2.5);
+      case WidgetSize.large:
+        // Widget rectangulaire : éléments plus grands
+        return (25.0, 20.0, 3.0);
+    }
   }
 }
