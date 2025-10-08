@@ -297,7 +297,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   Widget _buildIconSelector() {
     final baseIcons = [
       Icons.fitness_center,
-      Icons.music_note,
+      HugeIconsSolid.musicNote02,
       Icons.book,
       Icons.code,
       Icons.language,
@@ -602,7 +602,13 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       setState(() {
         _startDate = picked;
         if (_endDate != null && _endDate!.isBefore(picked)) {
-          _endDate = picked.add(const Duration(days: 1));
+          _endDate = picked.add(const Duration(days: 4)); // Minimum 5 jours
+        } else if (_endDate != null) {
+          // Vérifier si la durée est encore valide après le changement de date de début
+          final difference = _endDate!.difference(picked).inDays + 1;
+          if (difference < 5) {
+            _endDate = picked.add(const Duration(days: 4)); // Ajuster pour 5 jours minimum
+          }
         }
         _calculateDays();
       });
@@ -629,7 +635,9 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           _endDate ??
           (_startDate?.add(const Duration(days: 30)) ??
               DateTime.now().add(const Duration(days: 30))),
-      firstDate: _startDate ?? DateTime.now(),
+      firstDate: _startDate != null 
+          ? _startDate!.add(const Duration(days: 4)) // Minimum 5 jours
+          : DateTime.now().add(const Duration(days: 4)),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       cancelText: AppLocalizations.of(context)!.cancel,
     );
@@ -646,6 +654,12 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
       final difference = _endDate!.difference(_startDate!).inDays + 1;
       setState(() {
         _calculatedDays = difference > 0 ? difference : 1;
+        // S'assurer que la durée minimum est de 5 jours
+        if (_calculatedDays < 5) {
+          _calculatedDays = 5;
+          // Ajuster automatiquement la date de fin si nécessaire
+          _endDate = _startDate!.add(const Duration(days: 4)); // 4 jours + 1 = 5 jours total
+        }
       });
     }
   }
@@ -1073,6 +1087,18 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
 
   void _saveGoal() {
     if (_formKey.currentState!.validate()) {
+      // Validation de la durée minimum
+      if (_calculatedDays < 5) {
+        toastification.show(
+          context: context,
+          title: Text(AppLocalizations.of(context)!.bottom_modal_error_duration),
+          type: ToastificationType.error,
+          style: ToastificationStyle.flat,
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+        return;
+      }
+      
       final goalService = context.read<GoalService>();
 
       if (widget.goal != null) {
