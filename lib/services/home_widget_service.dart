@@ -47,24 +47,26 @@ class HomeWidgetService {
 
     await HomeWidget.renderFlutterWidget(
       Container(
-        width: 25,
-        height: 25,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-        color: goalService.activeGoal?.color.withValues(alpha: 0.25),
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: goalService.activeGoal?.color.withValues(alpha: 0.25),
+        ),
         alignment: Alignment.center,
-        child: Icon(iconData, color: Colors.white, size: 20),
+        child: Padding(padding: EdgeInsets.all(4), child: Icon(iconData, color: Colors.white, size: 18)),
       ),
       key: 'icon_image',
-      logicalSize: Size(25, 25),
+      logicalSize: Size(30, 30),
     );
 
     await HomeWidget.renderFlutterWidget(
       Container(
         alignment: Alignment.center,
-        child: SizedBox(width: 420, height: 350, child: heatmapOnly),
+        child: SizedBox(width: 380, height: 350, child: heatmapOnly),
       ),
       key: 'heatmap_image',
-      logicalSize: Size(420, 350),
+      logicalSize: Size(380, 350),
     );
 
     try {

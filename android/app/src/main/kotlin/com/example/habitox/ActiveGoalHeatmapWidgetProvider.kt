@@ -79,7 +79,7 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
                 verticalAlignment = Alignment.Top
             ) {
                 Row(
-                    modifier = GlanceModifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
+                    modifier = GlanceModifier.padding(start = 8.dp, top = 12.dp, bottom = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ){
@@ -115,7 +115,7 @@ class ActiveGoalHeatmapWidgetProvider : GlanceAppWidget() {
                                 contentDescription = "Heatmap de l'objectif",
                                 modifier = GlanceModifier
                                     .fillMaxWidth()
-                                    .height(110.dp)
+                                    .height(125.dp)
                             )
                         } else {
                             Text(
