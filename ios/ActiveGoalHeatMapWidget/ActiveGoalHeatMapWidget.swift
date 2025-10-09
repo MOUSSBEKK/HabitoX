@@ -14,7 +14,7 @@ struct Provider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let prefs = UserDefaults(suiteName: "group.com.example.habitox")
+        let prefs = UserDefaults(suiteName: "group.com.example.habitox.ActiveGoalHeatMapWidget")
         let title = prefs?.string(forKey: "widget_title") ?? "HabitoX"
         let heatmapImagePath = prefs?.string(forKey: "heatmap_image")
         
@@ -26,7 +26,7 @@ struct Provider: TimelineProvider {
         getSnapshot(in: context) { (entry) in
             let timeline = Timeline(entries: [entry], policy: .atEnd)
             completion(timeline)
-        }
+        }   
     }
 }
 
@@ -38,24 +38,23 @@ struct SimpleEntry: TimelineEntry {
 
 struct ActiveGoalHeatMapWidgetEntryView : View {
     var entry: Provider.Entry
+    @Environment(\.widgetFamily) var family
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Titre de l'objectif
+        VStack(alignment: .leading) {
             Text(entry.title)
                 .font(.headline)
                 .foregroundColor(.white)
-                .padding(.horizontal, 8)
-                .padding(.top, 8)
+                .padding(.horizontal, 4)
+                .padding(.top, 4)
             
-            // Image de la heatmap
             if let imagePath = entry.heatmapImagePath,
                let image = UIImage(contentsOfFile: imagePath) {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(maxHeight: 120)
-                    .padding(.horizontal, 8)
+                    .frame(maxWidth: family == .systemSmall ? 220 : 360 ,maxHeight: 220)
+                    //.padding(.horizontal, 4)
             } else {
                 // Placeholder si pas d'image
                 RoundedRectangle(cornerRadius: 8)
@@ -65,13 +64,14 @@ struct ActiveGoalHeatMapWidgetEntryView : View {
                         Text("Aucun objectif actif")
                             .foregroundColor(.gray)
                     )
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, 4)
             }
             
-            Spacer()
+            //Spacer()
         }
-        .background(Color(red: 0.12, green: 0.13, blue: 0.16)) // #1F222A
-        .cornerRadius(12)
+        //.background(Color(red: 0.122, green: 0.133, blue: 0.165))
+        //.cornerRadius(12)
+        .frame(width: .infinity, height: .infinity)
     }
 }
 
@@ -82,20 +82,19 @@ struct ActiveGoalHeatMapWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
                 ActiveGoalHeatMapWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    .containerBackground(Color(red: 0.122, green: 0.133, blue: 0.165), for: .widget)
             } else {
                 ActiveGoalHeatMapWidgetEntryView(entry: entry)
-                    .padding()
                     .background()
             }
         }
-        .configurationDisplayName("HabitoX Heatmap")
-        .description("Affiche la heatmap de votre objectif actif")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .configurationDisplayName("HabitoX Heatmap Calendar")
+        .description("Affiche le calendrier de votre objectif actif")
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
-#Preview(as: .systemMedium) {
+#Preview(as: .systemSmall) {
     ActiveGoalHeatMapWidget()
 } timeline: {
     SimpleEntry(date: .now, title: "Mon Objectif", heatmapImagePath: nil)

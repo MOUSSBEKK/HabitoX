@@ -8,7 +8,7 @@ enum WidgetSize { small, large }
 
 class HomeWidgetService {
   static const String androidProvider = 'ActiveGoalHeatmapWidgetReceiver';
-  static const String appGroupId = 'group.com.example.habitox';
+  static const String appGroupId = 'group.com.example.habitox.ActiveGoalHeatMapWidget';
   static const String iOSWidgetName = 'ActiveGoalHeatmapWidget';
   static const String data_key = 'widget_data';
 
@@ -53,7 +53,6 @@ class HomeWidgetService {
     }
 
     try {
-      // Mise à jour pour iOS
       await HomeWidget.updateWidget(
         androidName: androidProvider,
         iOSName: iOSWidgetName,
@@ -123,10 +122,10 @@ class HomeWidgetService {
     switch (widgetSize) {
       case WidgetSize.small:
         // Widget carré : afficher 30 jours (5 semaines)
-        return 60;
+        return 59;
       case WidgetSize.large:
         // Widget rectangulaire : afficher 60 jours (8-9 semaines)
-        return 90;
+        return 87;
     }
   }
 
@@ -155,7 +154,7 @@ class _HeatmapRender extends StatelessWidget {
     }
 
     return Container(
-      color: const Color(0xFF1F222A),
+      //color: const Color.from(alpha: 1, red: 0.122, green: 0.133, blue: 0.165),
       width: double.infinity,
       height: double.infinity,
       child: _CompactHeatMap(
