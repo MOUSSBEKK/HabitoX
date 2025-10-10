@@ -55,6 +55,7 @@ dependencies:
   liquid_glass_renderer: ^0.1.1-dev.10
   hugeicons_pro: ^0.0.2
   gaimon: ^1.4.1
+  confetti: ^0.8.0
 
 dev_dependencies:
   flutter_test:
