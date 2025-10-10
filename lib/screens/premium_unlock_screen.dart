@@ -28,14 +28,7 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: bg,
-        foregroundColor: AppColors.darkColor,
-        title: Text(
-          'HabitoX Premium',
-          style: TextStyle(
-            color: Theme.of(context).textTheme.bodyMedium?.color,
-          ),
-        ),
+        title: Text('HabitoX Premium'),
       ),
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(20, 8, 20, 16),
@@ -117,27 +110,27 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           accent: accent,
         ),
         const SizedBox(height: 10),
-        Center(
-          child: Text(
-            AppLocalizations.of(context)!.premium_subscribe_subtitle,
-            style: TextStyle(
-              color: AppColors.darkColor.withOpacity(0.8),
-              fontSize: 13,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Center(
-          child: Text(
-            'or',
-            style: TextStyle(
-              color: AppColors.darkColor.withOpacity(0.9),
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
+        // Center(
+        //   child: Text(
+        //     AppLocalizations.of(context)!.premium_subscribe_subtitle,
+        //     style: TextStyle(
+        //       color: AppColors.darkColor.withOpacity(0.8),
+        //       fontSize: 13,
+        //     ),
+        //   ),
+        // ),
+        // const SizedBox(height: 12),
+        // Center(
+        //   child: Text(
+        //     'or',
+        //     style: TextStyle(
+        //       color: AppColors.darkColor.withOpacity(0.9),
+        //       fontSize: 15,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        // ),
+        // const SizedBox(height: 12),
         _buildPlanCard(
           title: AppLocalizations.of(context)!.premium_life,
           price: _priceLifetime,
@@ -147,16 +140,16 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
           border: border,
           accent: accent,
         ),
-        const SizedBox(height: 6),
-        Center(
-          child: Text(
-            AppLocalizations.of(context)!.premium_paiement_subtitle,
-            style: TextStyle(
-              color: AppColors.darkColor.withOpacity(0.8),
-              fontSize: 13,
-            ),
-          ),
-        ),
+        // const SizedBox(height: 6),
+        // Center(
+        //   child: Text(
+        //     AppLocalizations.of(context)!.premium_paiement_subtitle,
+        //     style: TextStyle(
+        //       color: AppColors.darkColor.withOpacity(0.8),
+        //       fontSize: 13,
+        //     ),
+        //   ),
+        // ),
         if (_errorMessage != null) ...[
           const SizedBox(height: 6),
           Center(
@@ -409,7 +402,6 @@ class _PremiumUnlockScreenState extends State<PremiumUnlockScreen> {
   }
 
   void _onContinue() {
-    // Placeholder achat
     setState(() {
       _errorMessage = null; // ou affichez une erreur simulée
     });

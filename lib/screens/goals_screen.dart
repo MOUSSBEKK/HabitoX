@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import '../models/goal.dart';
 import '../services/goal_service.dart';
+import '../services/user_profile_service.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import '../l10n/app_localizations.dart';

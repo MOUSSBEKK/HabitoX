@@ -4,21 +4,22 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'goals_screen.dart';
 import 'profile_screen.dart';
 import 'badges_screen.dart';
+import 'premium_unlock_screen.dart';
 import '../widgets/skill_progress_widget.dart';
 import '../models/goal.dart';
 import '../widgets/add_goal_bottom_sheet.dart';
 import '../l10n/app_localizations.dart';
+import '../services/goal_service.dart';
+import '../services/user_profile_service.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:gaimon/gaimon.dart';
+import 'package:provider/provider.dart';
 
-// Couleurs du design épuré
+
 class HomeColors {
   static const Color primaryColor = Color(
     0xFFA7C6A5,
-  ); // Vert clair pour onglets/boutons
-  static const Color lightColor = Color(0xFF85B8CB); // Bleu clair pour fonds
-  static const Color darkColor = Color(
-    0xFF1F4843,
-  ); // Vert foncé pour TOUT le texte
+  );
 }
 
 class HomeScreen extends StatefulWidget {
@@ -42,6 +43,31 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => AddGoalBottomSheet(goal: goal),
     );
+  }
+
+  void _handleAddGoalClick(BuildContext context) {
+    final goalService = Provider.of<GoalService>(context, listen: false);
+    final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+    
+    // Vérifier si l'utilisateur est premium
+    if (userProfileService.isPremium) {
+      // Utilisateur premium : pas de limite
+      _showAddGoalBottomSheet(context);
+    } else {
+      // Utilisateur non-premium : vérifier la limite de 6 objectifs
+      if (goalService.goals.length >= 6) {
+        // Limite atteinte : rediriger vers la page premium
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const PremiumUnlockScreen(),
+          ),
+        );
+      } else {
+        // Limite pas encore atteinte : permettre l'ajout
+        _showAddGoalBottomSheet(context);
+      }
+    }
   }
 
   @override
@@ -184,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
+          Gaimon.selection();
           _currentIndex = index;
         });
       },
@@ -240,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       child:IconButton(onPressed:(){
-        _showAddGoalBottomSheet(context);
+        _handleAddGoalClick(context);
       } , icon: Icon(Icons.add, color: Colors.white, size: iconSize))
     );
   }

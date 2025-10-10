@@ -50,6 +50,25 @@ class UserProfileService extends ChangeNotifier {
     }
   }
 
+  // Méthode pour vérifier le statut premium
+  bool get isPremium => _userProfile?.isPremium ?? false;
+
+  // Méthode pour activer le premium (pour les tests ou l'achat)
+  Future<void> setPremiumStatus(bool isPremium) async {
+    if (_userProfile != null) {
+      _userProfile = _userProfile!.copyWith(isPremium: isPremium);
+      await _saveProfile();
+      notifyListeners();
+    }
+  }
+
+  // Méthode de test pour basculer le statut premium (à supprimer en production)
+  Future<void> togglePremiumStatus() async {
+    if (_userProfile != null) {
+      await setPremiumStatus(!_userProfile!.isPremium);
+    }
+  }
+
   // Méthode appelée quand un objectif est terminé (ancien système)
   // Future<void> onGoalCompleted() async {
   //   if (_userProfile != null) {

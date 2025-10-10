@@ -10,6 +10,7 @@ class UserProfile {
   int totalDaysCompleted;
   int consecutiveDays;
   int maxConsecutiveDays;
+  bool isPremium;
   DateTime lastActivityDate;
   DateTime createdAt;
   UserProfile({
@@ -21,6 +22,7 @@ class UserProfile {
     this.totalDaysCompleted = 0,
     this.consecutiveDays = 0,
     this.maxConsecutiveDays = 0,
+    this.isPremium = false,
     required this.lastActivityDate,
     required this.createdAt,
   }) {}
@@ -193,6 +195,7 @@ class UserProfile {
       'totalDaysCompleted': totalDaysCompleted,
       'consecutiveDays': consecutiveDays,
       'maxConsecutiveDays': maxConsecutiveDays,
+      'isPremium': isPremium,
       'lastActivityDate': lastActivityDate.millisecondsSinceEpoch,
       'createdAt': createdAt.millisecondsSinceEpoch,
     };
@@ -210,6 +213,7 @@ class UserProfile {
       totalDaysCompleted: json['totalDaysCompleted'] ?? 0,
       consecutiveDays: json['consecutiveDays'] ?? 0,
       maxConsecutiveDays: json['maxConsecutiveDays'] ?? 0,
+      isPremium: json['isPremium'] ?? false,
       lastActivityDate: DateTime.fromMillisecondsSinceEpoch(
         json['lastActivityDate'],
       ),
@@ -230,6 +234,7 @@ class UserProfile {
     int? totalDaysCompleted,
     int? consecutiveDays,
     int? maxConsecutiveDays,
+    bool? isPremium,
     DateTime? lastActivityDate,
     DateTime? createdAt,
   }) {
@@ -244,6 +249,7 @@ class UserProfile {
       totalDaysCompleted: totalDaysCompleted ?? this.totalDaysCompleted,
       consecutiveDays: consecutiveDays ?? this.consecutiveDays,
       maxConsecutiveDays: maxConsecutiveDays ?? this.maxConsecutiveDays,
+      isPremium: isPremium ?? this.isPremium,
       lastActivityDate: lastActivityDate ?? this.lastActivityDate,
       createdAt: createdAt ?? this.createdAt,
     );

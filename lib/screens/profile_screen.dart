@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // _buildUpgradeCard(isTablet),
+                  _buildUpgradeCard(isTablet),
                   const SizedBox(height: 16),
                   _buildLevelCard(isTablet),
                   const SizedBox(height: 16),
@@ -85,67 +85,104 @@ extension on _ProfileScreenState {
     return 'assets/badges/${assetFiles[badgeIndex]}';
   }
 
-  // Widget _buildUpgradeCard(bool isTablet) {
-  //   return GestureDetector(
-  //     // Ouvre la page de souscription premium
-  //     onTap: () => Navigator.pushNamed(context, '/premium_unlock'),
-  //     child: Container(
-  //       padding: EdgeInsets.all(isTablet ? 20 : 16),
-  //       decoration: BoxDecoration(
-  //         borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
-  //         gradient: const LinearGradient(
-  //           colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
-  //           begin: Alignment.topLeft,
-  //           end: Alignment.bottomRight,
-  //         ),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             // ! changer pour Theme.of(context).colorScheme.shadow
-  //             color: const Color(0xFF6db399).withOpacity(0.25),
-  //             blurRadius: 18,
-  //             offset: const Offset(0, 8),
-  //           ),
-  //         ],
-  //       ),
-  //       child: Row(
-  //         children: [
-  //           Container(
-  //             padding: const EdgeInsets.all(12),
-  //             decoration: BoxDecoration(
-  //               color: Colors.white.withOpacity(0.2),
-  //               borderRadius: BorderRadius.circular(12),
-  //             ),
-  //             child: const Icon(Icons.auto_awesome, color: Colors.white),
-  //           ),
-  //           const SizedBox(width: 12),
-  //           Expanded(
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   AppLocalizations.of(context)!.upgrade_card_title,
-  //                   style: TextStyle(
-  //                     color: Colors.white,
-  //                     fontWeight: FontWeight.w700,
-  //                     fontSize: 16,
-  //                   ),
-  //                 ),
-  //                 Text(
-  //                   AppLocalizations.of(context)!.upgrade_card_subtitle,
-  //                   style: TextStyle(
-  //                     color: Colors.white.withOpacity(0.95),
-  //                     fontSize: 12,
-  //                     fontWeight: FontWeight.w500,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildUpgradeCard(bool isTablet) {
+    return Consumer<UserProfileService>(
+      builder: (context, userProfileService, child) {
+        final isPremium = userProfileService.isPremium;
+        
+        return GestureDetector(
+          // Ouvre la page de souscription premium ou bascule le statut pour les tests
+          onTap: () {
+            if (kDebugMode) {
+              // En mode debug, basculer le statut premium pour les tests
+              userProfileService.togglePremiumStatus();
+            } else {
+              // En production, ouvrir la page premium
+              Navigator.pushNamed(context, '/premium_unlock');
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.all(isTablet ? 20 : 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
+              gradient: isPremium 
+                ? const LinearGradient(
+                    colors: [Color(0xFF8B5CF6), Color(0xFFA855F7)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : const LinearGradient(
+                    colors: [Color(0xFF6db399), Color(0xFFa9c4a5)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+              boxShadow: [
+                BoxShadow(
+                  color: (isPremium ? const Color(0xFF8B5CF6) : const Color(0xFF6db399)).withOpacity(0.25),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    isPremium ? Icons.workspace_premium : Icons.auto_awesome, 
+                    color: Colors.white
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isPremium 
+                          ? 'HabitoX Premium ✓'
+                          : AppLocalizations.of(context)!.upgrade_card_title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        isPremium 
+                          ? 'Accès illimité aux objectifs'
+                          : AppLocalizations.of(context)!.upgrade_card_subtitle,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.95),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      if (kDebugMode) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          'Tap to toggle (Debug)',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 10,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildLevelCard(bool isTablet) {
     return Consumer<UserProfileService>(
@@ -352,26 +389,12 @@ extension on _ProfileScreenState {
         _buildSettingsCategory(
           title: AppLocalizations.of(context)!.settings_categorie_ressources,
           items: [
-            // _SettingItem(
-            //   key: SettingKey.importData,
-            //   icon: FaIcon(
-            //     FontAwesomeIcons.fileImport,
-            //     size: 20,
-            //     color: Theme.of(context).iconTheme.color,
-            //   ),
-            //   title: AppLocalizations.of(context)!.settings_import,
-            //   locked: true,
-            // ),
-            // _SettingItem(
-            //   key: SettingKey.exportData,
-            //   icon: FaIcon(
-            //     FontAwesomeIcons.fileExport,
-            //     size: 20,
-            //     color: Theme.of(context).iconTheme.color,
-            //   ),
-            //   title: AppLocalizations.of(context)!.settings_export,
-            //   locked: true,
-            // ),
+            _SettingItem(
+              key: SettingKey.exportData,
+              icon: HugeIconsStroke.fileExport,
+              title: AppLocalizations.of(context)!.settings_export,
+              locked: true,
+            ),
             _SettingItem(
               key: SettingKey.privacyPolicy,
               icon: HugeIconsStroke.securityCheck,
@@ -419,7 +442,6 @@ extension on _ProfileScreenState {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Titre de la catégorie
           Padding(
             padding: EdgeInsets.fromLTRB(
               isTablet ? 20 : 16,
@@ -500,7 +522,6 @@ extension on _ProfileScreenState {
     return Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color);
   }
 
-  // Navigation basée sur une clé stable (indépendante de la localisation)
   void _navigateToSetting(SettingKey setting) {
     switch (setting) {
       case SettingKey.appAppearance:
@@ -534,9 +555,6 @@ extension on _ProfileScreenState {
       case SettingKey.appUpdates:
         Navigator.pushNamed(context, '/app_updates');
         break;
-      // case SettingKey.resetOnboarding:
-      // _resetOnboarding();
-      // break;
       case SettingKey.importData:
       case SettingKey.exportData:
         toastification.show(
@@ -552,7 +570,7 @@ extension on _ProfileScreenState {
 
   // facto avec _openPrivacyPolicy
   Future<void> _openHabitox() async {
-    final Uri habitoxUri = Uri.parse('https://habitox.app');
+    final Uri habitoxUri = Uri.parse('http://localhost:8080/#/help');
     try {
       bool opened = await launchUrl(
         habitoxUri,
