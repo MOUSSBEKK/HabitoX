@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
@@ -9,6 +11,7 @@ import 'level_up_dialog.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:gaimon/gaimon.dart';
 
 class ActiveGoalCalendarWidget extends StatelessWidget {
   final Function(int)? onSwitchTab;
@@ -295,6 +298,13 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
         onPressed: alreadyCompletedToday
             ? null
             : () async {
+                debugPrint('$isGaimonSupported');
+                if (isGaimonSupported == true) {
+                  debugPrint('Gaimon Sélection');
+                  
+                }
+                Gaimon.success();
+
                 final profileService = context.read<UserProfileService>();
                 final int experience = 5;
                 // Utiliser le nouveau système XP
@@ -305,45 +315,47 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
                   profileService,
                 );
                 if (updateResult != null) {
-                  if (updateResult['goalCompleted'] == true) {
+                  debugPrint('goal not completed');
+                  if (updateResult['goalCompleted'] != true) {
                     // Objectif terminé complètement
+                  debugPrint('xp gained');
+
                     final xpGained = updateResult['xpGained'] as int? ?? 0;
                     final levelUpResult = updateResult['levelUpResult'];
 
-                    toastification.show(
-                      context: context,
-                      title: Text(
-                        AppLocalizations.of(
-                          context,
-                        )!.toastification_goal_completed,
-                      ),
-                      description: Text('Congratulations ! +$xpGained XP'),
-                      type: ToastificationType.success,
-                      style: ToastificationStyle.flat,
-                      autoCloseDuration: const Duration(seconds: 4),
-                    );
+                    // toastification.show(
+                    //   context: context,
+                    //   title: Text(
+                    //     AppLocalizations.of(
+                    //       context,
+                    //     )!.toastification_goal_completed,
+                    //   ),
+                    //   description: Text('Congratulations ! +$xpGained XP'),
+                    //   type: ToastificationType.success,
+                    //   style: ToastificationStyle.flat,
+                    //   autoCloseDuration: const Duration(seconds: 4),
+                    // );
 
                     // Si level up, afficher popup
-                    if (levelUpResult != null &&
-                        levelUpResult.hasLeveledUp &&
-                        context.mounted) {
+                    //if (levelUpResult != null &&
+                      //  levelUpResult.hasLeveledUp &&
+                        //context.mounted) {
                       final badgeAsset =
-                          'assets/badges/BADGE${levelUpResult.newLevel}.png';
+                          'assets/badges/BADGE1.png';
                       final badgeName =
                           profileService.userProfile?.levelName ??
-                          'Niveau ${levelUpResult.newLevel}';
+                          'Niveau 1';
 
                       showDialog(
                         context: context,
                         barrierDismissible: true,
                         builder: (context) => LevelUpDialog(
-                          levelUpResult: levelUpResult,
+                          //levelUpResult: levelUpResult,
                           badgeAssetPath: badgeAsset,
                           badgeName: badgeName,
-                          badgeDescription: 'You have reached a new level !',
                         ),
                       );
-                    }
+                    //}
                   } else {
                     // Session normale
                     toastification.show(
@@ -441,4 +453,6 @@ class ActiveGoalCalendarWidget extends StatelessWidget {
       ),
     );
   }
+
+  static Future<bool> isGaimonSupported() async => Gaimon.canSupportsHaptic;
 }

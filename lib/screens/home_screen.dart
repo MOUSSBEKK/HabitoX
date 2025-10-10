@@ -49,14 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final goalService = Provider.of<GoalService>(context, listen: false);
     final userProfileService = Provider.of<UserProfileService>(context, listen: false);
     
-    // Vérifier si l'utilisateur est premium
     if (userProfileService.isPremium) {
-      // Utilisateur premium : pas de limite
       _showAddGoalBottomSheet(context);
     } else {
-      // Utilisateur non-premium : vérifier la limite de 6 objectifs
       if (goalService.goals.length >= 6) {
-        // Limite atteinte : rediriger vers la page premium
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -64,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       } else {
-        // Limite pas encore atteinte : permettre l'ajout
         _showAddGoalBottomSheet(context);
       }
     }
@@ -267,6 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       child:IconButton(onPressed:(){
+        Gaimon.selection();
         _handleAddGoalClick(context);
       } , icon: Icon(Icons.add, color: Colors.white, size: iconSize))
     );

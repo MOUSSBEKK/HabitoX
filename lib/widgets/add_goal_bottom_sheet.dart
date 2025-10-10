@@ -6,6 +6,7 @@ import '../models/goal.dart';
 import '../services/goal_service.dart';
 import '../l10n/app_localizations.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:gaimon/gaimon.dart';
 
 class AddGoalBottomSheetColors {
   static const Color darkColor = Color(0xFF1F4843);
@@ -183,6 +184,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
+                        Gaimon.error();
                         return AppLocalizations.of(
                           context,
                         )!.bottom_modal_error_title;
@@ -236,6 +238,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
                     ),
                     maxLines: 3,
                     validator: (value) {
+                      Gaimon.error();
                       if (value == null || value.trim().isEmpty) {
                         return AppLocalizations.of(
                           context,
@@ -995,7 +998,6 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   }
 
   Widget _buildAllColorsModal() {
-    // Organiser les couleurs pour mettre la sélectionnée en premier
     final orderedColors = <Color>[];
     if (AddGoalBottomSheetColors.goalColors.contains(_selectedColor)) {
       orderedColors.add(_selectedColor);
@@ -1091,21 +1093,11 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
   }
 
   void _saveGoal() {
-    if (_formKey.currentState!.validate()) {
-      // Validation de la durée minimum
-      if (_calculatedDays < 5) {
-        toastification.show(
-          context: context,
-          title: Text(
-            AppLocalizations.of(context)!.bottom_modal_error_duration,
-          ),
-          type: ToastificationType.error,
-          style: ToastificationStyle.flat,
-          autoCloseDuration: const Duration(seconds: 3),
-        );
-        return;
-      }
 
+  
+
+    if (_formKey.currentState!.validate()) {
+      
       final goalService = context.read<GoalService>();
 
       if (widget.goal != null) {
@@ -1128,6 +1120,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
+        Gaimon.success();
       } else {
         final newGoal = Goal(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -1150,6 +1143,7 @@ class _AddGoalBottomSheetState extends State<AddGoalBottomSheet> {
           style: ToastificationStyle.flat,
           autoCloseDuration: const Duration(seconds: 3),
         );
+        Gaimon.success();
       }
 
       Navigator.pop(context);

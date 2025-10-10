@@ -25,7 +25,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocalStorage();
 
-  // Initialiser l'App Group ID pour iOS
   await HomeWidgetService.initialize();
 
   final languageService = LanguageService();

@@ -342,6 +342,7 @@ class GoalService extends ChangeNotifier {
     return {'xpGained': 0, 'levelUpResult': null};
   }
 
+// a supprimer 
   Future<void> resetStreak(String goalId) async {
     final index = _goals.indexWhere((g) => g.id == goalId);
     if (index != -1) {
